@@ -10,7 +10,15 @@ body {
 
 .heading-font {
   font-family: 'Cinzel', serif;
-  color: whitesmoke;
+  color: rgb(237, 243, 121);
   font-size: 100px;
+  text-align: center;
+  
+}
+
+.body-font {
+  font-family: 'Cinzel', serif;
+  color: whitesmoke;
+  font-size: 75px;
   text-align: center;
 }
