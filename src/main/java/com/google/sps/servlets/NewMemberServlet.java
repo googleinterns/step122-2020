@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet responsible for creating new tasks. */
+/** Servlet responsible for adding new members to a family. */
 @WebServlet("/new-member")
 public class NewMemberServlet extends HttpServlet {
 

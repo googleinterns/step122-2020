@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet responsible for creating new tasks. */
+/** Servlet responsible for creating new families. */
 @WebServlet("/family")
 public class FamilyServlet extends HttpServlet {
 
@@ -34,7 +34,7 @@ public class FamilyServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserService userService = UserServiceFactory.getUserService();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        long userID = userService.getCurrentUser().getUserId();
+        String userID = userService.getCurrentUser().getUserId();
         Query query = new Query("UserInfo")
             .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userID));
         PreparedQuery results = datastore.prepare(query);
