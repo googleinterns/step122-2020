@@ -46,14 +46,14 @@ public class FamilyServlet extends HttpServlet {
         
         String familyName = request.getParameter("family-name");
         String creatorEmail = userService.getCurrentUser().getEmail();
-        long timestamp = System.currentTimeMillis();
+        long createdTimestamp = System.currentTimeMillis();
 
         ArrayList<String> memberEmails = new ArrayList(Arrays.asList(creatorEmail)); 
 
         Entity familyEntity = new Entity("Family");
         familyEntity.setProperty("name", familyName);
         familyEntity.setProperty("memberEmails", memberEmails);
-        familyEntity.setProperty("timestamp", timestamp);
+        familyEntity.setProperty("createdTimestamp", createdTimestamp);   
         datastore.put(familyEntity);
 
         long familyID = familyEntity.getKey().getId();
