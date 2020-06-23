@@ -29,24 +29,15 @@ public class loginServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     response.setContentType("text/html");
-
-    // checks if homepage button was pressed
-    if (request.getParameter("homeBtn") != null) {
-        response.sendRedirect("/home.html");
-    
-
-    //checks if login was pressed
-    } else if (request.getParameter("loginBtn") != null) {
         if (userService.isUserLoggedIn()) {
             String userEmail = userService.getCurrentUser().getEmail();
             String urlToRedirectToAfterUserLogsOut = "/";
             String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
             response.sendRedirect("/home.html");      
         } else {
-            String urlToRedirectToAfterUserLogsIn = "/";
+            String urlToRedirectToAfterUserLogsIn = "/home.html";
             String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
             response.sendRedirect(loginUrl);
     }
   }
  }
-}
