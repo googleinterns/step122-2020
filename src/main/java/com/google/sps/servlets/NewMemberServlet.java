@@ -27,26 +27,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet responsible for creating new tasks. */
-@WebServlet("/family")
-public class FamilyServlet extends HttpServlet {
+@WebServlet("/new-member")
+public class NewMemberServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UserService userService = UserServiceFactory.getUserService();
-        
-        String familyName = request.getParameter("family-name");
-        String creatorEmail = userService.getCurrentUser().getEmail();
+        String email = request.getParameter("memberEmail");
+        long familyID = Long.parseLong(request.getParameter("familyID"));
         long timestamp = System.currentTimeMillis();
 
-        ArrayList<String> memberEmails = new ArrayList(Arrays.asList(creatorEmail)); 
-
-        Entity familyEntity = new Entity("Family");
-        familyEntity.setProperty("name", familyName);
-        familyEntity.setProperty("memberEmails", memberEmails);
-        familyEntity.setProperty("timestamp", timestamp);
+        Key familyEntityKey = KeyFactory.createKey("Family", familyID);
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        datastore.put(familyEntity);
+        try {
+            Entity familyEntity = datastore.get(familyEntityKey);
+            ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
+            memberEmails.add(email);
+
+            familyEntity.setProperty("memberEmails", memberEmails);
+        } catch (Exception e) {
+            System.out.println("Error");
+        }
 
         response.sendRedirect("/settings.html");
     }
