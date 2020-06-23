@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Home</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
+    </head>
+    <body>
+        <div class="top-container">
+            <div class="dropdown">
+                <button class="dropbtn">MENU</button>
+                <div class="dropdown-content">
+                    <a href="cal.html">Calendar</a>
+                    <a href="photos.html">Photos</a>
+                    <a href="task.html">To-Do List</a>
+                    <a href="grocery.html">Grocery List</a>
+                    <a href="settings.html">Settings</a>
+                </div>
+            </div>
+            <div class="user">
+                <a href="images/user.png" ><img class="user-image" src="images/user.png"/></a>
+            </div>
+        </div>
+        <div id="content">
+            <button onclick="openFamilyForm()">Click to create a family</button>
+            <div class="form-popup" id="createFamilyForm">
+              <form action="/family" method="POST" class="form-container">
+                <h1>Create new family</h1>
+
+                <label for="name"><b>Name</b></label>
+                <input type="text" placeholder="Enter Name" name="family-name" required>
+
+                <button type="submit" class="btn">Confirm</button>
+                <button type="button" class="btn cancel" onclick="closeFamilyForm()">Close</button>
+              </form>
+            </div>
+        </div>
+        <br></br><br></br><br></br>
+  </body>
+</html>
