@@ -33,6 +33,16 @@ public class FamilyServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserService userService = UserServiceFactory.getUserService();
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        long userID = userService.getCurrentUser().getUserId();
+        Query query = new Query("UserInfo")
+            .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userID));
+        PreparedQuery results = datastore.prepare(query);
+        Entity entity = results.asSingleEntity();
+        if (entity != null) {
+            System.out.println("You already belong to a family");
+            return;
+        }
         
         String familyName = request.getParameter("family-name");
         String creatorEmail = userService.getCurrentUser().getEmail();
@@ -44,9 +54,15 @@ public class FamilyServlet extends HttpServlet {
         familyEntity.setProperty("name", familyName);
         familyEntity.setProperty("memberEmails", memberEmails);
         familyEntity.setProperty("timestamp", timestamp);
-
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         datastore.put(familyEntity);
+
+        long familyID = familyEntity.getKey().getId();
+
+        Entity userInfoEntity = new Entity("UserInfo", userID);
+        userInfoEntity.setProperty("id", userID);
+        userInfoEntity.setProperty("email", creatorEmail);
+        userInfoEntity.setProperty("familyID", familyID);
+        datastore.put(userInfoEntity);
 
         response.sendRedirect("/settings.html");
     }
