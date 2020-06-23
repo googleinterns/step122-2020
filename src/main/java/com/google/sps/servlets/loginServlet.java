@@ -28,6 +28,7 @@ public class loginServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
+    //TODO: redirect user to homepage if already logged in
     response.setContentType("text/html");
         if (userService.isUserLoggedIn()) {
             String userEmail = userService.getCurrentUser().getEmail();
