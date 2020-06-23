@@ -115,7 +115,8 @@ body {}
 
 /* The popup form - hidden by default */
 .form-popup {
-  display: none;
+  display: block;
+  visibility: hidden;
   position: fixed;
   border: 3px solid #f1f1f1;
   z-index: 9;
