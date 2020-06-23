@@ -89,11 +89,13 @@ body {}
   display: inline-block; 
   width: 100%;
 }
+
 .image-container{
     display:flex;
     align-items: center;
   justify-content: center;
 }
+
 .user {
   float: right;
 }
@@ -103,5 +105,3 @@ body {}
   height: 75px;
   border:  thick solid rgb(205, 236, 232);
 }
-
-
