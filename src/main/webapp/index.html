@@ -8,11 +8,16 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cinzel">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora">
   </head>
- <body>
+  <body>
     <div id="content">
       <div>
         <h1 class="heading-font">HOUSEHOLD</h1>
         <h3 class="body-font">Please log in here:<h3>
+        <form action="/login" method="GET">
+          <button onclick="userLogin()" name="loginBtn">login button</button>
+          <br>
+          <button onclick="userLogin()" name="homeBtn">go to homepage</button>
+        </form>
       </div>
     </body>
 </html>
