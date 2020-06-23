@@ -8,9 +8,9 @@ body {
   width: 650px;
 }
 
-.heading-font {
+.title {
   font-family: 'Cinzel', serif;
-  color: rgb(237, 243, 121);
+  color: rgba(0,0,0, 0.4);
   font-size: 100px;
   text-align: center;
   
@@ -18,7 +18,18 @@ body {
 
 .body-font {
   font-family: 'Cinzel', serif;
-  color: whitesmoke;
-  font-size: 75px;
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0, 0.4); /* Black w/opacity/see-through */
+  color: white;
+  font-weight: normal;
+  font-size: 35px;
+  border: 10px solid #f1f1f1;
+  position: absolute; /* Stay fixed */
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 600px;
+  padding: 20px;
   text-align: center;
 }
