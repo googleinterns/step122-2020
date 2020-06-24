@@ -28,6 +28,20 @@ function closeNewMemberForm() {
   document.getElementById("newMemberForm").style.visibility = "hidden";
 }
 
+function loadFamilyMembers() {
+  fetch('/family').then(response => response.json()).then((memberEmails) => {
+    const familyElement = document.getElementById('family-container');
+    const familyHeader = document.createElement("HEADER");
+    familyHeader.innerText = "Current Family Members: ";
+    familyElement.appendChild(familyHeader);
+    memberEmails.forEach((memberEmail) => {
+      const memberListElement = document.createElement('li');
+      memberListElement.innerText = memberEmail;
+      familyElement.appendChild(memberListElement);
+    })
+  });
+}
+
 function userLogin() {
   fetch('/login').then(response => response.text())
   .then((message) => {
