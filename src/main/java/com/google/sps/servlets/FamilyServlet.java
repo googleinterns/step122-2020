@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,36 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for creating new families. */
 @WebServlet("/family")
 public class FamilyServlet extends HttpServlet {
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        UserService userService = UserServiceFactory.getUserService();
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        String userEmail = userService.getCurrentUser().getEmail();
+        Query query = new Query("UserInfo")
+            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
+        PreparedQuery results = datastore.prepare(query);
+        Entity userInfoEntity = results.asSingleEntity();
+        if (userInfoEntity == null) {
+            return;
+        }
+
+        long familyID = (long) userInfoEntity.getProperty("familyID");
+
+        Key familyEntityKey = KeyFactory.createKey("Family", familyID);
+        
+        try {
+            Entity familyEntity = datastore.get(familyEntityKey);
+            ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
+
+            Gson gson = new Gson();
+
+            response.setContentType("application/json;");
+            response.getWriter().println(gson.toJson(memberEmails));
+        } catch (Exception e) {
+            System.out.println("Family not found");
+        }
+    }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
