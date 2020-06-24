@@ -170,3 +170,15 @@ body {}
 .form-container .btn:hover, .open-button:hover {
   opacity: 1;
 }
+
+.bg-image {
+  /* Full height */
+  height: 100%;
+
+  /* Center and scale the image nicely */
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.cal { background-image: url("images/cal.png"); }
+.album { background-image: url("images/createalbum.png"); }
