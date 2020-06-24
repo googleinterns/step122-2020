@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Home</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
+    </head>
+    <body onload="loadGrocery()">
+        <div class="top-container">
+            <div class="dropdown">
+                <button class="dropbtn">MENU</button>
+                <div class="dropdown-content">
+                    <a href="cal.html">Calendar</a>
+                    <a href="photos.html">Photos</a>
+                    <a href="task.html">To-Do List</a>
+                    <a href="grocery.html">Grocery List</a>
+                    <a href="settings.html">Settings</a>
+                </div>
+            </div>
+            <div class="user">
+                <a href="images/user.png" ><img class="user-image" src="images/user.png"/></a>
+            </div>
+        </div>
+        <div id="content">
+            <h1>Groceries</h1>
+            <form action="/grocery-list" method="POST">
+             <input type="text" name="groceryItem">
+            <input type="submit" value="Submit">
+            </form>    
+            <br>
+            <div id="grocery-list-container"></div>
+        </div>
+        <br></br><br></br><br></br>
+  </body>
+</html>

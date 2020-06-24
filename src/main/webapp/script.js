@@ -25,5 +25,11 @@ function userLogin() {
   .then((message) => {
     document.getElementById('login-container').innerHTML = message;
   });
-  
+}
+
+function loadGrocery() {
+  fetch('/grocery-list').then(response => response.text())
+  .then((message) => {
+    document.getElementById('grocery-list-container').innerHTML = message;
+  });
 }
