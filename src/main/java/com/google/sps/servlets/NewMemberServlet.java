@@ -32,21 +32,41 @@ public class NewMemberServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String email = request.getParameter("memberEmail");
-        long familyID = Long.parseLong(request.getParameter("familyID"));
-        long timestamp = System.currentTimeMillis();
+        UserService userService = UserServiceFactory.getUserService();
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        String userEmail = userService.getCurrentUser().getEmail();
+        Query query = new Query("UserInfo")
+            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
+        PreparedQuery results = datastore.prepare(query);
+        Entity userInfoEntity = results.asSingleEntity();
+        if (userInfoEntity == null) {
+            System.out.println("You do not belong to a family yet!");
+            return;
+        }
+
+        String newMemberEmail = request.getParameter("new-member-email");
+        long updatedTimestamp = System.currentTimeMillis();
+
+        long familyID = (long) userInfoEntity.getProperty("familyID");
 
         Key familyEntityKey = KeyFactory.createKey("Family", familyID);
 
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         try {
             Entity familyEntity = datastore.get(familyEntityKey);
             ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
-            memberEmails.add(email);
+            memberEmails.add(newMemberEmail);
 
             familyEntity.setProperty("memberEmails", memberEmails);
+            familyEntity.setProperty("timestamp", updatedTimestamp);
+
+            datastore.put(familyEntity);
+
+            Entity newUserInfoEntity = new Entity("UserInfo", newMemberEmail);
+            newUserInfoEntity.setProperty("email", newMemberEmail);
+            newUserInfoEntity.setProperty("familyID", familyID);
+            datastore.put(newUserInfoEntity);
         } catch (Exception e) {
-            System.out.println("Error");
+            System.out.println("Family not found");
         }
 
         response.sendRedirect("/settings.html");
