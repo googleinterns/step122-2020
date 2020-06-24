@@ -28,17 +28,25 @@ public class loginServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
-    //TODO: redirect user to homepage if already logged in
-    response.setContentType("text/html");
+  
+    // log user out and redirect to index.html if pressed.
+    if (request.getParameter("logoutBtn") != null){
+        String userEmail = userService.getCurrentUser().getEmail();
+        String urlToRedirectToAfterUserLogsOut = "/index.html";
+        String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
+        response.sendRedirect(logoutUrl);
+    }
+
+    // allow user to login and go to home page
+    else if (request.getParameter("loginBtn") != null){
+        //TODO: redirect user to homepage if already logged in
         if (userService.isUserLoggedIn()) {
-            String userEmail = userService.getCurrentUser().getEmail();
-            String urlToRedirectToAfterUserLogsOut = "/";
-            String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
             response.sendRedirect("/home.html");      
         } else {
             String urlToRedirectToAfterUserLogsIn = "/home.html";
             String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
             response.sendRedirect(loginUrl);
+        }
     }
   }
  }
