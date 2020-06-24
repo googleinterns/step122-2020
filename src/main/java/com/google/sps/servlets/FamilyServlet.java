@@ -34,9 +34,9 @@ public class FamilyServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserService userService = UserServiceFactory.getUserService();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        String userID = userService.getCurrentUser().getUserId();
+        String userEmail = userService.getCurrentUser().getEmail();
         Query query = new Query("UserInfo")
-            .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userID));
+            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
         PreparedQuery results = datastore.prepare(query);
         Entity entity = results.asSingleEntity();
         if (entity != null) {
@@ -45,10 +45,9 @@ public class FamilyServlet extends HttpServlet {
         }
         
         String familyName = request.getParameter("family-name");
-        String creatorEmail = userService.getCurrentUser().getEmail();
         long createdTimestamp = System.currentTimeMillis();
 
-        ArrayList<String> memberEmails = new ArrayList(Arrays.asList(creatorEmail)); 
+        ArrayList<String> memberEmails = new ArrayList(Arrays.asList(userEmail)); 
 
         Entity familyEntity = new Entity("Family");
         familyEntity.setProperty("name", familyName);
@@ -58,9 +57,8 @@ public class FamilyServlet extends HttpServlet {
 
         long familyID = familyEntity.getKey().getId();
 
-        Entity userInfoEntity = new Entity("UserInfo", userID);
-        userInfoEntity.setProperty("id", userID);
-        userInfoEntity.setProperty("email", creatorEmail);
+        Entity userInfoEntity = new Entity("UserInfo", userEmail);
+        userInfoEntity.setProperty("email", userEmail);
         userInfoEntity.setProperty("familyID", familyID);
         datastore.put(userInfoEntity);
 
