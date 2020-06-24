@@ -12,7 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function openFamilyForm() {
+    document.getElementById("createFamilyForm").style.display = "block";
+}
 
+function closeFamilyForm() {
+  document.getElementById("createFamilyForm").style.display = "none";
+}
 
 function userLogin() {
   fetch('/login').then(response => response.text())
