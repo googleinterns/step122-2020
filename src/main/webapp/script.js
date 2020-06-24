@@ -20,6 +20,14 @@ function closeFamilyForm() {
   document.getElementById("createFamilyForm").style.visibility = "hidden";
 }
 
+function openNewMemberForm() {
+    document.getElementById("newMemberForm").style.visibility = "visible";
+}
+
+function closeNewMemberForm() {
+  document.getElementById("newMemberForm").style.visibility = "hidden";
+}
+
 function userLogin() {
   fetch('/login').then(response => response.text())
   .then((message) => {
