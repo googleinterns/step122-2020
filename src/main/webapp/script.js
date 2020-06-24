@@ -13,11 +13,19 @@
 // limitations under the License.
 
 function openFamilyForm() {
-    document.getElementById("createFamilyForm").style.display = "block";
+    document.getElementById("createFamilyForm").style.visibility = "visible";
 }
 
 function closeFamilyForm() {
-  document.getElementById("createFamilyForm").style.display = "none";
+  document.getElementById("createFamilyForm").style.visibility = "hidden";
+}
+
+function openNewMemberForm() {
+    document.getElementById("newMemberForm").style.visibility = "visible";
+}
+
+function closeNewMemberForm() {
+  document.getElementById("newMemberForm").style.visibility = "hidden";
 }
 
 function userLogin() {
