@@ -26,27 +26,41 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet responsible for creating new tasks. */
+/** Servlet responsible for creating new families. */
 @WebServlet("/family")
 public class FamilyServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserService userService = UserServiceFactory.getUserService();
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        String userEmail = userService.getCurrentUser().getEmail();
+        Query query = new Query("UserInfo")
+            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
+        PreparedQuery results = datastore.prepare(query);
+        Entity entity = results.asSingleEntity();
+        if (entity != null) {
+            System.out.println("You already belong to a family");
+            return;
+        }
         
         String familyName = request.getParameter("family-name");
-        String creatorEmail = userService.getCurrentUser().getEmail();
-        long timestamp = System.currentTimeMillis();
+        long createdTimestamp = System.currentTimeMillis();
 
-        ArrayList<String> memberEmails = new ArrayList(Arrays.asList(creatorEmail)); 
+        ArrayList<String> memberEmails = new ArrayList(Arrays.asList(userEmail)); 
 
         Entity familyEntity = new Entity("Family");
         familyEntity.setProperty("name", familyName);
         familyEntity.setProperty("memberEmails", memberEmails);
-        familyEntity.setProperty("timestamp", timestamp);
-
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        familyEntity.setProperty("createdTimestamp", createdTimestamp);   
         datastore.put(familyEntity);
+
+        long familyID = familyEntity.getKey().getId();
+
+        Entity userInfoEntity = new Entity("UserInfo", userEmail);
+        userInfoEntity.setProperty("email", userEmail);
+        userInfoEntity.setProperty("familyID", familyID);
+        datastore.put(userInfoEntity);
 
         response.sendRedirect("/settings.html");
     }
