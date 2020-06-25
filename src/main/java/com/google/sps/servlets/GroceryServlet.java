@@ -31,14 +31,13 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for creating new tasks. */
 @WebServlet("/grocery-list")
 public class GroceryServlet extends HttpServlet {
-
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         doGet(request,response);  
         response.sendRedirect("/grocery.html");
     }
-
         public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         // adds item to datastore
         String grocery = request.getParameter("groceryItem");
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -47,11 +46,13 @@ public class GroceryServlet extends HttpServlet {
             groceryEntity.setProperty("grocery", grocery);
             datastore.put(groceryEntity);
         }
-        //`
+
+        // creates arraylist and starts query
         ArrayList<String> groceryList = new ArrayList<String>();
         Query query = new Query("grocery");
         PreparedQuery results = datastore.prepare(query);
-
+        
+        //loads entities into arraylist to be printed
         for (Entity entity : results.asIterable()) {
             String groceryItem = (String) entity.getProperty("grocery");
             groceryList.add(groceryItem);

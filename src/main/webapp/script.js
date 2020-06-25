@@ -27,9 +27,35 @@ function userLogin() {
   });
 }
 
-function loadGrocery() {
+/*function loadGrocery() {
   fetch('/grocery-list').then(response => response.text())
   .then((message) => {
-    document.getElementById('grocery-list-container').innerHTML = message;
+    document.getElementById('grocery-list-container');
   });
+}*/
+
+
+function loadGrocery() {
+    // fetches json list of groceries
+    fetch('/grocery-list').then(response => response.json()).then((groceries) => {
+      const groceryListElement = document.getElementById('grocery-list-container');
+      
+      groceries.forEach((grocery) => {
+        groceryListElement.appendChild(createGroceryElement(grocery));
+    })
+  });
+}
+
+function createGroceryElement(grocery){
+      const taskElement = document.createElement('li');
+  taskElement.className = 'task';
+
+  const titleElement = document.createElement('span');
+  titleElement.innerText = task.title;
+
+    // Remove the task from the DOM.
+    taskElement.remove();
+
+  taskElement.appendChild(titleElement);
+  return taskElement;
 }
