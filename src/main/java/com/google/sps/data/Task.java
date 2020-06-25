@@ -12,19 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function openFamilyForm() {
-    document.getElementById("createFamilyForm").style.display = "block";
-}
+package com.google.sps.data;
 
-function closeFamilyForm() {
-  document.getElementById("createFamilyForm").style.display = "none";
-}
+/** An item on a todo list. */
+public final class Task {
 
-function userLogin() {
-  fetch('/login').then(response => response.text())
-  .then((message) => {
-    document.getElementById('login-container').innerHTML = message;
-  });
-  
-}
+  private final long id;
+  private final String title;
+  private final long timestamp;
 
+  public Task(long id, String title, long timestamp) {
+    this.id = id;
+    this.title = title;
+    this.timestamp = timestamp;
+  }
+}
