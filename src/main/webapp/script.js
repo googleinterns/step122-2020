@@ -13,11 +13,19 @@
 // limitations under the License.
 
 function openFamilyForm() {
-    document.getElementById("createFamilyForm").style.display = "block";
+    document.getElementById("createFamilyForm").style.visibility = "visible";
 }
 
 function closeFamilyForm() {
-  document.getElementById("createFamilyForm").style.display = "none";
+  document.getElementById("createFamilyForm").style.visibility = "hidden";
+}
+
+function openNewMemberForm() {
+    document.getElementById("newMemberForm").style.visibility = "visible";
+}
+
+function closeNewMemberForm() {
+  document.getElementById("newMemberForm").style.visibility = "hidden";
 }
 
 function userLogin() {
@@ -26,7 +34,6 @@ function userLogin() {
     document.getElementById('login-container').innerHTML = message;
   });
 }
-
 /*function loadGrocery() {
   fetch('/grocery-list').then(response => response.text())
   .then((message) => {
@@ -38,24 +45,62 @@ function userLogin() {
 function loadGrocery() {
     // fetches json list of groceries
     fetch('/grocery-list').then(response => response.json()).then((groceries) => {
-      const groceryListElement = document.getElementById('grocery-list-container');
+        const groceryListElement = document.getElementById('grocery-list-container');
       
-      groceries.forEach((grocery) => {
+    groceries.forEach((grocery) => {
         groceryListElement.appendChild(createGroceryElement(grocery));
     })
   });
 }
 
 function createGroceryElement(grocery){
-      const taskElement = document.createElement('li');
-  taskElement.className = 'task';
+    const groceryElement = document.createElement('li');
+      groceryElement.className = 'task';
 
+    const titleElement = document.createElement('span');
+    titleElement.innerText = grocery;
+
+    groceryElement.appendChild(titleElement);
+    return groceryElement;
+}
+
+
+
+/** Fetches tasks from the server and adds them to the DOM. */
+function loadTasks() {
+  fetch('/list-tasks').then(response => response.json()).then((tasks) => {
+    const taskListElement = document.getElementById('task-list');
+    tasks.forEach((task) => {
+      taskListElement.appendChild(createTaskElement(task));
+    })
+  });
+}
+ 
+/** Creates an element that represents a task, including its delete button. */
+function createTaskElement(task) {
+  const taskElement = document.createElement('li');
+  taskElement.className = 'task';
+ 
   const titleElement = document.createElement('span');
   titleElement.innerText = task.title;
-
+ 
+  const deleteButtonElement = document.createElement('button');
+  deleteButtonElement.innerText = 'Delete';
+  deleteButtonElement.addEventListener('click', () => {
+    deleteTask(task);
+ 
     // Remove the task from the DOM.
     taskElement.remove();
-
+  });
+ 
   taskElement.appendChild(titleElement);
+  taskElement.appendChild(deleteButtonElement);
   return taskElement;
+}
+ 
+/** Tells the server to delete the task. */
+function deleteTask(task) {
+  const params = new URLSearchParams();
+  params.append('id', task.id);
+  fetch('/delete-task', {method: 'POST', body: params});
 }

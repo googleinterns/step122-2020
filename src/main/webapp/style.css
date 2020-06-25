@@ -1,5 +1,8 @@
 body {}
-* {box-sizing: border-box;}
+
+* {
+  box-sizing: border-box;
+}
 
 #content {
   margin-left: auto;
@@ -115,7 +118,8 @@ body {}
 
 /* The popup form - hidden by default */
 .form-popup {
-  display: none;
+  display: block;
+  visibility: hidden;
   position: fixed;
   border: 3px solid #f1f1f1;
   z-index: 9;
@@ -178,3 +182,34 @@ body {}
 
 .cal { background-image: url("images/cal.png"); }
 .album { background-image: url("images/createalbum.png"); }
+
+#task-list {
+  list-style-type: none;
+}
+ 
+.task {
+  border: thin solid black;
+  display: flex;
+  margin: 10px;
+  padding: 10px;
+  width: 300px;
+}
+ 
+.task span {
+  flex-grow: 1;
+}
+
+.task-title {
+  font-family: 'Cinzel', serif;
+  color: rgb(205, 236, 232);
+  font-size: 100px;
+  text-align: center;
+}
+
+
+.grocery-title {
+  font-family: 'Cinzel', serif;
+  color: rgb(205, 236, 232);
+  font-size: 100px;
+  text-align: center;
+}
