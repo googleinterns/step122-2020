@@ -35,7 +35,21 @@
                 <button type="button" class="btn cancel" onclick="closeFamilyForm()">Close</button>
               </form>
             </div>
+            <button onclick="openNewMemberForm()">Add a new family member</button>
+            <div class="form-popup" id="newMemberForm">
+              <form action="/new-member" method="POST" class="form-container">
+                <h1>Add a new family member</h1>
+
+                <label for="name"><b>Member email</b></label>
+                <input type="text" placeholder="Enter Email" name="new-member-email" required>
+
+                <button type="submit" class="btn">Confirm</button>
+                <button type="button" class="btn cancel" onclick="closeNewMemberForm()">Close</button>
+              </form>
+            </div>
+            <form action="/login" method="GET">
+                <button name="logoutBtn">Logout</button>
+            </form>
         </div>
-        <br></br><br></br><br></br>
   </body>
 </html>
