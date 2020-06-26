@@ -60,16 +60,19 @@ public class DeleteMemberServlet extends HttpServlet {
         memberEmails.remove(memberToDelete);
 
         familyEntity.setProperty("memberEmails", memberEmails);
+        datastore.put(familyEntity);
 
         query = new Query("UserInfo")
             .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, memberToDelete));
         results = datastore.prepare(query);
         userInfoEntity = results.asSingleEntity();
         datastore.delete(userInfoEntity.getKey());
+        response.sendRedirect("/settings.html");
         
     } catch (Exception e) {
         System.out.println("Family not found");
     }
 
+    
   }
 }
