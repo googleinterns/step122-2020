@@ -41,7 +41,7 @@ public class GroceryServlet extends HttpServlet {
     String grocery = request.getParameter("groceryItem");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity groceryEntity = new Entity("grocery");
-    if(grocery != null && !grocery.equals("")) {
+    if( grocery != null && !grocery.equals("")) {
         groceryEntity.setProperty("grocery", grocery);
         datastore.put(groceryEntity);
     }

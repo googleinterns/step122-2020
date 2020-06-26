@@ -34,13 +34,6 @@ function userLogin() {
     document.getElementById('login-container').innerHTML = message;
   });
 }
-/*function loadGrocery() {
-  fetch('/grocery-list').then(response => response.text())
-  .then((message) => {
-    document.getElementById('grocery-list-container');
-  });
-}*/
-
 
 function loadGrocery() {
     // fetches json list of groceries
@@ -48,7 +41,7 @@ function loadGrocery() {
         const groceryListElement = document.getElementById('grocery-list-container');
       
     groceries.forEach((grocery) => {
-        groceryListElement.appendChild(createGroceryElement(grocery));
+      groceryListElement.appendChild(createGroceryElement(grocery));
     })
   });
 }
@@ -63,8 +56,6 @@ function createGroceryElement(grocery){
     groceryElement.appendChild(titleElement);
     return groceryElement;
 }
-
-
 
 /** Fetches tasks from the server and adds them to the DOM. */
 function loadTasks() {
