@@ -28,6 +28,14 @@ function closeNewMemberForm() {
   document.getElementById("newMemberForm").style.visibility = "hidden";
 }
 
+function openRemoveMemberForm() {
+    document.getElementById("removeMemberForm").style.visibility = "visible";
+}
+
+function closeRemoveMemberForm() {
+  document.getElementById("removeMemberForm").style.visibility = "hidden";
+}
+
 function loadFamilyMembers() {
   fetch('/family').then(response => response.json()).then((memberEmails) => {
     const familyElement = document.getElementById('family-container');
