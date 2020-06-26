@@ -7,16 +7,31 @@
         <script src="script.js"></script>
     </head>
     <body onload="loadTasks()">
-    <h1 class="task-title">TO-DO LIST</h1>
-    <form method="POST" action="/new-task">
-        <input type="text" name="title" />
-        <br/>
-        <button>Submit</button>
-    </form>
+        <div class="top-container">
+            <div class="dropdown">
+                <button class="dropbtn">MENU</button>
+                <div class="dropdown-content">
+                    <a href="cal.html">Calendar</a>
+                    <a href="photos.html">Photos</a>
+                    <a href="task.html">To-Do List</a>
+                    <a href="grocery.html">Grocery List</a>
+                    <a href="settings.html">Settings</a>
+                </div>
+            </div>
+            <div class="user">
+                <a href="images/user.png" ><img class="user-image" src="images/user.png"/></a>
+            </div>
+        </div>
+        <h1 class="task-title">TO-DO LIST</h1>
+        <form method="POST" action="/new-task">
+            <input type="text" name="title" />
+            <br/>
+            <button>Submit</button>
+        </form>
 
-    <hr/>
+        <hr/>
 
-    <ul id="task-list"></ul>
+        <ul id="task-list"></ul>
 
-  </body>
+    </body>
 </html>
