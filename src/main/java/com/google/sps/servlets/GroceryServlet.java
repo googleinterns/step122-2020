@@ -27,33 +27,36 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-/** Servlet responsible for creating new tasks. */
+/** Servlet takes grocery list and I did*/
 @WebServlet("/grocery-list")
 public class GroceryServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      doGet(request,response);  
-      response.sendRedirect("/grocery.html");
-    }
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    // TODO: add items to the specific families datastore.   
     // adds item to datastore
     String grocery = request.getParameter("groceryItem");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity groceryEntity = new Entity("grocery");
+    Entity groceryEntity = new Entity("Grocery");
     if( grocery != null && !grocery.equals("")) {
         groceryEntity.setProperty("grocery", grocery);
         datastore.put(groceryEntity);
     }
+               
+    doGet(request,response);  
+    response.sendRedirect("/grocery.html");
+    }
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     // creates arraylist and starts query
     ArrayList<String> groceryList = new ArrayList<String>();
-    Query query = new Query("grocery");
+    Query query = new Query("Grocery");
     PreparedQuery results = datastore.prepare(query);
         
     //loads entities into arraylist to be printed
     for (Entity entity : results.asIterable()) {
-        String groceryItem = (String) entity.getProperty("grocery");
+        String groceryItem = (String) entity.getProperty("Grocery");
         groceryList.add(groceryItem);
     }
     Gson gson = new Gson();
