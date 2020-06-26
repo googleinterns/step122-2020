@@ -72,7 +72,5 @@ public class DeleteMemberServlet extends HttpServlet {
     } catch (Exception e) {
         System.out.println("Family not found");
     }
-
-    
   }
 }
