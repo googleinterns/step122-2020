@@ -14,11 +14,11 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -61,10 +61,10 @@ public class DeleteMemberServlet extends HttpServlet {
 
         familyEntity.setProperty("memberEmails", memberEmails);
 
-        Query query = new Query("UserInfo")
+        query = new Query("UserInfo")
             .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, memberToDelete));
-        PreparedQuery results = datastore.prepare(query);
-        Entity userInfoEntity = results.asSingleEntity();
+        results = datastore.prepare(query);
+        userInfoEntity = results.asSingleEntity();
         datastore.delete(userInfoEntity.getKey());
         
     } catch (Exception e) {
