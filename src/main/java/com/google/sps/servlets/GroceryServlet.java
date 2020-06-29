@@ -56,7 +56,7 @@ public class GroceryServlet extends HttpServlet {
         
     //loads entities into arraylist to be printed
     for (Entity entity : results.asIterable()) {
-        String groceryItem = (String) entity.getProperty("Grocery");
+        String groceryItem = (String) entity.getProperty("grocery");
         groceryList.add(groceryItem);
     }
     Gson gson = new Gson();

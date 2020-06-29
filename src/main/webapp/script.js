@@ -41,14 +41,14 @@ function loadGrocery() {
         const groceryListElement = document.getElementById('grocery-list-container');
       
     groceries.forEach((grocery) => {
-      groceryListElement.appendChild(createGroceryElement(grocery));
+        groceryListElement.appendChild(createGroceryElement(grocery));
     })
   });
 }
 
 function createGroceryElement(grocery){
     const groceryElement = document.createElement('li');
-      groceryElement.className = 'task';
+        groceryElement.className = 'task';
 
     const titleElement = document.createElement('span');
     titleElement.innerText = grocery;
