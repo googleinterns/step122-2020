@@ -26,6 +26,7 @@ public final class Family {
 
   public Family(String name, long id, long timestamp, ArrayList<String> members) {
     this.name = name;
+    this.id = id;
     this.timestamp = timestamp;
     this.members = members;
   }
