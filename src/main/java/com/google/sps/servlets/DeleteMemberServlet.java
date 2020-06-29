@@ -32,12 +32,14 @@ public class DeleteMemberServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    String userEmail = userService.getCurrentUser().getEmail();
 
+    // Query datastore with the current users email to see if they are in a family
+    String userEmail = userService.getCurrentUser().getEmail();
     Query query = new Query("UserInfo")
             .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
     PreparedQuery results = datastore.prepare(query);
     Entity userInfoEntity = results.asSingleEntity();
+    // TODO: Replace print statements with returning an error
     if (userInfoEntity == null) {
         System.out.println("You do not belong to a family currently");
         return;
@@ -45,32 +47,37 @@ public class DeleteMemberServlet extends HttpServlet {
 
     String memberToDelete = request.getParameter("member-to-delete");
 
+    // Retrieve the family id from the user info and fetch their family entity from datastore
     long familyID = (long) userInfoEntity.getProperty("familyID");
 
     Key familyEntityKey = KeyFactory.createKey("Family", familyID);
 
+    Entity familyEntity;
     try {
-        Entity familyEntity = datastore.get(familyEntityKey);
-        ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
-        if(!memberEmails.contains(memberToDelete)) {
-            System.out.println("This member does not belong to your family");
-            return;
-        }
-
-        memberEmails.remove(memberToDelete);
-
-        familyEntity.setProperty("memberEmails", memberEmails);
-        datastore.put(familyEntity);
-
-        query = new Query("UserInfo")
-            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, memberToDelete));
-        results = datastore.prepare(query);
-        userInfoEntity = results.asSingleEntity();
-        datastore.delete(userInfoEntity.getKey());
-        response.sendRedirect("/settings.html");
-        
-    } catch (Exception e) {
+        familyEntity = datastore.get(familyEntityKey);
+    } catch (EntityNotFoundException e) {
         System.out.println("Family not found");
+        return;
     }
+
+    // Remove the member from the list and update datastore
+    ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
+    if(!memberEmails.contains(memberToDelete)) {
+        System.out.println("This member does not belong to your family");
+        return;
+    }
+
+    memberEmails.remove(memberToDelete);
+
+    familyEntity.setProperty("memberEmails", memberEmails);
+    datastore.put(familyEntity);
+
+    // Delete the user info entity of the removed member from datastore
+    query = new Query("UserInfo")
+        .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, memberToDelete));
+    results = datastore.prepare(query);
+    userInfoEntity = results.asSingleEntity();
+    datastore.delete(userInfoEntity.getKey());
+    response.sendRedirect("/settings.html");
   }
 }
