@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet takes grocery list and I did*/
+/** Servlet takes grocery list and displays it to the screen based on the users family*/
 @WebServlet("/grocery-list")
 public class GroceryServlet extends HttpServlet {
   @Override
