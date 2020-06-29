@@ -70,7 +70,7 @@ public class NewMemberServlet extends HttpServlet {
         memberEmails.add(newMemberEmail);
 
         familyEntity.setProperty("memberEmails", memberEmails);
-        familyEntity.setProperty("timestamp", updatedTimestamp);
+        familyEntity.setProperty("updatedTimestamp", updatedTimestamp);
 
         datastore.put(familyEntity);
 
