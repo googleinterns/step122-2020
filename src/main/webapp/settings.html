@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="style.css">
         <script src="script.js"></script>
     </head>
-    <body>
+    <body onload="loadFamilyMembers()">
         <div class="top-container">
             <div class="dropdown">
                 <button class="dropbtn">MENU</button>
@@ -23,6 +23,7 @@
             </div>
         </div>
         <div id="content">
+            <div id="family-container"></div>
             <button onclick="openFamilyForm()">Click to create a family</button>
             <div class="form-popup" id="createFamilyForm">
               <form action="/family" method="POST" class="form-container">
@@ -45,6 +46,18 @@
 
                 <button type="submit" class="btn">Confirm</button>
                 <button type="button" class="btn cancel" onclick="closeNewMemberForm()">Close</button>
+              </form>
+            </div>
+            <button onclick="openRemoveMemberForm()">Remove a new family member</button>
+            <div class="form-popup" id="removeMemberForm">
+              <form action="/delete-member" method="POST" class="form-container">
+                <h1>Remove a new family member</h1>
+
+                <label for="name"><b>Member email</b></label>
+                <input type="text" placeholder="Enter Email" name="member-to-delete" required>
+
+                <button type="submit" class="btn">Confirm</button>
+                <button type="button" class="btn cancel" onclick="closeRemoveMemberForm()">Close</button>
               </form>
             </div>
             <form action="/login" method="GET">
