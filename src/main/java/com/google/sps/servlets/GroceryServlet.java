@@ -35,6 +35,8 @@ public class GroceryServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String userEmail = userService.getCurrentUser().getEmail();
+
+    // if user isn't associated with family don't allow them to create a list
     Query query = new Query("UserInfo")
         .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
     PreparedQuery results = datastore.prepare(query);
@@ -43,11 +45,36 @@ public class GroceryServlet extends HttpServlet {
         response.sendRedirect("/grocery.html");
         return;
     }
+    String assignGrocery = request.getParameter("assignGrocery");
+    String noneAssigned = " ";
+    Entity groceryEntity = new Entity("Grocery");
+   
+    // turn familyID into a key so the users family can be accessed
+    long familyID = (long) userInfoEntity.getProperty("familyID");
+    Key familyEntityKey = KeyFactory.createKey("Family", familyID);
+    Entity familyEntity;
+    try {
+        familyEntity = datastore.get(familyEntityKey);
+    } catch (EntityNotFoundException e) {
+        System.out.println("Family not found");
+        return;
+    }
 
+    // checks if the given email matches a email in the family
+    ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
+    for(int i = 0; i < memberEmails.size(); i++) {
+        System.out.println("Cuerrnt email is : " + memberEmails.get(i));
+        if(assignGrocery.equals(memberEmails.get(i))) {
+            groceryEntity.setProperty("assignEmail" , memberEmails.get(i));
+            System.out.println("emails match");
+            break;
+        } else {
+            groceryEntity.setProperty("assignEmail", noneAssigned);
+        }
+    }
+    
     // adds item to datastore
     String grocery = request.getParameter("groceryItem");
-    long familyID = (long) userInfoEntity.getProperty("familyID");
-    Entity groceryEntity = new Entity("Grocery");
     if( grocery != null && !grocery.equals("")) {
         groceryEntity.setProperty("grocery", grocery);
         groceryEntity.setProperty("familyID", familyID);
@@ -79,7 +106,7 @@ public class GroceryServlet extends HttpServlet {
     PreparedQuery grocery = datastore.prepare(groceryQuery);
     long familyID = (long) userInfoEntity.getProperty("familyID");
     groceryList = checkGroceries(familyID, grocery);   
-    
+
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(groceryList));
@@ -89,10 +116,13 @@ public class GroceryServlet extends HttpServlet {
     private ArrayList<String> checkGroceries(long familyID, PreparedQuery grocery) {
     ArrayList<String> groceryList = new ArrayList<String>();
     for (Entity entity : grocery.asIterable()) {
+        String groceryOutput;
         long groceryID = (long) entity.getProperty("familyID");
         if(groceryID == familyID) {
             String groceryItem = (String) entity.getProperty("grocery");
-            groceryList.add(groceryItem);
+            String memberEmail = (String) entity.getProperty("assignEmail");
+            groceryOutput = groceryItem + " assigned to: " + memberEmail;
+            groceryList.add(groceryOutput);
         }
     }
     return groceryList;
