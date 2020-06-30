@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet takes grocery list and displays it to the screen based on the users family*/
+/** Servlet takes grocery list and displays it to the screen based on the users family */
 @WebServlet("/grocery-list")
 public class GroceryServlet extends HttpServlet {
   @Override
@@ -45,22 +45,21 @@ public class GroceryServlet extends HttpServlet {
                
     doGet(request,response);  
     response.sendRedirect("/grocery.html");
-    }
+  }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-    // creates arraylist and starts query
-    ArrayList<String> groceryList = new ArrayList<String>();
-    Query query = new Query("Grocery");
-    PreparedQuery results = datastore.prepare(query);
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      // creates arraylist and starts query
+      ArrayList<String> groceryList = new ArrayList<String>();
+      Query query = new Query("Grocery");
+      PreparedQuery results = datastore.prepare(query);
         
-    //loads entities into arraylist to be printed
-    for (Entity entity : results.asIterable()) {
-        String groceryItem = (String) entity.getProperty("grocery");
+      //loads entities into arraylist to be printed
+      for (Entity entity : results.asIterable()) {
+          String groceryItem = (String) entity.getProperty("grocery");
         groceryList.add(groceryItem);
-    }
-    Gson gson = new Gson();
-    response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(groceryList));
+      }
+      Gson gson = new Gson();
+      response.setContentType("application/json;");
+      response.getWriter().println(gson.toJson(groceryList));
     }
 }
