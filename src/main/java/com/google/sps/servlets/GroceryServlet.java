@@ -72,13 +72,14 @@ public class GroceryServlet extends HttpServlet {
         response.getWriter().println("You do not belong to a family yet!");
     return;
     }
-    
+
     // creates arraylist and starts query
     ArrayList<String> groceryList = new ArrayList<String>();
     Query groceryQuery = new Query("Grocery");
     PreparedQuery grocery = datastore.prepare(groceryQuery);
     long familyID = (long) userInfoEntity.getProperty("familyID");
     groceryList = checkGroceries(familyID, grocery);   
+    
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(groceryList));
