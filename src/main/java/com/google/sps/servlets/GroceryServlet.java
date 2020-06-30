@@ -32,19 +32,17 @@ import javax.servlet.http.HttpServletResponse;
 public class GroceryServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {      
-    // TODO: add items to the specific families datastore.   
-        UserService userService = UserServiceFactory.getUserService();
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        String userEmail = userService.getCurrentUser().getEmail();
-        Query query = new Query("UserInfo")
-            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
-        PreparedQuery results = datastore.prepare(query);
-        Entity userInfoEntity = results.asSingleEntity();
-        if (userInfoEntity == null) {
-           //System.out.println("You do not belong to a family yet! post Method");
-            response.sendRedirect("/grocery.html");
-            return;
-        }
+    UserService userService = UserServiceFactory.getUserService();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    String userEmail = userService.getCurrentUser().getEmail();
+    Query query = new Query("UserInfo")
+        .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
+    PreparedQuery results = datastore.prepare(query);
+    Entity userInfoEntity = results.asSingleEntity();
+    if (userInfoEntity == null) {
+        response.sendRedirect("/grocery.html");
+        return;
+    }
 
     // adds item to datastore
     String grocery = request.getParameter("groceryItem");
@@ -70,26 +68,32 @@ public class GroceryServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity userInfoEntity = results.asSingleEntity();
     if (userInfoEntity == null) {
-    response.setContentType("text/html;");
-    response.getWriter().println("You do not belong to a family yet! Get method");
-   // System.out.println("You do not belong to a family yet! Get method");
+        response.setContentType("text/html;");
+        response.getWriter().println("You do not belong to a family yet!");
     return;
     }
-
+    
     // creates arraylist and starts query
     ArrayList<String> groceryList = new ArrayList<String>();
     Query groceryQuery = new Query("Grocery");
     PreparedQuery grocery = datastore.prepare(groceryQuery);
-        
-    //loads entities into arraylist to be printed
     long familyID = (long) userInfoEntity.getProperty("familyID");
-    for (Entity entity : grocery.asIterable()) {
-        //TODO: Loop through entity and only add values that mtch user's familyID
-        String groceryItem = (String) entity.getProperty("grocery");
-        groceryList.add(groceryItem);
-    }
+    groceryList = checkGroceries(familyID, grocery);   
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(groceryList));
+    }
+
+    // returns items from the query that match the users familyID
+    private ArrayList<String> checkGroceries(long familyID, PreparedQuery grocery) {
+    ArrayList<String> groceryList = new ArrayList<String>();
+    for (Entity entity : grocery.asIterable()) {
+        long groceryID = (long) entity.getProperty("familyID");
+        if(groceryID == familyID) {
+            String groceryItem = (String) entity.getProperty("grocery");
+            groceryList.add(groceryItem);
+        }
+    }
+    return groceryList;
     }
 }
