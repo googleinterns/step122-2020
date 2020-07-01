@@ -27,9 +27,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
+
 /** Servlet takes grocery list and displays it to the screen based on the users family*/
 @WebServlet("/grocery-list")
 public class GroceryServlet extends HttpServlet {
+  private static final String GROCERY = "Grocery";
+  private static final String FAMILY_ID = "familyID";
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {      
     UserService userService = UserServiceFactory.getUserService();
@@ -47,10 +52,10 @@ public class GroceryServlet extends HttpServlet {
     }
     String assignGrocery = request.getParameter("assignGrocery");
     String noneAssigned = " ";
-    Entity groceryEntity = new Entity("Grocery");
+    Entity groceryEntity = new Entity(GROCERY);
    
     // turn familyID into a key so the users family can be accessed
-    long familyID = (long) userInfoEntity.getProperty("familyID");
+    long familyID = (long) userInfoEntity.getProperty(FAMILY_ID);
     Key familyEntityKey = KeyFactory.createKey("Family", familyID);
     Entity familyEntity;
     try {
@@ -77,14 +82,12 @@ public class GroceryServlet extends HttpServlet {
     String grocery = request.getParameter("groceryItem");
     if( grocery != null && !grocery.equals("")) {
         groceryEntity.setProperty("grocery", grocery);
-        groceryEntity.setProperty("familyID", familyID);
+        groceryEntity.setProperty(FAMILY_ID, familyID);
         datastore.put(groceryEntity);
-    }
-               
-    doGet(request,response);  
+    }     
     response.sendRedirect("/grocery.html");
-    }
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  }
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService = UserServiceFactory.getUserService();
 
@@ -102,10 +105,11 @@ public class GroceryServlet extends HttpServlet {
 
     // creates arraylist and starts query
     ArrayList<String> groceryList = new ArrayList<String>();
-    Query groceryQuery = new Query("Grocery");
-    PreparedQuery grocery = datastore.prepare(groceryQuery);
-    long familyID = (long) userInfoEntity.getProperty("familyID");
-    groceryList = checkGroceries(familyID, grocery);   
+    long familyID = (long) userInfoEntity.getProperty(FAMILY_ID);
+    Query groceryQuery = new Query(GROCERY)
+      .setFilter(new Query.FilterPredicate(FAMILY_ID, Query.FilterOperator.EQUAL, familyID));   
+    PreparedQuery familyGrocery= datastore.prepare(groceryQuery);
+    groceryList = checkGroceries(familyGrocery);   
 
     Gson gson = new Gson();
     response.setContentType("application/json;");
@@ -113,18 +117,16 @@ public class GroceryServlet extends HttpServlet {
     }
 
     // returns items from the query that match the users familyID
-    private ArrayList<String> checkGroceries(long familyID, PreparedQuery grocery) {
+  private ArrayList<String> checkGroceries(PreparedQuery familyGrocery) {
     ArrayList<String> groceryList = new ArrayList<String>();
-    for (Entity entity : grocery.asIterable()) {
+    for (Entity entity : familyGrocery.asIterable()) {
         String groceryOutput;
-        long groceryID = (long) entity.getProperty("familyID");
-        if(groceryID == familyID) {
             String groceryItem = (String) entity.getProperty("grocery");
             String memberEmail = (String) entity.getProperty("assignEmail");
             groceryOutput = groceryItem + " assigned to: " + memberEmail;
+            System.out.println("The outpu is: " + groceryOutput);
             groceryList.add(groceryOutput);
-        }
     }
     return groceryList;
-    }
+  }
 }
