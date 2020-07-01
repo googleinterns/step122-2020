@@ -55,7 +55,28 @@ function userLogin() {
   .then((message) => {
     document.getElementById('login-container').innerHTML = message;
   });
-  
+}
+
+function loadGrocery() {
+    // fetches json list of groceries
+    fetch('/grocery-list').then(response => response.json()).then((groceries) => {
+        const groceryListElement = document.getElementById('grocery-list-container');
+      
+    groceries.forEach((grocery) => {
+        groceryListElement.appendChild(createGroceryElement(grocery));
+    })
+  });
+}
+
+function createGroceryElement(grocery){
+    const groceryElement = document.createElement('li');
+        groceryElement.className = 'task';
+
+    const titleElement = document.createElement('span');
+    titleElement.innerText = grocery;
+
+    groceryElement.appendChild(titleElement);
+    return groceryElement;
 }
 
 /** Fetches tasks from the server and adds them to the DOM. */
@@ -96,4 +117,3 @@ function deleteTask(task) {
   params.append('id', task.id);
   fetch('/delete-task', {method: 'POST', body: params});
 }
-
