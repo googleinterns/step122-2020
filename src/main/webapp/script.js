@@ -97,3 +97,19 @@ function deleteTask(task) {
   fetch('/delete-task', {method: 'POST', body: params});
 }
 
+function insertCalendar() {
+    const calElement = document.getElementById('caldiv');
+
+    fetch('/calendar').then((response) => response.text()).then((calSrc) => {
+        var calFrame = document.createElement('iframe');
+        calFrame.setAttribute('src', calSrc);
+        calFrame.setAttribute('style', 'border: 0'); 
+        calFrame.setAttribute('width', '800'); 
+        calFrame.setAttribute('height', '600'); 
+        calFrame.setAttribute('frameborder', '0'); 
+        calFrame.setAttribute('scrolling', 'no'); 
+        calElement.appendChild(calFrame)
+        calElement.appendChild(calFrame);
+    });
+
+}
