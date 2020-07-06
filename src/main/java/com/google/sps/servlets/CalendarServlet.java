@@ -43,14 +43,10 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /** 
- * Servlet responsible for returning the iframe src for a user's primary calendar
+ * Servlet responsible for creating a shared family calendar
 */
 @WebServlet("/calendar")
 public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
-
-  static final String APP_NAME = "Household";
-
-  private static final long serialVersionUID = 1L;
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
