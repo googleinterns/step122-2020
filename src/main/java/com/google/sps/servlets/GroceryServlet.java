@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-// TODO: fix git error when pushing
 /** Servlet takes grocery list and displays it to the screen based on the users family */
 @WebServlet("/grocery-list")
 public class GroceryServlet extends HttpServlet {
@@ -119,7 +118,8 @@ public class GroceryServlet extends HttpServlet {
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(groceryList));
     }
-    // returns items from the query that match the users familyID
+
+  // returns items from the query that match the users familyID
   private ArrayList<String> checkGroceries(PreparedQuery familyGrocery) {
     ArrayList<String> groceryList = new ArrayList<String>();
     for (Entity entity : familyGrocery.asIterable()) {
