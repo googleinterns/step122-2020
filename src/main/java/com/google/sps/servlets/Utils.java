@@ -29,13 +29,10 @@ import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.io.File;
 import java.util.Collections;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
