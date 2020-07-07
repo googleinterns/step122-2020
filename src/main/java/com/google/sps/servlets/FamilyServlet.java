@@ -40,31 +40,14 @@ public class FamilyServlet extends HttpServlet {
         UserService userService = UserServiceFactory.getUserService();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-        // Query datastore with the current users email to see if they are in a family
-        String userEmail = userService.getCurrentUser().getEmail();
-        Query query = new Query("UserInfo")
-            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
-        PreparedQuery results = datastore.prepare(query);
-        Entity userInfoEntity = results.asSingleEntity();
+        Entity userInfoEntity = Utils.getCurrentUserEntity();
 
         // If there is no user info entity they are not in a family
         if (userInfoEntity == null) {
             return;
         }
 
-        // Retrieve the family id from the user info and fetch their family entity from datastore
-        long familyID = (long) userInfoEntity.getProperty("familyID");
-
-        Key familyEntityKey = KeyFactory.createKey("Family", familyID);
-        
-        Entity familyEntity;
-
-        try {
-            familyEntity = datastore.get(familyEntityKey);
-        } catch (EntityNotFoundException e) {
-            System.out.println("Family not found");
-            return;
-        }
+        Entity familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
 
         // Fetch family info and return in json format
         String name = (String) familyEntity.getProperty("name");
@@ -85,12 +68,7 @@ public class FamilyServlet extends HttpServlet {
         UserService userService = UserServiceFactory.getUserService();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-        // Query datastore with the current users email to see if they are in a family
-        String userEmail = userService.getCurrentUser().getEmail();
-        Query query = new Query("UserInfo")
-            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
-        PreparedQuery results = datastore.prepare(query);
-        Entity entity = results.asSingleEntity();
+        Entity entity = Utils.getCurrentUserEntity();
 
         // If the user already belongs to a family, they cannot create a new one
         if (entity != null) {
