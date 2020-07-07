@@ -62,8 +62,6 @@ public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServle
     // Insert the new calendar
     com.google.api.services.calendar.model.Calendar createdCalendar = calendarService.calendars().insert(calendar).execute();
 
-    System.out.println(createdCalendar.getId());
-
     Entity currentFamilyEntity = Utils.getCurrentFamilyEntity(Utils.getCurrentUserEntity());
 
     currentFamilyEntity.setProperty("calendarID", createdCalendar.getId());
