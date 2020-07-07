@@ -183,7 +183,7 @@ function deleteTask(task) {
 function insertCalendar() {
     const calElement = document.getElementById('caldiv');
 
-    fetch('/calendar').then((response) => response.text()).then((calSrc) => 
+    fetch('/calendar').then((response) => response.text()).then((calSrc) => {
         if(!calSrc || 0 === calSrc.length || !calSrc.trim()) {
             return;
         }
