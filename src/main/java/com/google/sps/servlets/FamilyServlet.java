@@ -37,7 +37,6 @@ public class FamilyServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UserService userService = UserServiceFactory.getUserService();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
         Entity userInfoEntity = Utils.getCurrentUserEntity();
@@ -65,7 +64,6 @@ public class FamilyServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UserService userService = UserServiceFactory.getUserService();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
         Entity entity = Utils.getCurrentUserEntity();
