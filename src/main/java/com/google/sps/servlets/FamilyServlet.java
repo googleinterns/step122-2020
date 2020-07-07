@@ -19,6 +19,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
+import com.google.sps.data.Family;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,13 +66,18 @@ public class FamilyServlet extends HttpServlet {
             return;
         }
 
-        // Fetch member emails belonging to the family and return in json format
+        // Fetch family info and return in json format
+        String name = (String) familyEntity.getProperty("name");
+        long id = familyEntity.getKey().getId();
+        long timestamp = (long) familyEntity.getProperty("timestamp");
         ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
+
+        Family family = new Family(name, id, timestamp, memberEmails);
 
         Gson gson = new Gson();
 
         response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(memberEmails));
+        response.getWriter().println(gson.toJson(family));
     }
 
     @Override
@@ -102,7 +108,7 @@ public class FamilyServlet extends HttpServlet {
         Entity familyEntity = new Entity("Family");
         familyEntity.setProperty("name", familyName);
         familyEntity.setProperty("memberEmails", memberEmails);
-        familyEntity.setProperty("createdTimestamp", createdTimestamp);   
+        familyEntity.setProperty("timestamp", createdTimestamp);   
         datastore.put(familyEntity);
 
         long familyID = familyEntity.getKey().getId();
