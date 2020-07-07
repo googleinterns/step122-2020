@@ -30,7 +30,6 @@ public class DeleteMemberServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Entity userInfoEntity = getCurrentUserEntity();
