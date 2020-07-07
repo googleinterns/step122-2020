@@ -47,7 +47,7 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-
+    
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Entity userInfoEntity = Utils.getCurrentUserEntity();
