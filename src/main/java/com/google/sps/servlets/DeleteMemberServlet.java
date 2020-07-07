@@ -33,32 +33,15 @@ public class DeleteMemberServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    // Query datastore with the current users email to see if they are in a family
-    String userEmail = userService.getCurrentUser().getEmail();
-    Query query = new Query("UserInfo")
-            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
-    PreparedQuery results = datastore.prepare(query);
-    Entity userInfoEntity = results.asSingleEntity();
-    // TODO: Replace print statements with returning an error
+    Entity userInfoEntity = getCurrentUserEntity();
     if (userInfoEntity == null) {
         System.out.println("You do not belong to a family currently");
         return;
     }
 
+    Entity familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
+
     String memberToDelete = request.getParameter("member-to-delete");
-
-    // Retrieve the family id from the user info and fetch their family entity from datastore
-    long familyID = (long) userInfoEntity.getProperty("familyID");
-
-    Key familyEntityKey = KeyFactory.createKey("Family", familyID);
-
-    Entity familyEntity;
-    try {
-        familyEntity = datastore.get(familyEntityKey);
-    } catch (EntityNotFoundException e) {
-        System.out.println("Family not found");
-        return;
-    }
 
     // Remove the member from the list and update datastore
     ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
