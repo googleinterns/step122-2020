@@ -28,6 +28,8 @@ import com.google.api.client.util.Preconditions;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,7 +38,7 @@ import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Utility class for OAuth flow helpers
+ * Utility class for common functionality
  */
 class Utils {
 
@@ -52,6 +54,8 @@ class Utils {
 
   /** Global instance of the JSON factory. */
   static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+
+  private static final String APPLICATION_NAME = "Household";
 
   private static GoogleClientSecrets clientSecrets = null;
 
@@ -84,6 +88,36 @@ class Utils {
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
     Credential credential = newFlow().loadCredential(userId);
     return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
+  }
+
+  // Query datastore with the current users email to retrieve user info entity
+  static Entity getCurrentUserEntity() {
+    UserService userService = UserServiceFactory.getUserService();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    String userEmail = userService.getCurrentUser().getEmail();
+    Query query = new Query("UserInfo")
+        .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
+    PreparedQuery results = datastore.prepare(query);
+    return results.asSingleEntity();
+  }
+
+  // Retrieve the family id from the user info and fetch their family entity from datastore
+  static Entity getCurrentFamilyEntity(Entity userInfoEntity) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    long familyID = (long) userInfoEntity.getProperty("familyID");
+
+    Key familyEntityKey = KeyFactory.createKey("Family", familyID);
+
+    Entity familyEntity = null;
+    try {
+        familyEntity = datastore.get(familyEntityKey);
+    } catch (EntityNotFoundException e) {
+        System.out.println("Family not found");
+    }
+
+    return familyEntity;
   }
 
   /**
