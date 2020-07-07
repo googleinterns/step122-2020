@@ -160,7 +160,7 @@ function deleteTask(task) {
 function insertCalendar() {
     const calElement = document.getElementById('caldiv');
 
-    fetch('/calendar').then((response) => response.text()).then((calSrc) => {
+    fetch('/calendar').then((response) => response.text()).then((calSrc) => 
         if(!calSrc || 0 === calSrc.length || !calSrc.trim()) {
             return;
         }
@@ -171,7 +171,6 @@ function insertCalendar() {
         calFrame.setAttribute('height', '600'); 
         calFrame.setAttribute('frameborder', '0'); 
         calFrame.setAttribute('scrolling', 'no');
-
         calElement.appendChild(calFrame);
     });
 

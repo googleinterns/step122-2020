@@ -31,14 +31,10 @@ import com.google.api.services.calendar.CalendarScopes;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
-
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.io.File;
 import java.util.Collections;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -60,7 +56,7 @@ class Utils {
   static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
   private static final String APPLICATION_NAME = "Household";
-
+  
   private static GoogleClientSecrets clientSecrets = null;
 
   // Loads client secrets from a stored file
@@ -123,7 +119,7 @@ class Utils {
 
     return familyEntity;
   }
-
+  
   /**
    * Returns an {@link IOException} (but not a subclass) in order to work around restrictive GWT
    * serialization policy.
