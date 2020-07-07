@@ -119,7 +119,7 @@ class Utils {
 
     return familyEntity;
   }
-  
+
   /**
    * Returns an {@link IOException} (but not a subclass) in order to work around restrictive GWT
    * serialization policy.
