@@ -24,6 +24,7 @@ import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
@@ -43,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /** 
- * Servlet responsible for creating a shared family calendar
+ * Servlet responsible for returning the link to the shared family calendar
 */
 @WebServlet("/calendar")
 public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
@@ -52,12 +53,32 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
           
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    Entity userInfoEntity = Utils.getCurrentUserEntity();
+
+    // If current user is not in a family, they cannot add a member
+    if (userInfoEntity == null) {
+        System.out.println("You do not belong to a family yet!");
+        return;
+    }
+
+    Entity familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
+
+    String calendarID = (String) familyEntity.getProperty("calendarID");
+
+    if(calendarID == null) {
+        response.setContentType("application/text");
+        response.getWriter().println("");
+        return;
+    }
+
     Calendar calendarService = Utils.loadCalendarClient();
 
-    CalendarListEntry primaryCalendarEntry = calendarService.calendarList().get("primary").execute();
+    CalendarListEntry calendarEntry = calendarService.calendarList().get(calendarID).execute();
 
     response.setContentType("application/text");
-    response.getWriter().println("https://calendar.google.com/calendar/embed?src=" + primaryCalendarEntry.getId());
+    response.getWriter().println("https://calendar.google.com/calendar/embed?src=" + calendarEntry.getId() + "&output=embed");
    
   }
 
