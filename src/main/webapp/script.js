@@ -60,8 +60,7 @@ function userLogin() {
 function loadGrocery() {
     // fetches json list of groceries
     fetch('/grocery-list').then(response => response.json()).then((groceries) => {
-        const groceryListElement = document.getElementById('grocery-list-container');
-      
+    const groceryListElement = document.getElementById('grocery-list-container');  
     groceries.forEach((grocery) => {
         groceryListElement.appendChild(createGroceryElement(grocery));
     })
@@ -69,13 +68,30 @@ function loadGrocery() {
 }
 
 function createGroceryElement(grocery){
+    console.log(grocery)
     const groceryElement = document.createElement('li');
-        groceryElement.className = 'task';
+    groceryElement.className = 'task';
 
+    // changes string depending on if a member was assigned an email. 
     const titleElement = document.createElement('span');
-    titleElement.innerText = grocery;
+    const emptyString = " ";
+    if(grocery.email === emptyString) {
+        titleElement.innerText = grocery.item;
+    } else {
+        titleElement.innerText = grocery.item + " assigned to: " + grocery.email;
+    }
+
+    const deleteButtonElement = document.createElement('button');
+    deleteButtonElement.innerText = 'Delete';
+    deleteButtonElement.addEventListener('click', () => {
+    deleteGrocery(grocery);
+
+    // Remove the task from the DOM.
+    groceryElement.remove();
+  });
 
     groceryElement.appendChild(titleElement);
+    groceryElement.appendChild(deleteButtonElement);
     return groceryElement;
 }
 
@@ -180,4 +196,12 @@ function createCalendar() {
     fetch(new Request('/new-calendar', {method: 'POST'})).then(() => {
         insertCalendar();
     });
+
+/** Tells the server to delete the grocery. */
+function deleteGrocery(grocery) {
+  console.log(grocery);
+  console.log("JS deleteGrocery");
+  const params = new URLSearchParams();
+  params.append('id', grocery.id);  
+  fetch('/delete-grocery', {method: 'POST', body: params});
 }
