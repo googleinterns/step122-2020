@@ -19,9 +19,11 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
+import com.google.sps.data.Grocery;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -63,7 +65,7 @@ public class GroceryServlet extends HttpServlet {
         System.out.println("Family not found");
         return;
     }
-    System.out.println("grocery assigned to: " + assignGrocery);
+
     // checks if the given email matches a email in the family
     if (assignGrocery.equals("") || assignGrocery.equals(null)) {
         groceryEntity.setProperty("assignEmail", noneAssigned);
@@ -81,9 +83,10 @@ public class GroceryServlet extends HttpServlet {
     }
     
     // adds item to datastore
+
     String grocery = request.getParameter("groceryItem");
     if( grocery != null && !grocery.equals("")) {
-        groceryEntity.setProperty("grocery", grocery);
+        groceryEntity.setProperty(GROCERY, grocery);
         groceryEntity.setProperty(FAMILY_ID, familyID);
         datastore.put(groceryEntity);
     }     
@@ -107,7 +110,7 @@ public class GroceryServlet extends HttpServlet {
     }
 
     // creates arraylist and starts query
-    ArrayList<String> groceryList = new ArrayList<String>();
+    ArrayList<Grocery> groceryList = new ArrayList<>();
     long familyID = (long) userInfoEntity.getProperty(FAMILY_ID);
     Query groceryQuery = new Query(GROCERY)
       .setFilter(new Query.FilterPredicate(FAMILY_ID, Query.FilterOperator.EQUAL, familyID));   
@@ -119,15 +122,15 @@ public class GroceryServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(groceryList));
     }
 
-  // returns items from the query that match the users familyID
-  private ArrayList<String> checkGroceries(PreparedQuery familyGrocery) {
-    ArrayList<String> groceryList = new ArrayList<String>();
+  // returns items from the query that match the users familyID in the Grocery object    
+  private ArrayList<Grocery> checkGroceries(PreparedQuery familyGrocery) {
+    ArrayList<Grocery> groceryList = new ArrayList<>();
     for (Entity entity : familyGrocery.asIterable()) {
-        String groceryOutput;
-            String groceryItem = (String) entity.getProperty("grocery");
-            String memberEmail = (String) entity.getProperty("assignEmail");
-            groceryOutput = groceryItem + " assigned to: " + memberEmail;
-            groceryList.add(groceryOutput);
+        String groceryItem = (String) entity.getProperty(GROCERY);
+        String memberEmail = (String) entity.getProperty("assignEmail");
+        long id = entity.getKey().getId();     
+        Grocery grocery = new Grocery(memberEmail, id, groceryItem);
+        groceryList.add(grocery);
     }
     return groceryList;
   }
