@@ -48,6 +48,7 @@ public class DeleteGroceryServlet extends HttpServlet {
         System.out.println("Family not found");
         return;
     }
+    
     // deletes key if user email is assigned to them or no one
     String member = (String) groceryEntity.getProperty("assignEmail");
     if(member.equals(" ")) {
