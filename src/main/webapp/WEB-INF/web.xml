@@ -26,6 +26,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>calendar-auth</servlet-name>
+    <servlet-class>com.google.sps.servlets.CalendarAuthServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>calendar-auth</servlet-name>
+    <url-pattern>/calendar-auth/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>login</servlet-name>
     <servlet-class>com.google.sps.servlets.LoginServlet</servlet-class>
   </servlet>
@@ -55,9 +65,59 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <url-pattern>/new-member/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>delete-member</servlet-name>
+    <servlet-class>com.google.sps.servlets.DeleteMemberServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>delete-member</servlet-name>
+    <url-pattern>/delete-member/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>delete-task</servlet-name>
+    <servlet-class>com.google.sps.servlets.DeleteTaskServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>delete-task</servlet-name>
+    <url-pattern>/delete-task/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>list-tasks</servlet-name>
+    <servlet-class>com.google.sps.servlets.ListTasksServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>list-tasks</servlet-name>
+    <url-pattern>/list-tasks/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>new-task</servlet-name>
+    <servlet-class>com.google.sps.servlets.NewTaskServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>new-task</servlet-name>
+    <url-pattern>/new-task/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>grocery-list</servlet-name>
+    <servlet-class>com.google.sps.servlets.GroceryServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>grocery-list</servlet-name>
+    <url-pattern>/grocery-list/*</url-pattern>
+  </servlet-mapping>
+
   <security-constraint>
     <web-resource-collection>
-      <web-resource-name>calendar</web-resource-name>
+      <web-resource-name>calendar-auth</web-resource-name>
       <url-pattern>/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
