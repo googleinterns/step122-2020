@@ -16,12 +16,11 @@ package com.google.sps.data;
 
 
 
-/** A family in the database */
+/** A grocery in the database */
 public final class Grocery {
 
   private final String item;
   private final long id;
- // private final long timestamp;
   private final String email;
   private final boolean userMatch;
 
@@ -30,24 +29,6 @@ public final class Grocery {
     this.id = id;
     this.item = item;
     this.userMatch = userMatch;
-  }
-
-  public String getEmail(String email) {
-      return email;
-  }
-
-
-  public boolean getUserMatch(boolean userMatch) {
-      return userMatch;
-  }
-
-
-  public long setId(long id) {
-      return id;
-  }
-
-    public String setItem(String item) {
-      return item;
   }
 
   public String toString() {

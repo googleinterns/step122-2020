@@ -89,10 +89,6 @@ public class GroceryServlet extends HttpServlet {
         groceryEntity.setProperty(FAMILY_ID, familyID);
         datastore.put(groceryEntity);
     }     
-  
-   
-  //request.setAttribute("currentUser", userEmail);
-
 
     response.sendRedirect("/grocery.html");
   }
