@@ -120,7 +120,6 @@ function createTaskElement(task) {
   const titleElement = document.createElement('span');
   titleElement.innerText = task.title;
       
-      console.log("names match");
   const deleteButtonElement = document.createElement('button');
   deleteButtonElement.innerText = 'Delete';
   deleteButtonElement.addEventListener('click', () => {
