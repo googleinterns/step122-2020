@@ -80,12 +80,10 @@ function createGroceryElement(grocery){
         titleElement.innerText = grocery.item + " assigned to: " + grocery.email;
     }
 
-    console.log("userMatch: " + userMatch(grocery));
+    // only creates button for items assigned to user or no one
     if (userMatch(grocery)) {
     const deleteButtonElement = document.createElement('button');
     deleteButtonElement.innerText = 'Delete';
-    console.log(grocery.userMathch);
-    console.log(grocery.email);
     deleteButtonElement.addEventListener('click', () => {
     deleteGrocery(grocery);
 
@@ -98,7 +96,6 @@ function createGroceryElement(grocery){
     return groceryElement;
     }
     
-  //console.log(request.getAttribute("currentUser"));
     groceryElement.appendChild(titleElement);
     return groceryElement;
 }
@@ -210,22 +207,14 @@ function createCalendar() {
 
 /** Tells the server to delete the grocery. */
 function deleteGrocery(grocery) {
-  //console.log(grocery.userMatch);
   const params = new URLSearchParams();
   params.append('id', grocery.id);  
   fetch('/delete-grocery', {method: 'POST', body: params});
 }
 
 function userMatch(grocery) {
-    console.log(grocery.userMatch);
   if (grocery.userMatch === true) {
-      return true;
+    return true;
   } 
   return false
   }
-/*function getCurrentUser() {
-    fetch('/current-user').then(response => response.text()).then((currentUser)
-    => {
-
-    }
-}*/
