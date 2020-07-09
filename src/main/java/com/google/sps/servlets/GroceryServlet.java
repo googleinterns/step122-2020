@@ -83,13 +83,17 @@ public class GroceryServlet extends HttpServlet {
     }
     
     // adds item to datastore
-
     String grocery = request.getParameter("groceryItem");
     if( grocery != null && !grocery.equals("")) {
         groceryEntity.setProperty(GROCERY, grocery);
         groceryEntity.setProperty(FAMILY_ID, familyID);
         datastore.put(groceryEntity);
     }     
+  
+   
+  //request.setAttribute("currentUser", userEmail);
+
+
     response.sendRedirect("/grocery.html");
   }
 
@@ -115,7 +119,7 @@ public class GroceryServlet extends HttpServlet {
     Query groceryQuery = new Query(GROCERY)
       .setFilter(new Query.FilterPredicate(FAMILY_ID, Query.FilterOperator.EQUAL, familyID));   
     PreparedQuery familyGrocery= datastore.prepare(groceryQuery);
-    groceryList = checkGroceries(familyGrocery);   
+    groceryList = checkGroceries(familyGrocery, userEmail);   
 
     Gson gson = new Gson();
     response.setContentType("application/json;");
@@ -123,13 +127,19 @@ public class GroceryServlet extends HttpServlet {
     }
 
   // returns items from the query that match the users familyID in the Grocery object    
-  private ArrayList<Grocery> checkGroceries(PreparedQuery familyGrocery) {
+  private ArrayList<Grocery> checkGroceries(PreparedQuery familyGrocery, String userEmail) {
+    boolean match;
     ArrayList<Grocery> groceryList = new ArrayList<>();
     for (Entity entity : familyGrocery.asIterable()) {
         String groceryItem = (String) entity.getProperty(GROCERY);
         String memberEmail = (String) entity.getProperty("assignEmail");
         long id = entity.getKey().getId();     
-        Grocery grocery = new Grocery(memberEmail, id, groceryItem);
+        if(userEmail.equals(memberEmail)) {
+            match = true;
+        } else {
+            match = false;
+        }
+        Grocery grocery = new Grocery(memberEmail, id, groceryItem, match);
         groceryList.add(grocery);
     }
     return groceryList;

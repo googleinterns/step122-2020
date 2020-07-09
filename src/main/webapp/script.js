@@ -68,7 +68,6 @@ function loadGrocery() {
 }
 
 function createGroceryElement(grocery){
-    console.log(grocery)
     const groceryElement = document.createElement('li');
     groceryElement.className = 'task';
 
@@ -81,17 +80,26 @@ function createGroceryElement(grocery){
         titleElement.innerText = grocery.item + " assigned to: " + grocery.email;
     }
 
+    console.log("userMatch: " + userMatch(grocery));
+    if (userMatch(grocery)) {
     const deleteButtonElement = document.createElement('button');
     deleteButtonElement.innerText = 'Delete';
+    console.log(grocery.userMathch);
+    console.log(grocery.email);
     deleteButtonElement.addEventListener('click', () => {
     deleteGrocery(grocery);
 
     // Remove the task from the DOM.
     groceryElement.remove();
   });
-
+    
     groceryElement.appendChild(titleElement);
     groceryElement.appendChild(deleteButtonElement);
+    return groceryElement;
+    }
+    
+  //console.log(request.getAttribute("currentUser"));
+    groceryElement.appendChild(titleElement);
     return groceryElement;
 }
 
@@ -107,12 +115,15 @@ function loadTasks() {
  
 /** Creates an element that represents a task, including its delete button. */
 function createTaskElement(task) {
+  const currentUser = getCurrentUser();
+
   const taskElement = document.createElement('li');
   taskElement.className = 'task';
  
   const titleElement = document.createElement('span');
   titleElement.innerText = task.title;
- 
+      
+      console.log("names match");
   const deleteButtonElement = document.createElement('button');
   deleteButtonElement.innerText = 'Delete';
   deleteButtonElement.addEventListener('click', () => {
@@ -120,8 +131,8 @@ function createTaskElement(task) {
  
     // Remove the task from the DOM.
     taskElement.remove();
+    
   });
- 
   taskElement.appendChild(titleElement);
   taskElement.appendChild(deleteButtonElement);
   return taskElement;
@@ -136,9 +147,22 @@ function deleteTask(task) {
 
 /** Tells the server to delete the grocery. */
 function deleteGrocery(grocery) {
-  console.log(grocery);
-  console.log("JS deleteGrocery");
+  //console.log(grocery.userMatch);
   const params = new URLSearchParams();
   params.append('id', grocery.id);  
   fetch('/delete-grocery', {method: 'POST', body: params});
 }
+
+function userMatch(grocery) {
+    console.log(grocery.userMatch);
+  if (grocery.userMatch === true) {
+      return true;
+  } 
+  return false
+  }
+/*function getCurrentUser() {
+    fetch('/current-user').then(response => response.text()).then((currentUser)
+    => {
+
+    }
+}*/
