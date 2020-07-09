@@ -62,8 +62,8 @@ public class GroceryServlet extends HttpServlet {
     try {
         familyEntity = datastore.get(familyEntityKey);
     } catch (EntityNotFoundException e) {
-        System.out.println("Family not found");
-        return;
+         return;
+    System.out.println("grocery assigned to: " + assignGrocery);
     }
 
     // checks if the given email matches a email in the family
