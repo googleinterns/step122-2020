@@ -132,14 +132,16 @@ public class GroceryServlet extends HttpServlet {
     ArrayList<Grocery> groceryList = new ArrayList<>();
     for (Entity entity : familyGrocery.asIterable()) {
         String groceryItem = (String) entity.getProperty(GROCERY);
-        String memberEmail = (String) entity.getProperty("assignEmail");
+        String assignEmail = (String) entity.getProperty("assignEmail");
         long id = entity.getKey().getId();     
-        if(userEmail.equals(memberEmail)) {
+        if(userEmail.equals(assignEmail)) {
+            match = true;
+        } else if(assignEmail.equals(" ")){
             match = true;
         } else {
             match = false;
         }
-        Grocery grocery = new Grocery(memberEmail, id, groceryItem, match);
+        Grocery grocery = new Grocery(assignEmail, id, groceryItem, match);
         groceryList.add(grocery);
     }
     return groceryList;
