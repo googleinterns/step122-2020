@@ -90,9 +90,23 @@ function createGroceryElement(grocery){
     // Remove the task from the DOM.
     groceryElement.remove();
   });
+
+    const completeButtonElement = document.createElement('button');
+    completeButtonElement.innerText = 'Complete';
+    if(grocery.complete === true) {
+        groceryElement.className = 'taskComplete';
+    }
+    completeButtonElement.addEventListener('click', () => {
+
+    groceryElement.className = 'taskComplete';
+    completeGrocery(grocery);
+    }); 
     
+
     groceryElement.appendChild(titleElement);
     groceryElement.appendChild(deleteButtonElement);
+    groceryElement.appendChild(completeButtonElement);
+
     return groceryElement;
     }
     
@@ -146,6 +160,13 @@ function deleteGrocery(grocery) {
   const params = new URLSearchParams();
   params.append('id', grocery.id);  
   fetch('/delete-grocery', {method: 'POST', body: params});
+}
+
+/** Tells the server to delete the grocery. */
+function completeGrocery(grocery) {
+  const params = new URLSearchParams();
+  params.append('id', grocery.id);  
+  fetch('/complete-grocery', {method: 'POST', body: params});
 }
 
 function userMatch(grocery) {

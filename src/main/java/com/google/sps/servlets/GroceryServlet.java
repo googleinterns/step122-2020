@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /** Servlet takes grocery list and displays it to the screen based on the users family */
 @WebServlet("/grocery-list")
 public class GroceryServlet extends HttpServlet {
@@ -51,6 +50,7 @@ public class GroceryServlet extends HttpServlet {
         response.sendRedirect("/grocery.html");
         return;
     }
+
     String assignGrocery = request.getParameter("assignGrocery");
     String noneAssigned = " ";
     Entity groceryEntity = new Entity(GROCERY);
@@ -63,7 +63,6 @@ public class GroceryServlet extends HttpServlet {
         familyEntity = datastore.get(familyEntityKey);
     } catch (EntityNotFoundException e) {
          return;
-    System.out.println("grocery assigned to: " + assignGrocery);
     }
 
     // checks if the given email matches a email in the family
@@ -81,12 +80,13 @@ public class GroceryServlet extends HttpServlet {
             }
         }
     }
-    
+    boolean complete = false;
     // adds item to datastore
     String grocery = request.getParameter("groceryItem");
     if( grocery != null && !grocery.equals("")) {
         groceryEntity.setProperty(GROCERY, grocery);
         groceryEntity.setProperty(FAMILY_ID, familyID);
+        groceryEntity.setProperty("Complete", complete);
         datastore.put(groceryEntity);
     }     
 
@@ -125,12 +125,14 @@ public class GroceryServlet extends HttpServlet {
   // returns items from the query that match the users familyID in the Grocery object    
   private ArrayList<Grocery> checkGroceries(PreparedQuery familyGrocery, String userEmail) {
     boolean match;
+    boolean complete;
     long timestamp = System.currentTimeMillis();
     System.out.println(timestamp);
     ArrayList<Grocery> groceryList = new ArrayList<>();
     for (Entity entity : familyGrocery.asIterable()) {
         String groceryItem = (String) entity.getProperty(GROCERY);
         String assignEmail = (String) entity.getProperty("assignEmail");
+        complete = (boolean) entity.getProperty("Complete");
         long id = entity.getKey().getId();     
         if(userEmail.equals(assignEmail)) {
             match = true;
@@ -139,7 +141,7 @@ public class GroceryServlet extends HttpServlet {
         } else {
             match = false;
         }
-        Grocery grocery = new Grocery(assignEmail, id, timestamp, groceryItem, match);
+        Grocery grocery = new Grocery(assignEmail, id, timestamp, groceryItem, match, complete);
         groceryList.add(grocery);
     }
     return groceryList;
