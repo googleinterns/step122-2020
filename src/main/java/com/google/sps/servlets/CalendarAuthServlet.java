@@ -48,7 +48,9 @@ public class CalendarAuthServlet extends AbstractAppEngineAuthorizationCodeServl
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
 
-    response.sendRedirect("cal.html");
+    String url = initializeFlow().newAuthorizationUrl()
+        .setRedirectUri(Utils.getRedirectUri(request)).build();
+    response.sendRedirect(url);
   }
 
   @Override
