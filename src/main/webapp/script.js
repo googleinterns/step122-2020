@@ -167,8 +167,7 @@ function insertCalendar() {
         calFrame.setAttribute('width', '800'); 
         calFrame.setAttribute('height', '600'); 
         calFrame.setAttribute('frameborder', '0'); 
-        calFrame.setAttribute('scrolling', 'no'); 
-        calElement.appendChild(calFrame)
+        calFrame.setAttribute('scrolling', 'no');
         calElement.appendChild(calFrame);
     });
 

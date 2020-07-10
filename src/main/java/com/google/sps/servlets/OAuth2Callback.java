@@ -25,7 +25,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/oauth2callback")
 public class OAuth2Callback extends AbstractAppEngineAuthorizationCodeCallbackServlet {
 
   private static final long serialVersionUID = 1L;

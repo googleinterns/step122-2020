@@ -41,21 +41,16 @@ import javax.servlet.http.HttpServletResponse;
 /** 
  * Servlet responsible for returning the iframe src for a user's primary calendar
 */
-public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
-
-  static final String APP_NAME = "Household";
+@WebServlet("/calendar-auth")
+public class CalendarAuthServlet extends AbstractAppEngineAuthorizationCodeServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-          
-    Calendar calendarService = Utils.loadCalendarClient();
 
-    CalendarListEntry primaryCalendarEntry = calendarService.calendarList().get("primary").execute();
-
-    response.setContentType("application/text");
-    response.getWriter().println("https://calendar.google.com/calendar/embed?src=" + primaryCalendarEntry.getId());
-   
+    String url = initializeFlow().newAuthorizationUrl()
+        .setRedirectUri(Utils.getRedirectUri(request)).build();
+    response.sendRedirect(url);
   }
 
   @Override
