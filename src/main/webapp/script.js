@@ -80,6 +80,10 @@ function createGroceryElement(grocery){
         titleElement.innerText = grocery.item + " assigned to: " + grocery.email;
     }
 
+    if(grocery.complete === true) {
+        groceryElement.className = 'taskComplete';
+    }
+
     // only creates button for items assigned to user or no one
     if (userMatch(grocery)) {
     const deleteButtonElement = document.createElement('button');
@@ -99,6 +103,7 @@ function createGroceryElement(grocery){
     completeButtonElement.addEventListener('click', () => {
 
     groceryElement.className = 'taskComplete';
+   // completeButtonElement.remove();
     completeGrocery(grocery);
     }); 
     
