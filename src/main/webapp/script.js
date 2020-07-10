@@ -85,7 +85,7 @@ function createGroceryElement(grocery){
     }
 
     // only creates button for items assigned to user or no one
-    if (userMatch(grocery)) {
+    if (booleanStatus(grocery.userMatch)) {
     const deleteButtonElement = document.createElement('button');
     deleteButtonElement.innerText = 'Delete';
     deleteButtonElement.addEventListener('click', () => {
@@ -97,22 +97,25 @@ function createGroceryElement(grocery){
 
     const completeButtonElement = document.createElement('button');
     completeButtonElement.innerText = 'Complete';
-    if(grocery.complete === true) {
-        groceryElement.className = 'taskComplete';
-    }
     completeButtonElement.addEventListener('click', () => {
 
     groceryElement.className = 'taskComplete';
-   // completeButtonElement.remove();
+    completeButtonElement.remove();
     completeGrocery(grocery);
     }); 
     
+   if(booleanStatus(grocery.complete)) {
+    completeButtonElement.remove();
+    groceryElement.appendChild(titleElement);
+    groceryElement.appendChild(deleteButtonElement);
+    } else {
 
     groceryElement.appendChild(titleElement);
     groceryElement.appendChild(deleteButtonElement);
     groceryElement.appendChild(completeButtonElement);
-
+    }
     return groceryElement;
+    
     }
     
     groceryElement.appendChild(titleElement);
@@ -174,8 +177,8 @@ function completeGrocery(grocery) {
   fetch('/complete-grocery', {method: 'POST', body: params});
 }
 
-function userMatch(grocery) {
-  if (grocery.userMatch === true) {
+function booleanStatus(status) {
+  if (status === true) {
     return true;
   } 
   return false
