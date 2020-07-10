@@ -6,12 +6,12 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
 
   <servlet>
-    <servlet-name>oauth2Callback</servlet-name>
+    <servlet-name>oauth2callback</servlet-name>
     <servlet-class>com.google.sps.servlets.OAuth2Callback</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>oauth2Callback</servlet-name>
+    <servlet-name>oauth2callback</servlet-name>
     <url-pattern>/oauth2callback/*</url-pattern>
   </servlet-mapping>
 
