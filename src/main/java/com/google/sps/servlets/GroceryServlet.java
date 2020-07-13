@@ -81,7 +81,7 @@ public class GroceryServlet extends HttpServlet {
             }
         }
     }
-    
+
     // adds item to datastore
     String grocery = request.getParameter("groceryItem");
     if( grocery != null && !grocery.equals("")) {
@@ -124,7 +124,7 @@ public class GroceryServlet extends HttpServlet {
 
   // returns items from the query that match the users familyID in the Grocery object    
   private ArrayList<Grocery> fetchGroceries(PreparedQuery familyGrocery, String userEmail) {
-    boolean match;
+    boolean isUserAssigned;
     long timestamp = System.currentTimeMillis();
     ArrayList<Grocery> groceryList = new ArrayList<>();
     for (Entity entity : familyGrocery.asIterable()) {
@@ -132,13 +132,11 @@ public class GroceryServlet extends HttpServlet {
         String assignEmail = (String) entity.getProperty("assignEmail");
         long id = entity.getKey().getId();     
         if (userEmail.equals(assignEmail)) {
-            match = true;
-        } else if (assignEmail.equals(" ")){
-            match = true;
+            isUserAssigned = true;
         } else {
-            match = false;
+            isUserAssigned = false;
         }
-        Grocery grocery = new Grocery(assignEmail, id, timestamp, groceryItem, match);
+        Grocery grocery = new Grocery(assignEmail, id, timestamp, groceryItem, isUserAssigned);
         groceryList.add(grocery);
     }
     return groceryList;
