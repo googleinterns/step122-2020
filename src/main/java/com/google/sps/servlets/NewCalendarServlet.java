@@ -65,12 +65,17 @@ public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServle
 
     ArrayList<String> memberEmails = (ArrayList<String>) currentFamilyEntity.getProperty("memberEmails");
 
+    UserService userService = UserServiceFactory.getUserService();
     for(String memberEmail : memberEmails) {
         // Create access rule with associated scope
+        if(memberEmail.equals(userService.getCurrentUser().getEmail())) {
+            continue;
+        } 
+        
         AclRule rule = new AclRule();
         Scope scope = new Scope();
         scope.setType("user").setValue(memberEmail);
-        rule.setScope(scope).setRole("writer");
+        rule.setScope(scope).setRole("owner");
 
         // Insert new access rule
         AclRule createdRule = calendarService.acl().insert(createdCalendar.getId(), rule).execute();
