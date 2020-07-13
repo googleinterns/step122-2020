@@ -80,8 +80,9 @@ public class GroceryServlet extends HttpServlet {
             }
         }
     }
-    boolean complete = false;
+    
     // adds item to datastore
+    boolean complete = false;
     String grocery = request.getParameter("groceryItem");
     if( grocery != null && !grocery.equals("")) {
         groceryEntity.setProperty(GROCERY, grocery);
