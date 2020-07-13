@@ -34,7 +34,6 @@ public class DeleteGroceryServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("deleteGroceryServlet");
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String userEmail = userService.getCurrentUser().getEmail();
@@ -45,17 +44,16 @@ public class DeleteGroceryServlet extends HttpServlet {
     try {
         groceryEntity = datastore.get(groceryEntityKey);
     } catch (EntityNotFoundException e) {
-        System.out.println("Family not found");
+        System.out.println("Grocery not found");
         return;
     }
     
     // deletes key if user email is assigned to them or no one
     String member = (String) groceryEntity.getProperty("assignEmail");
-    if(member.equals(" ")) {
-        datastore.delete(groceryEntityKey);
-    } else if (member.equals(userEmail)) {
+    if(member.equals(" ") || member.equals(userEmail)) {
         datastore.delete(groceryEntityKey);
     } else {
+        // TODO: add error handling
         return;
     }
   }

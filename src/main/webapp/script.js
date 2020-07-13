@@ -64,14 +64,14 @@ function loadGrocery() {
     groceries.forEach((grocery) => {
         groceryListElement.appendChild(createGroceryElement(grocery));
     })
-  });
+    });
 }
 
 function createGroceryElement(grocery){
     const groceryElement = document.createElement('li');
     groceryElement.className = 'task';
 
-    // changes string depending on if a member was assigned an email. 
+    // If assigned email is empty then only show the item else show the item and the assigned email
     const titleElement = document.createElement('span');
     const emptyString = " ";
     if(grocery.email === emptyString) {
@@ -81,7 +81,7 @@ function createGroceryElement(grocery){
     }
 
     // only creates button for items assigned to user or no one
-    if (userMatch(grocery)) {
+    if (isEditableGrocery(grocery)) {
     const deleteButtonElement = document.createElement('button');
     deleteButtonElement.innerText = 'Delete';
     deleteButtonElement.addEventListener('click', () => {
@@ -148,9 +148,6 @@ function deleteGrocery(grocery) {
   fetch('/delete-grocery', {method: 'POST', body: params});
 }
 
-function userMatch(grocery) {
-  if (grocery.userMatch === true) {
-    return true;
-  } 
-  return false
-  }
+function isEditableGrocery(grocery) {
+  return grocery.userMatch; 
+}
