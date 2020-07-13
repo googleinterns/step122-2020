@@ -43,9 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  * Servlet responsible for returning the link to the shared family calendar
 */
 public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
-
-  static final String APP_NAME = "Household";
-
+  
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
