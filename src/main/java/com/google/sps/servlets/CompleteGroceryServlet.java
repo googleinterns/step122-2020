@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet responsible for deleting tasks. */
+/** Servlet responsible for telling the server a task is complete. */
 @WebServlet("/complete-grocery")
 public class CompleteGroceryServlet extends HttpServlet {
     
