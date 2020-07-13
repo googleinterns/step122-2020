@@ -64,7 +64,7 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
 
     String calendarID = (String) familyEntity.getProperty("calendarID");
 
-    if(calendarID == null) {
+    if (calendarID == null) {
         response.setContentType("application/text");
         response.getWriter().println("");
         return;
