@@ -50,7 +50,7 @@ public class DeleteGroceryServlet extends HttpServlet {
     
     // deletes key if user email is assigned to them or no one
     String member = (String) groceryEntity.getProperty("assignEmail");
-    if(member.equals(" ") || member.equals(userEmail)) {
+    if(member == null || member.equals(userEmail)) {
         datastore.delete(groceryEntityKey);
     } else {
         // TODO: add error handling
