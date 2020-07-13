@@ -86,41 +86,39 @@ function createGroceryElement(grocery){
 
     // only creates button for items assigned to user or no one
     if (booleanStatus(grocery.userMatch)) {
-    const deleteButtonElement = document.createElement('button');
-    deleteButtonElement.innerText = 'Delete';
-    deleteButtonElement.addEventListener('click', () => {
-    deleteGrocery(grocery);
+        const deleteButtonElement = document.createElement('button');
+        deleteButtonElement.innerText = 'Delete';
+        deleteButtonElement.addEventListener('click', () => {
+        deleteGrocery(grocery);
 
-    // Remove the task from the DOM.
-    groceryElement.remove();
-  });
+        // Remove the task from the DOM.
+        groceryElement.remove();
+        });
 
-    const completeButtonElement = document.createElement('button');
-    completeButtonElement.innerText = 'Complete';
-    completeButtonElement.addEventListener('click', () => {
+        const completeButtonElement = document.createElement('button');
+        completeButtonElement.innerText = 'Complete';
+        completeButtonElement.addEventListener('click', () => {
 
-    groceryElement.className = 'taskComplete';
-    completeButtonElement.remove();
-    completeGrocery(grocery);
-    }); 
+        groceryElement.className = 'taskComplete';
+        completeButtonElement.remove();
+        completeGrocery(grocery);
+        }); 
     
-   if(booleanStatus(grocery.complete)) {
-    completeButtonElement.remove();
-    groceryElement.appendChild(titleElement);
-    groceryElement.appendChild(deleteButtonElement);
-    } else {
+        if(booleanStatus(grocery.complete)) {
+            completeButtonElement.remove();
+            groceryElement.appendChild(titleElement);
+            groceryElement.appendChild(deleteButtonElement);
+            return groceryElement;
+        } 
 
-    groceryElement.appendChild(titleElement);
-    groceryElement.appendChild(deleteButtonElement);
-    groceryElement.appendChild(completeButtonElement);
+        groceryElement.appendChild(titleElement);
+        groceryElement.appendChild(deleteButtonElement);
+        groceryElement.appendChild(completeButtonElement);
+        return groceryElement;
     }
-    return groceryElement;
-    
-    }
-    
     groceryElement.appendChild(titleElement);
     return groceryElement;
-}
+    }
 
 /** Fetches tasks from the server and adds them to the DOM. */
 function loadTasks() {
