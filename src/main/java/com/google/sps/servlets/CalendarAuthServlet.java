@@ -24,7 +24,6 @@ import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
-import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
@@ -40,41 +39,18 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /** 
- * Servlet responsible for returning the link to the shared family calendar
+ * Servlet responsible for returning the iframe src for a user's primary calendar
 */
-public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
-  
+@WebServlet("/calendar-auth")
+public class CalendarAuthServlet extends AbstractAppEngineAuthorizationCodeServlet {
+
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-        
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    Entity userInfoEntity = Utils.getCurrentUserEntity();
-
-    // If current user is not in a family, they cannot add a member
-    if (userInfoEntity == null) {
-        System.out.println("You do not belong to a family yet!");
-        return;
-    }
-
-    Entity familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
-
-    String calendarID = (String) familyEntity.getProperty("calendarID");
-
-    if(calendarID == null) {
-        response.setContentType("application/text");
-        response.getWriter().println("");
-        return;
-    }
-
-    Calendar calendarService = Utils.loadCalendarClient();
-
-    CalendarListEntry calendarEntry = calendarService.calendarList().get(calendarID).execute();
-
-    response.setContentType("application/text");
-    response.getWriter().println("https://calendar.google.com/calendar/embed?src=" + calendarEntry.getId() + "&output=embed");
-   
+    String url = initializeFlow().newAuthorizationUrl()
+        .setRedirectUri(Utils.getRedirectUri(request)).build();
+    response.sendRedirect(url);
   }
 
   @Override
