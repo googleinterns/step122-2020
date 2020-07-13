@@ -126,14 +126,14 @@ public class GroceryServlet extends HttpServlet {
   // returns items from the query that match the users familyID in the Grocery object    
   private ArrayList<Grocery> checkGroceries(PreparedQuery familyGrocery, String userEmail) {
     boolean match;
-    boolean complete;
+    Boolean complete;
     long timestamp = System.currentTimeMillis();
     System.out.println(timestamp);
     ArrayList<Grocery> groceryList = new ArrayList<>();
     for (Entity entity : familyGrocery.asIterable()) {
         String groceryItem = (String) entity.getProperty(GROCERY);
         String assignEmail = (String) entity.getProperty("assignEmail");
-        complete = (boolean) entity.getProperty("Complete");
+        complete = (Boolean) entity.getProperty("Complete");
         long id = entity.getKey().getId();     
         if(userEmail.equals(assignEmail)) {
             match = true;

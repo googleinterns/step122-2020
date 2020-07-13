@@ -23,9 +23,9 @@ public final class Grocery {
   private final long id;
   private final String email;
   private final boolean userMatch;
-  private final boolean complete;
+  private final Boolean complete;
 
-  public Grocery(String email, long id, long timestamp, String item, boolean userMatch, boolean complete) {
+  public Grocery(String email, long id, long timestamp, String item, boolean userMatch, Boolean complete) {
     this.email = email;
     this.id = id;
     this.item = item;
