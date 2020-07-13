@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.extensions.appengine.auth.oauth2.AbstractAppEngineAuthorizationCodeServlet;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
@@ -72,7 +73,18 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
 
     Calendar calendarService = Utils.loadCalendarClient();
 
-    CalendarListEntry calendarEntry = calendarService.calendarList().get(calendarID).execute();
+    CalendarListEntry calendarEntry;
+    try {
+        calendarEntry = calendarService.calendarList().get(calendarID).execute();
+    } catch (GoogleJsonResponseException e) {
+        // Create a new calendar list entry
+        CalendarListEntry calendarListEntry = new CalendarListEntry();
+        calendarListEntry.setId(calendarID);
+
+        // Insert the new calendar list entry
+        calendarEntry = calendarService.calendarList().insert(calendarListEntry).execute();
+    }
+    
 
     response.setContentType("application/text");
     response.getWriter().println("https://calendar.google.com/calendar/embed?src=" + calendarEntry.getId() + "&output=embed");
