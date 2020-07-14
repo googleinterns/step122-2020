@@ -16,24 +16,45 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet responsible for deleting tasks. */
-@WebServlet("/delete-task")
-public class DeleteTaskServlet extends HttpServlet {
+/** Servlet responsible for deleting groceries. */
+@WebServlet("/delete-grocery")
+public class DeleteGroceryServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long id = Long.parseLong(request.getParameter("id"));
-    
-    Key taskEntityKey = KeyFactory.createKey("Task", id);
+    UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.delete(taskEntityKey);
+    String userEmail = userService.getCurrentUser().getEmail();
+    long id = Long.parseLong(request.getParameter("id"));
+    Key groceryEntityKey = KeyFactory.createKey("Grocery", id);
+
+    Entity groceryEntity;
+    try {
+        groceryEntity = datastore.get(groceryEntityKey);
+    } catch (EntityNotFoundException e) {
+        System.out.println("Grocery not found");
+        return;
+    }
+    
+    // deletes key if user email is assigned to them or no one
+    String member = (String) groceryEntity.getProperty("assignEmail");
+    if(member == null || member.equals(userEmail)) {
+        datastore.delete(groceryEntityKey);
+    } else {
+        // TODO: add error handling
+        return;
+    }
   }
 }
