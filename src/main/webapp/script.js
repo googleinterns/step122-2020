@@ -64,17 +64,16 @@ function loadGrocery() {
     groceries.forEach((grocery) => {
         groceryListElement.appendChild(createGroceryElement(grocery));
     })
-  });
+    });
 }
 
 function createGroceryElement(grocery){
     const groceryElement = document.createElement('li');
     groceryElement.className = 'task';
 
-    // changes string depending on if a member was assigned an email. 
+    // If assigned email is empty then only show the item else show the item and the assigned email
     const titleElement = document.createElement('span');
-    const emptyString = " ";
-    if(grocery.email === emptyString) {
+    if(!grocery.email) {
         titleElement.innerText = grocery.item;
     } else {
         titleElement.innerText = grocery.item + " assigned to: " + grocery.email;
@@ -83,13 +82,13 @@ function createGroceryElement(grocery){
     if(grocery.complete === true) {
         groceryElement.className = 'taskComplete';
     }
-
+  
     // only creates button for items assigned to user or no one
-    if (booleanStatus(grocery.userMatch)) {
-        const deleteButtonElement = document.createElement('button');
-        deleteButtonElement.innerText = 'Delete';
-        deleteButtonElement.addEventListener('click', () => {
-        deleteGrocery(grocery);
+    if (isEditableGrocery(grocery)) {
+    const deleteButtonElement = document.createElement('button');
+    deleteButtonElement.innerText = 'Delete';
+    deleteButtonElement.addEventListener('click', () => {
+    deleteGrocery(grocery);
 
         // Remove the task from the DOM.
         groceryElement.remove();
@@ -104,7 +103,7 @@ function createGroceryElement(grocery){
         completeGrocery(grocery);
         }); 
     
-        if(booleanStatus(grocery.complete)) {
+        if(isEditableGrocery(grocery.complete)) {
             completeButtonElement.remove();
             groceryElement.appendChild(titleElement);
             groceryElement.appendChild(deleteButtonElement);
@@ -175,9 +174,61 @@ function completeGrocery(grocery) {
   fetch('/complete-grocery', {method: 'POST', body: params});
 }
 
-function booleanStatus(status) {
-  if (status === true) {
-    return true;
-  } 
-  return false
-  }
+function isEditableGrocery(grocery) {
+  return grocery.userMatch || !grocery.email; 
+
+/** Fetches tasks from the server and adds them to the DOM. */
+function loadTasks() {
+  fetch('/list-tasks').then(response => response.json()).then((tasks) => {
+    const taskListElement = document.getElementById('task-list');
+    tasks.forEach((task) => {
+      taskListElement.appendChild(createTaskElement(task));
+    })
+  });
+}
+ 
+/** Creates an element that represents a task, including its delete button. */
+function createTaskElement(task) {
+  const taskElement = document.createElement('li');
+  taskElement.className = 'task';
+ 
+  const titleElement = document.createElement('span');
+  titleElement.innerText = task.title;
+ 
+  const deleteButtonElement = document.createElement('button');
+  deleteButtonElement.innerText = 'Delete';
+  deleteButtonElement.addEventListener('click', () => {
+    deleteTask(task);
+ 
+    // Remove the task from the DOM.
+    taskElement.remove();
+  });
+ 
+  taskElement.appendChild(titleElement);
+  taskElement.appendChild(deleteButtonElement);
+  return taskElement;
+}
+ 
+/** Tells the server to delete the task. */
+function deleteTask(task) {
+  const params = new URLSearchParams();
+  params.append('id', task.id);
+  fetch('/delete-task', {method: 'POST', body: params});
+}
+
+function insertCalendar() {
+    const calElement = document.getElementById('caldiv');
+
+    fetch('/calendar').then((response) => response.text()).then((calSrc) => {
+        var calFrame = document.createElement('iframe');
+        calFrame.setAttribute('src', calSrc);
+        calFrame.setAttribute('style', 'border: 0'); 
+        calFrame.setAttribute('width', '800'); 
+        calFrame.setAttribute('height', '600'); 
+        calFrame.setAttribute('frameborder', '0'); 
+        calFrame.setAttribute('scrolling', 'no');
+        calElement.appendChild(calFrame);
+    });
+
+}
+  
