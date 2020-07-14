@@ -73,8 +73,6 @@ function createGroceryElement(grocery){
 
     // If assigned email is empty then only show the item else show the item and the assigned email
     const titleElement = document.createElement('span');
-    const emptyString = " ";
-    console.log(grocery);
     if(!grocery.email) {
         titleElement.innerText = grocery.item;
     } else {
