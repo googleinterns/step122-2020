@@ -27,21 +27,16 @@ import com.google.api.services.calendar.model.Events;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import java.lang.StringBuilder;
-
 import java.util.Collections;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 
 /** 
  * Servlet responsible for creating a shared family calendar
@@ -67,7 +62,6 @@ public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServle
     currentFamilyEntity.setProperty("calendarID", createdCalendar.getId());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(currentFamilyEntity);
-   
   }
 
   @Override
