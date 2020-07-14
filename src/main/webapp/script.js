@@ -64,17 +64,16 @@ function loadGrocery() {
     groceries.forEach((grocery) => {
         groceryListElement.appendChild(createGroceryElement(grocery));
     })
-  });
+    })
 }
 
 function createGroceryElement(grocery){
     const groceryElement = document.createElement('li');
     groceryElement.className = 'task';
 
-    // changes string depending on if a member was assigned an email. 
+    // If assigned email is empty then only show the item else show the item and the assigned email
     const titleElement = document.createElement('span');
-    const emptyString = " ";
-    if(grocery.email === emptyString) {
+    if(!grocery.email) {
         titleElement.innerText = grocery.item;
     } else {
         titleElement.innerText = grocery.item + " assigned to: " + grocery.email;
@@ -85,11 +84,11 @@ function createGroceryElement(grocery){
     }
 
     // only creates button for items assigned to user or no one
-    if (booleanStatus(grocery.userMatch)) {
-        const deleteButtonElement = document.createElement('button');
-        deleteButtonElement.innerText = 'Delete';
-        deleteButtonElement.addEventListener('click', () => {
-        deleteGrocery(grocery);
+    if (isEditableGrocery(grocery)) {
+    const deleteButtonElement = document.createElement('button');
+    deleteButtonElement.innerText = 'Delete';
+    deleteButtonElement.addEventListener('click', () => {
+    deleteGrocery(grocery);
 
         // Remove the task from the DOM.
         groceryElement.remove();
@@ -104,7 +103,7 @@ function createGroceryElement(grocery){
         completeGrocery(grocery);
         }); 
     
-        if(booleanStatus(grocery.complete)) {
+        if(booleanStatus(grocery)) {
             completeButtonElement.remove();
             groceryElement.appendChild(titleElement);
             groceryElement.appendChild(deleteButtonElement);
@@ -175,9 +174,25 @@ function completeGrocery(grocery) {
   fetch('/complete-grocery', {method: 'POST', body: params});
 }
 
-function booleanStatus(status) {
-  if (status === true) {
-    return true;
-  } 
-  return false
-  }
+function booleanStatus(grocery) {
+  return grocery.complete;
+}
+
+function isEditableGrocery(grocery) {
+  return grocery.userMatch || !grocery.email; 
+}
+
+function insertCalendar() {
+    const calElement = document.getElementById('caldiv');
+
+    fetch('/calendar').then((response) => response.text()).then((calSrc) => {
+        var calFrame = document.createElement('iframe');
+        calFrame.setAttribute('src', calSrc);
+        calFrame.setAttribute('style', 'border: 0'); 
+        calFrame.setAttribute('width', '800'); 
+        calFrame.setAttribute('height', '600'); 
+        calFrame.setAttribute('frameborder', '0'); 
+        calFrame.setAttribute('scrolling', 'no');
+        calElement.appendChild(calFrame);
+    });
+}
