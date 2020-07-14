@@ -125,7 +125,6 @@ public class GroceryServlet extends HttpServlet {
     }
 
   // returns items from the query that match the users familyID in the Grocery object    
-
   private ArrayList<Grocery> fetchGroceries(PreparedQuery familyGrocery, String userEmail) {
     boolean isUserAssigned;
     Boolean complete;
@@ -141,7 +140,6 @@ public class GroceryServlet extends HttpServlet {
         } else {
             isUserAssigned = false;
         }
-
         Grocery grocery = new Grocery(assignEmail, id, timestamp, groceryItem, isUserAssigned, complete);
         groceryList.add(grocery);
     }
