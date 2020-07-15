@@ -160,7 +160,7 @@ function deleteTask(task) {
 function insertCalendar() {
     const calElement = document.getElementById('caldiv');
 
-    fetch('/calendar').then((response) => response.text()).then((calSrc) => {
+    fetch('/calendar').then((response) => handleErrors(response)).then((response) => response.text()).then((calSrc) => {
         if(!calSrc || 0 === calSrc.length || !calSrc.trim()) {
             return;
         }
@@ -172,7 +172,7 @@ function insertCalendar() {
         calFrame.setAttribute('frameborder', '0'); 
         calFrame.setAttribute('scrolling', 'no');
         calElement.appendChild(calFrame);
-    });
+    }).catch(error => alert(error.message));
 
 }
 
@@ -180,4 +180,14 @@ function createCalendar() {
     fetch(new Request('/new-calendar', {method: 'POST'})).then(() => {
         insertCalendar();
     });
+}
+
+function handleErrors(response) {
+    if (!response.ok) {
+        return response.clone().text().then((errorMsg) => {
+            console.log(errorMsg);
+            throw new Error(errorMsg);
+        });
+    }
+    return response;
 }
