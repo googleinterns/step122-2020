@@ -55,9 +55,9 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
 
     // If current user is not in a family, they cannot add a member
     if (userInfoEntity == null) {
-        System.out.println("You do not belong to a family yet!");
         response.setContentType("application/text");
-        response.getWriter().println("");
+        response.getWriter().println("You must belong to a family to use the calendar function");
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return;
     }
 
