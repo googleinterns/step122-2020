@@ -54,21 +54,25 @@ public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServle
           
     Calendar calendarService = Utils.loadCalendarClient();
 
-    // Create a new calendar
-    com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
-    calendar.setSummary("FamilyCalendar");
-
     // Insert the new calendar
     com.google.api.services.calendar.model.Calendar createdCalendar = calendarService.calendars().insert(calendar).execute();
 
     Entity currentFamilyEntity = Utils.getCurrentFamilyEntity(Utils.getCurrentUserEntity());
 
+    // Create a new calendar
+    com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
+    calendar.setSummary((String) currentFamilyEntity.getProperty("name") + "'s Calendar");
+
+    currentFamilyEntity.setProperty("calendarID", createdCalendar.getId());
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(currentFamilyEntity);
+
     ArrayList<String> memberEmails = (ArrayList<String>) currentFamilyEntity.getProperty("memberEmails");
 
     UserService userService = UserServiceFactory.getUserService();
-    for(String memberEmail : memberEmails) {
+    for (String memberEmail : memberEmails) {
         // Create access rule with associated scope
-        if(memberEmail.equals(userService.getCurrentUser().getEmail())) {
+        if (memberEmail.equals(userService.getCurrentUser().getEmail())) {
             continue;
         } 
         
@@ -81,10 +85,6 @@ public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServle
         AclRule createdRule = calendarService.acl().insert(createdCalendar.getId(), rule).execute();
         System.out.println(createdRule.getId());
     }
-    
-    currentFamilyEntity.setProperty("calendarID", createdCalendar.getId());
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(currentFamilyEntity);
    
   }
 

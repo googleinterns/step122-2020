@@ -161,7 +161,7 @@ function insertCalendar() {
     const calElement = document.getElementById('caldiv');
 
     fetch('/calendar').then((response) => response.text()).then((calSrc) => {
-        if(!calSrc || 0 === calSrc.length || !calSrc.trim()) {
+        if(!calSrc.trim()) {
             return;
         }
         var calFrame = document.createElement('iframe');
