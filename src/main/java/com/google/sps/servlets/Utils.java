@@ -56,7 +56,7 @@ class Utils {
   static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
   private static final String APPLICATION_NAME = "Household";
-  
+
   private static GoogleClientSecrets clientSecrets = null;
 
   // Loads client secrets from a stored file
