@@ -37,12 +37,12 @@ function closeRemoveMemberForm() {
 }
 
 function loadFamilyMembers() {
-  fetch('/family').then(response => response.json()).then((memberEmails) => {
+  fetch('/family').then(response => response.json()).then((family) => {
     const familyElement = document.getElementById('family-container');
     const familyHeader = document.createElement("HEADER");
-    familyHeader.innerText = "Current Family Members: ";
+    familyHeader.innerText = "Current Family Members in " + family.name + ":";
     familyElement.appendChild(familyHeader);
-    memberEmails.forEach((memberEmail) => {
+    family.members.forEach((memberEmail) => {
       const memberListElement = document.createElement('li');
       memberListElement.innerText = memberEmail;
       familyElement.appendChild(memberListElement);
@@ -60,21 +60,41 @@ function userLogin() {
 function loadGrocery() {
     // fetches json list of groceries
     fetch('/grocery-list').then(response => response.json()).then((groceries) => {
-        const groceryListElement = document.getElementById('grocery-list-container');
-      
+    const groceryListElement = document.getElementById('grocery-list-container');  
     groceries.forEach((grocery) => {
         groceryListElement.appendChild(createGroceryElement(grocery));
     })
-  });
+    });
 }
 
 function createGroceryElement(grocery){
     const groceryElement = document.createElement('li');
-        groceryElement.className = 'task';
+    groceryElement.className = 'task';
 
+    // If assigned email is empty then only show the item else show the item and the assigned email
     const titleElement = document.createElement('span');
-    titleElement.innerText = grocery;
+    if(!grocery.email) {
+        titleElement.innerText = grocery.item;
+    } else {
+        titleElement.innerText = grocery.item + " assigned to: " + grocery.email;
+    }
 
+    // only creates button for items assigned to user or no one
+    if (isEditableGrocery(grocery)) {
+    const deleteButtonElement = document.createElement('button');
+    deleteButtonElement.innerText = 'Delete';
+    deleteButtonElement.addEventListener('click', () => {
+    deleteGrocery(grocery);
+
+    // Remove the task from the DOM.
+    groceryElement.remove();
+  });
+    
+    groceryElement.appendChild(titleElement);
+    groceryElement.appendChild(deleteButtonElement);
+    return groceryElement;
+    }
+    
     groceryElement.appendChild(titleElement);
     return groceryElement;
 }
@@ -91,12 +111,14 @@ function loadTasks() {
  
 /** Creates an element that represents a task, including its delete button. */
 function createTaskElement(task) {
+  const currentUser = getCurrentUser();
+
   const taskElement = document.createElement('li');
   taskElement.className = 'task';
  
   const titleElement = document.createElement('span');
   titleElement.innerText = task.title;
- 
+      
   const deleteButtonElement = document.createElement('button');
   deleteButtonElement.innerText = 'Delete';
   deleteButtonElement.addEventListener('click', () => {
@@ -104,8 +126,8 @@ function createTaskElement(task) {
  
     // Remove the task from the DOM.
     taskElement.remove();
+    
   });
- 
   taskElement.appendChild(titleElement);
   taskElement.appendChild(deleteButtonElement);
   return taskElement;
@@ -117,6 +139,16 @@ function deleteTask(task) {
   params.append('id', task.id);
   fetch('/delete-task', {method: 'POST', body: params});
 }
+
+/** Tells the server to delete the grocery. */
+function deleteGrocery(grocery) {
+  const params = new URLSearchParams();
+  params.append('id', grocery.id);  
+  fetch('/delete-grocery', {method: 'POST', body: params});
+}
+
+function isEditableGrocery(grocery) {
+  return grocery.userMatch || !grocery.email; 
 
 /** Fetches tasks from the server and adds them to the DOM. */
 function loadTasks() {
@@ -180,6 +212,16 @@ function createCalendar() {
     fetch(new Request('/new-calendar', {method: 'POST'})).then(() => {
         insertCalendar();
     });
+
+/** Tells the server to delete the grocery. */
+function deleteGrocery(grocery) {
+  const params = new URLSearchParams();
+  params.append('id', grocery.id);  
+  fetch('/delete-grocery', {method: 'POST', body: params});
+}
+
+function isEditableGrocery(grocery) {
+  return grocery.userMatch || !grocery.email; 
 }
 
 function handleErrors(response) {

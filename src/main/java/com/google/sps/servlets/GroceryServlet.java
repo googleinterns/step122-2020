@@ -19,9 +19,11 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
+import com.google.sps.data.Grocery;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +52,7 @@ public class GroceryServlet extends HttpServlet {
         return;
     }
     String assignGrocery = request.getParameter("assignGrocery");
-    String noneAssigned = " ";
+    String noneAssigned = null;
     Entity groceryEntity = new Entity(GROCERY);
    
     // turn familyID into a key so the users family can be accessed
@@ -60,10 +62,10 @@ public class GroceryServlet extends HttpServlet {
     try {
         familyEntity = datastore.get(familyEntityKey);
     } catch (EntityNotFoundException e) {
-        System.out.println("Family not found");
+        System.out.println("grocery assigned to: " + assignGrocery);
         return;
     }
-    System.out.println("grocery assigned to: " + assignGrocery);
+
     // checks if the given email matches a email in the family
     if (assignGrocery.equals("") || assignGrocery.equals(null)) {
         groceryEntity.setProperty("assignEmail", noneAssigned);
@@ -79,14 +81,15 @@ public class GroceryServlet extends HttpServlet {
             }
         }
     }
-    
+
     // adds item to datastore
     String grocery = request.getParameter("groceryItem");
     if( grocery != null && !grocery.equals("")) {
-        groceryEntity.setProperty("grocery", grocery);
+        groceryEntity.setProperty(GROCERY, grocery);
         groceryEntity.setProperty(FAMILY_ID, familyID);
         datastore.put(groceryEntity);
     }     
+
     response.sendRedirect("/grocery.html");
   }
 
@@ -107,27 +110,34 @@ public class GroceryServlet extends HttpServlet {
     }
 
     // creates arraylist and starts query
-    ArrayList<String> groceryList = new ArrayList<String>();
+    ArrayList<Grocery> groceryList = new ArrayList<>();
     long familyID = (long) userInfoEntity.getProperty(FAMILY_ID);
     Query groceryQuery = new Query(GROCERY)
       .setFilter(new Query.FilterPredicate(FAMILY_ID, Query.FilterOperator.EQUAL, familyID));   
     PreparedQuery familyGrocery= datastore.prepare(groceryQuery);
-    groceryList = checkGroceries(familyGrocery);   
+    groceryList = fetchGroceries(familyGrocery, userEmail);   
 
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(groceryList));
     }
 
-  // returns items from the query that match the users familyID
-  private ArrayList<String> checkGroceries(PreparedQuery familyGrocery) {
-    ArrayList<String> groceryList = new ArrayList<String>();
+  // returns items from the query that match the users familyID in the Grocery object    
+  private ArrayList<Grocery> fetchGroceries(PreparedQuery familyGrocery, String userEmail) {
+    boolean isUserAssigned;
+    long timestamp = System.currentTimeMillis();
+    ArrayList<Grocery> groceryList = new ArrayList<>();
     for (Entity entity : familyGrocery.asIterable()) {
-        String groceryOutput;
-            String groceryItem = (String) entity.getProperty("grocery");
-            String memberEmail = (String) entity.getProperty("assignEmail");
-            groceryOutput = groceryItem + " assigned to: " + memberEmail;
-            groceryList.add(groceryOutput);
+        String groceryItem = (String) entity.getProperty(GROCERY);
+        String assignEmail = (String) entity.getProperty("assignEmail");
+        long id = entity.getKey().getId();     
+        if (userEmail.equals(assignEmail)) {
+            isUserAssigned = true;
+        } else {
+            isUserAssigned = false;
+        }
+        Grocery grocery = new Grocery(assignEmail, id, timestamp, groceryItem, isUserAssigned);
+        groceryList.add(grocery);
     }
     return groceryList;
   }

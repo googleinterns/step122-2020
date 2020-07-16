@@ -41,7 +41,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /** 
  * Servlet responsible for creating a shared family calendar
 */
@@ -85,7 +84,6 @@ public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServle
     currentFamilyEntity.setProperty("calendarID", createdCalendar.getId());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(currentFamilyEntity);
-   
   }
 
   @Override

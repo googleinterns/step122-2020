@@ -32,15 +32,9 @@ public class NewMemberServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UserService userService = UserServiceFactory.getUserService();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-        // Query datastore with the current users email to see if they are in a family
-        String userEmail = userService.getCurrentUser().getEmail();
-        Query query = new Query("UserInfo")
-            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
-        PreparedQuery results = datastore.prepare(query);
-        Entity userInfoEntity = results.asSingleEntity();
+        Entity userInfoEntity = getCurrentUserEntity();
 
         // If current user is not in a family, they cannot add a member
         if (userInfoEntity == null) {
@@ -48,22 +42,11 @@ public class NewMemberServlet extends HttpServlet {
             return;
         }
 
+        Entity familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
+
         // Fetch the new member email to add from the request
         String newMemberEmail = request.getParameter("new-member-email");
         long updatedTimestamp = System.currentTimeMillis();
-
-        // Retrieve the family id from the user info and fetch their family entity from datastore
-        long familyID = (long) userInfoEntity.getProperty("familyID");
-
-        Key familyEntityKey = KeyFactory.createKey("Family", familyID);
-
-        Entity familyEntity;
-        try {
-            familyEntity = datastore.get(familyEntityKey);
-        } catch (EntityNotFoundException e) {
-            System.out.println("Family not found");
-            return;
-        }
 
         // Add the new member email to the family's list and update datastore
         ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
