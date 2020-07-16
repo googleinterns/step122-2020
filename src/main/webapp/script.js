@@ -140,6 +140,16 @@ function deleteTask(task) {
   fetch('/delete-task', {method: 'POST', body: params});
 }
 
+/** Tells the server to delete the grocery. */
+function deleteGrocery(grocery) {
+  const params = new URLSearchParams();
+  params.append('id', grocery.id);  
+  fetch('/delete-grocery', {method: 'POST', body: params});
+}
+
+function isEditableGrocery(grocery) {
+  return grocery.userMatch || !grocery.email; 
+
 /** Fetches tasks from the server and adds them to the DOM. */
 function loadTasks() {
   fetch('/list-tasks').then(response => response.json()).then((tasks) => {
