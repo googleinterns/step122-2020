@@ -90,30 +90,30 @@ function createGroceryElement(grocery){
     deleteButtonElement.addEventListener('click', () => {
     deleteGrocery(grocery);
 
-        // Remove the task from the DOM.
-        groceryElement.remove();
-        });
+      // Remove the task from the DOM.
+      groceryElement.remove();
+      });
 
-        const completeButtonElement = document.createElement('button');
-        completeButtonElement.innerText = 'Complete';
-        completeButtonElement.addEventListener('click', () => {
+      const completeButtonElement = document.createElement('button');
+      completeButtonElement.innerText = 'Complete';
+      completeButtonElement.addEventListener('click', () => {
 
-        groceryElement.className = 'taskComplete';
-        completeButtonElement.remove();
-        completeGrocery(grocery);
-        }); 
+      groceryElement.className = 'taskComplete';
+      completeButtonElement.remove();
+      completeGrocery(grocery);
+      }); 
     
-        if(booleanStatus(grocery)) {
-            completeButtonElement.remove();
-            groceryElement.appendChild(titleElement);
-            groceryElement.appendChild(deleteButtonElement);
-            return groceryElement;
-        } 
-
+      if(booleanStatus(grocery)) {
+        completeButtonElement.remove();
         groceryElement.appendChild(titleElement);
         groceryElement.appendChild(deleteButtonElement);
-        groceryElement.appendChild(completeButtonElement);
         return groceryElement;
+      } 
+
+      groceryElement.appendChild(titleElement);
+      groceryElement.appendChild(deleteButtonElement);
+      groceryElement.appendChild(completeButtonElement);
+      return groceryElement;
     }
     groceryElement.appendChild(titleElement);
     return groceryElement;
@@ -196,3 +196,8 @@ function insertCalendar() {
         calElement.appendChild(calFrame);
     });
 }
+
+                 function randomthing() {
+                                          const power = "hello";
+                                 console.log(power);
+  }
