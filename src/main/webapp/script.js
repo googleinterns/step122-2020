@@ -201,14 +201,11 @@ function createCalendar() {
     fetch(new Request('/new-calendar', {method: 'POST'})).then(() => {
         insertCalendar();
     });
+}
 
 /** Tells the server to delete the grocery. */
 function deleteGrocery(grocery) {
   const params = new URLSearchParams();
   params.append('id', grocery.id);  
   fetch('/delete-grocery', {method: 'POST', body: params});
-}
-
-function isEditableGrocery(grocery) {
-  return grocery.userMatch || !grocery.email; 
 }
