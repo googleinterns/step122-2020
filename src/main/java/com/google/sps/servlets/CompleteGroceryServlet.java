@@ -53,5 +53,3 @@ public class CompleteGroceryServlet extends HttpServlet {
     datastore.put(groceryEntity);
   }
 }
-
-
