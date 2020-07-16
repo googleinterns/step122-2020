@@ -46,6 +46,7 @@ public class DeleteMemberServlet extends HttpServlet {
     }
 
     String memberToDelete = request.getParameter("member-to-delete");
+    RemoveFromGrocery.removeMember(memberToDelete);
 
     // Retrieve the family id from the user info and fetch their family entity from datastore
     long familyID = (long) userInfoEntity.getProperty("familyID");
