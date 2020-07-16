@@ -31,19 +31,21 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for telling the server a task is complete. */
 @WebServlet("/complete-grocery")
 public class CompleteGroceryServlet extends HttpServlet {
+    private static final String GROCERY = "Grocery";
+
     
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     long id = Long.parseLong(request.getParameter("id"));
-    Key groceryEntityKey = KeyFactory.createKey("Grocery", id);
+    Key groceryEntityKey = KeyFactory.createKey(GROCERY, id);
 
     Entity groceryEntity;
     try {
         groceryEntity = datastore.get(groceryEntityKey);
     } catch (EntityNotFoundException e) {
-        System.out.println("Family not found");
+        System.out.println("Grocery not found");
         return;
     }
     boolean complete = true;
