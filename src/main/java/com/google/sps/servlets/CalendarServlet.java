@@ -45,6 +45,8 @@ import javax.servlet.http.HttpServletResponse;
 */
 public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
   
+  private static final String CALENDAR_ID_PROPERTY = "calendarID";
+
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
@@ -61,7 +63,7 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
 
     Entity familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
 
-    String calendarID = (String) familyEntity.getProperty("calendarID");
+    String calendarID = (String) familyEntity.getProperty(CALENDAR_ID_PROPERTY);
 
     if (calendarID == null) {
         response.setContentType("application/text");
