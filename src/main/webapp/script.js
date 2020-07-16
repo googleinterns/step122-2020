@@ -196,8 +196,3 @@ function insertCalendar() {
         calElement.appendChild(calFrame);
     });
 }
-
-                 function randomthing() {
-                                          const power = "hello";
-                                 console.log(power);
-  }
