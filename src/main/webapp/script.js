@@ -37,12 +37,12 @@ function closeRemoveMemberForm() {
 }
 
 function loadFamilyMembers() {
-  fetch('/family').then(response => response.json()).then((memberEmails) => {
+  fetch('/family').then(response => response.json()).then((family) => {
     const familyElement = document.getElementById('family-container');
     const familyHeader = document.createElement("HEADER");
-    familyHeader.innerText = "Current Family Members: ";
+    familyHeader.innerText = "Current Family Members in " + family.name + ":";
     familyElement.appendChild(familyHeader);
-    memberEmails.forEach((memberEmail) => {
+    family.members.forEach((memberEmail) => {
       const memberListElement = document.createElement('li');
       memberListElement.innerText = memberEmail;
       familyElement.appendChild(memberListElement);
@@ -201,4 +201,14 @@ function createCalendar() {
     fetch(new Request('/new-calendar', {method: 'POST'})).then(() => {
         insertCalendar();
     });
+
+/** Tells the server to delete the grocery. */
+function deleteGrocery(grocery) {
+  const params = new URLSearchParams();
+  params.append('id', grocery.id);  
+  fetch('/delete-grocery', {method: 'POST', body: params});
+}
+
+function isEditableGrocery(grocery) {
+  return grocery.userMatch || !grocery.email; 
 }
