@@ -61,8 +61,17 @@ public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServle
           
     Calendar calendarService = Utils.loadCalendarClient();
 
-    Entity currentFamilyEntity = Utils.getCurrentFamilyEntity(Utils.getCurrentUserEntity());
-
+    Entity currentFamilyEntity = null;
+    
+    try {
+        currentFamilyEntity = Utils.getCurrentFamilyEntity(Utils.getCurrentUserEntity());
+    } catch(EntityNotFoundException e) {
+        System.out.println("Family entity was not found");
+        response.setContentType("application/text");
+        response.getWriter().println("");
+        return;
+    }
+    
     // Create a new calendar
     com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
     calendar.setSummary((String) currentFamilyEntity.getProperty("name") + "'s Calendar");

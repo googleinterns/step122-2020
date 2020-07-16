@@ -61,8 +61,16 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
         return;
     }
 
-    Entity familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
-
+    Entity familyEntity = null;
+    try {
+        familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
+    } catch(EntityNotFoundException e) {
+        System.out.println("Family entity was not found");
+        response.setContentType("application/text");
+        response.getWriter().println("");
+        return;
+    }
+    
     String calendarID = (String) familyEntity.getProperty(CALENDAR_ID_PROPERTY);
 
     if (calendarID == null) {
