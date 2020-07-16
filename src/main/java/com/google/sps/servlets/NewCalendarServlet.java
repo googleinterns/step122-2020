@@ -38,43 +38,30 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /** 
- * Servlet responsible for returning the link to the shared family calendar
+ * Servlet responsible for creating a shared family calendar
 */
-public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
-  
+@WebServlet("/new-calendar")
+public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
+
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-    Entity userInfoEntity = Utils.getCurrentUserEntity();
-
-    // If current user is not in a family, they cannot add a member
-    if (userInfoEntity == null) {
-        System.out.println("You do not belong to a family yet!");
-        return;
-    }
-
-    Entity familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
-
-    String calendarID = (String) familyEntity.getProperty("calendarID");
-
-    if (calendarID == null) {
-        response.setContentType("application/text");
-        response.getWriter().println("");
-        return;
-    }
-
+          
     Calendar calendarService = Utils.loadCalendarClient();
 
-    CalendarListEntry calendarEntry = calendarService.calendarList().get(calendarID).execute();
+    // Create a new calendar
+    com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
+    calendar.setSummary("FamilyCalendar");
 
-    response.setContentType("application/text");
-    response.getWriter().println("https://calendar.google.com/calendar/embed?src=" + calendarEntry.getId() + "&output=embed");
-   
+    // Insert the new calendar
+    com.google.api.services.calendar.model.Calendar createdCalendar = calendarService.calendars().insert(calendar).execute();
+
+    Entity currentFamilyEntity = Utils.getCurrentFamilyEntity(Utils.getCurrentUserEntity());
+
+    currentFamilyEntity.setProperty("calendarID", createdCalendar.getId());
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(currentFamilyEntity);
   }
 
   @Override
