@@ -68,55 +68,51 @@ function loadGrocery() {
 }
 
 function createGroceryElement(grocery){
-    const groceryElement = document.createElement('li');
-    groceryElement.className = 'task';
+  const groceryElement = document.createElement('li');
+  groceryElement.className = 'task';
 
-    // If assigned email is empty then only show the item else show the item and the assigned email
-    const titleElement = document.createElement('span');
-    if(!grocery.email) {
-        titleElement.innerText = grocery.item;
-    } else {
-        titleElement.innerText = grocery.item + " assigned to: " + grocery.email;
-    }
+  // If assigned email is empty then only show the item else show the item and the assigned email
+  const titleElement = document.createElement('span');
+  if(!grocery.email) {
+    titleElement.innerText = grocery.item;
+  } else {
+    titleElement.innerText = grocery.item + " assigned to: " + grocery.email;
+  }
 
-    if(grocery.complete === true) {
-        groceryElement.className = 'taskComplete';
-    }
+  if(grocery.complete === true) {
+    groceryElement.className = 'taskComplete';
+  }
 
-    // only creates button for items assigned to user or no one
-    if (isEditableGrocery(grocery)) {
+  // only creates button for items assigned to user or no one
+  if (isEditableGrocery(grocery)) {
     const deleteButtonElement = document.createElement('button');
     deleteButtonElement.innerText = 'Delete';
     deleteButtonElement.addEventListener('click', () => {
-    deleteGrocery(grocery);
-
+      deleteGrocery(grocery);
       // Remove the task from the DOM.
       groceryElement.remove();
-      });
-
-      const completeButtonElement = document.createElement('button');
-      completeButtonElement.innerText = 'Complete';
-      completeButtonElement.addEventListener('click', () => {
-
+    });
+    const completeButtonElement = document.createElement('button');
+    completeButtonElement.innerText = 'Complete';
+    completeButtonElement.addEventListener('click', () => {
       groceryElement.className = 'taskComplete';
       completeButtonElement.remove();
       completeGrocery(grocery);
-      }); 
-    
-      if(booleanStatus(grocery)) {
-        completeButtonElement.remove();
-        groceryElement.appendChild(titleElement);
-        groceryElement.appendChild(deleteButtonElement);
-        return groceryElement;
-      } 
+    }); 
 
+    if(isGroceryComplete(grocery)) {
+      completeButtonElement.remove();
       groceryElement.appendChild(titleElement);
       groceryElement.appendChild(deleteButtonElement);
-      groceryElement.appendChild(completeButtonElement);
       return groceryElement;
-    }
+    } 
     groceryElement.appendChild(titleElement);
+    groceryElement.appendChild(deleteButtonElement);
+    groceryElement.appendChild(completeButtonElement);
     return groceryElement;
+    }
+  groceryElement.appendChild(titleElement);
+  return groceryElement;
     }
 
 /** Fetches tasks from the server and adds them to the DOM. */
@@ -174,7 +170,8 @@ function completeGrocery(grocery) {
   fetch('/complete-grocery', {method: 'POST', body: params});
 }
 
-function booleanStatus(grocery) {
+
+function isGroceryComplete(grocery) {
   return grocery.complete;
 }
 
