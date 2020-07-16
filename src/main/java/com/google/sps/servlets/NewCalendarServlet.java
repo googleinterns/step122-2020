@@ -103,10 +103,10 @@ public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServle
             public void onFailure(GoogleJsonErrorContainer e, HttpHeaders responseHeaders) {
                 log(e.getError().getMessage());
             }
-        }); // Throws IOExceptoin
+        }); // Throws IOException
     }
 
-    batch.execute(); // Throws IOExceptoin
+    batch.execute(); // Throws IOException
    
   }
 
