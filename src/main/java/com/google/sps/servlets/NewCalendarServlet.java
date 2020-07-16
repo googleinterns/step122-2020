@@ -16,10 +16,14 @@ package com.google.sps.servlets;
 
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.extensions.appengine.auth.oauth2.AbstractAppEngineAuthorizationCodeServlet;
+import com.google.api.client.http.HttpHeaders;
+import com.google.api.client.googleapis.batch.*;
+import com.google.api.client.googleapis.json.GoogleJsonErrorContainer;
 import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.Calendar.Acl.Insert;
 import com.google.api.services.calendar.model.AclRule;
 import com.google.api.services.calendar.model.AclRule.Scope;
 import com.google.api.services.calendar.model.CalendarList;
@@ -48,14 +52,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/new-calendar")
 public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
 
+  private static final String CALENDAR_ID_PROPERTY = "calendarID";
+  private static final String MEMBER_EMAILS_PROPERTY = "memberEmails";
+
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
           
     Calendar calendarService = Utils.loadCalendarClient();
-
-    // Insert the new calendar
-    com.google.api.services.calendar.model.Calendar createdCalendar = calendarService.calendars().insert(calendar).execute();
 
     Entity currentFamilyEntity = Utils.getCurrentFamilyEntity(Utils.getCurrentUserEntity());
 
@@ -63,16 +67,21 @@ public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServle
     com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
     calendar.setSummary((String) currentFamilyEntity.getProperty("name") + "'s Calendar");
 
-    currentFamilyEntity.setProperty("calendarID", createdCalendar.getId());
+    // Insert the new calendar
+    com.google.api.services.calendar.model.Calendar createdCalendar = calendarService.calendars().insert(calendar).execute();
+
+    currentFamilyEntity.setProperty(CALENDAR_ID_PROPERTY, createdCalendar.getId());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(currentFamilyEntity);
 
-    ArrayList<String> memberEmails = (ArrayList<String>) currentFamilyEntity.getProperty("memberEmails");
+    ArrayList<String> memberEmails = (ArrayList<String>) currentFamilyEntity.getProperty(MEMBER_EMAILS_PROPERTY);
 
-    UserService userService = UserServiceFactory.getUserService();
+    String currentUserEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
+    BatchRequest batch = calendarService.batch();
+    
     for (String memberEmail : memberEmails) {
         // Create access rule with associated scope
-        if (memberEmail.equals(userService.getCurrentUser().getEmail())) {
+        if (memberEmail.equals(currentUserEmail)) {
             continue;
         } 
         
@@ -82,9 +91,22 @@ public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServle
         rule.setScope(scope).setRole("owner");
 
         // Insert new access rule
-        AclRule createdRule = calendarService.acl().insert(createdCalendar.getId(), rule).execute();
-        System.out.println(createdRule.getId());
+        Insert insertRequest = calendarService.acl().insert(createdCalendar.getId(), rule);
+
+        batch.queue(insertRequest.buildHttpRequest(), Calendar.class, GoogleJsonErrorContainer.class, 
+          new BatchCallback<Calendar, GoogleJsonErrorContainer>() {
+
+            public void onSuccess(Calendar calendar, HttpHeaders responseHeaders) {
+                log("Added ACL rule");
+            }
+
+            public void onFailure(GoogleJsonErrorContainer e, HttpHeaders responseHeaders) {
+                log(e.getError().getMessage());
+            }
+        }); // Throws IOExceptoin
     }
+
+    batch.execute(); // Throws IOExceptoin
    
   }
 
