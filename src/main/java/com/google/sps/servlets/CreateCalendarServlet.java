@@ -49,8 +49,8 @@ import javax.servlet.http.HttpServletResponse;
 /** 
  * Servlet responsible for creating a shared family calendar
 */
-@WebServlet("/new-calendar")
-public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
+@WebServlet("/create-calendar")
+public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
 
   private static final String CALENDAR_ID_PROPERTY = "calendarID";
   private static final String MEMBER_EMAILS_PROPERTY = "memberEmails";
@@ -71,7 +71,7 @@ public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServle
         response.getWriter().println("");
         return;
     }
-    
+
     // Create a new calendar
     com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
     calendar.setSummary((String) currentFamilyEntity.getProperty("name") + "'s Calendar");

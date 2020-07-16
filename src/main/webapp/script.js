@@ -177,7 +177,7 @@ function insertCalendar() {
 }
 
 function createCalendar() {
-    fetch(new Request('/new-calendar', {method: 'POST'})).then(() => {
+    fetch(new Request('/create-calendar', {method: 'POST'})).then(() => {
         insertCalendar();
     });
 }
