@@ -42,7 +42,16 @@ public class NewMemberServlet extends HttpServlet {
             return;
         }
 
-        Entity familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
+        Entity familyEntity = null;
+    
+        try {
+            familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
+        } catch(EntityNotFoundException e) {
+            System.out.println("Family entity was not found");
+            response.setContentType("application/text");
+            response.getWriter().println("");
+            return;
+        }
 
         // Fetch the new member email to add from the request
         String newMemberEmail = request.getParameter("new-member-email");

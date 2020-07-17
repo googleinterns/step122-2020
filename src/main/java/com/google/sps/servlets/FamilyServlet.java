@@ -46,7 +46,16 @@ public class FamilyServlet extends HttpServlet {
             return;
         }
 
-        Entity familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
+        Entity familyEntity = null;
+    
+        try {
+            familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
+        } catch(EntityNotFoundException e) {
+            System.out.println("Family entity was not found");
+            response.setContentType("application/text");
+            response.getWriter().println("");
+            return;
+        }
 
         // Fetch family info and return in json format
         String name = (String) familyEntity.getProperty("name");
@@ -64,6 +73,7 @@ public class FamilyServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        UserService userService = UserServiceFactory.getUserService();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
         Entity entity = Utils.getCurrentUserEntity();
@@ -74,7 +84,7 @@ public class FamilyServlet extends HttpServlet {
             return;
         }
         
-        String userEmail = (String) entity.getProperty("email");
+        String userEmail = userService.getCurrentUser().getEmail();
 
         // Retrieve the family name from the request
         String familyName = request.getParameter("family-name");
