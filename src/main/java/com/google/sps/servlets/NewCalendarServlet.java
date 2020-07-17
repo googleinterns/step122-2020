@@ -20,6 +20,8 @@ import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.AclRule;
+import com.google.api.services.calendar.model.AclRule.Scope;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
@@ -30,6 +32,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.StringBuilder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -59,6 +62,25 @@ public class NewCalendarServlet extends AbstractAppEngineAuthorizationCodeServle
 
     Entity currentFamilyEntity = Utils.getCurrentFamilyEntity(Utils.getCurrentUserEntity());
 
+    ArrayList<String> memberEmails = (ArrayList<String>) currentFamilyEntity.getProperty("memberEmails");
+
+    UserService userService = UserServiceFactory.getUserService();
+    for(String memberEmail : memberEmails) {
+        // Create access rule with associated scope
+        if(memberEmail.equals(userService.getCurrentUser().getEmail())) {
+            continue;
+        } 
+        
+        AclRule rule = new AclRule();
+        Scope scope = new Scope();
+        scope.setType("user").setValue(memberEmail);
+        rule.setScope(scope).setRole("owner");
+
+        // Insert new access rule
+        AclRule createdRule = calendarService.acl().insert(createdCalendar.getId(), rule).execute();
+        System.out.println(createdRule.getId());
+    }
+    
     currentFamilyEntity.setProperty("calendarID", createdCalendar.getId());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(currentFamilyEntity);
