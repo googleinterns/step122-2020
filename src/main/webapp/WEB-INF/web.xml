@@ -26,13 +26,13 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>new-calendar</servlet-name>
-    <servlet-class>com.google.sps.servlets.NewCalendarServlet</servlet-class>
+    <servlet-name>create-calendar</servlet-name>
+    <servlet-class>com.google.sps.servlets.CreateCalendarServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>new-calendar</servlet-name>
-    <url-pattern>/new-calendar/*</url-pattern>
+    <servlet-name>create-calendar</servlet-name>
+    <url-pattern>/create-calendar/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
