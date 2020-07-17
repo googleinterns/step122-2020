@@ -163,11 +163,22 @@ function deleteGrocery(grocery) {
   fetch('/delete-grocery', {method: 'POST', body: params});
 }
 
+
 /** Tells the server to delete the grocery. */
 function completeGrocery(grocery) {
   const params = new URLSearchParams();
   params.append('id', grocery.id);  
   fetch('/complete-grocery', {method: 'POST', body: params});
+}
+
+/** Fetches tasks from the server and adds them to the DOM. */
+function loadTasks() {
+  fetch('/list-tasks').then(response => response.json()).then((tasks) => {
+    const taskListElement = document.getElementById('task-list');
+    tasks.forEach((task) => {
+      taskListElement.appendChild(createTaskElement(task));
+    })
+  });
 }
 
 
@@ -182,8 +193,8 @@ function isEditableGrocery(grocery) {
 function insertCalendar() {
     const calElement = document.getElementById('caldiv');
 
-    fetch('/calendar').then((response) => response.text()).then((calSrc) => {
-        if(!calSrc || 0 === calSrc.length || !calSrc.trim()) {
+    fetch('/calendar').then((response) => handleErrors(response)).then((response) => response.text()).then((calSrc) => {
+        if(!calSrc.trim()) {
             return;
         }
         var calFrame = document.createElement('iframe');
@@ -198,7 +209,24 @@ function insertCalendar() {
 }
 
 function createCalendar() {
-    fetch(new Request('/new-calendar', {method: 'POST'})).then(() => {
+    fetch(new Request('/create-calendar', {method: 'POST'})).then(() => {
         insertCalendar();
     });
+}
+
+/** Tells the server to delete the grocery. */
+function deleteGrocery(grocery) {
+  const params = new URLSearchParams();
+  params.append('id', grocery.id);  
+  fetch('/delete-grocery', {method: 'POST', body: params});
+}
+
+function handleErrors(response) {
+    if (!response.ok) {
+        return response.clone().text().then((errorMsg) => {
+            console.log(errorMsg);
+            throw new Error(errorMsg);
+        });
+    }
+    return response;
 }

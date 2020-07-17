@@ -34,7 +34,7 @@ public class NewMemberServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-        Entity userInfoEntity = getCurrentUserEntity();
+        Entity userInfoEntity = Utils.getCurrentUserEntity();
 
         // If current user is not in a family, they cannot add a member
         if (userInfoEntity == null) {
@@ -56,6 +56,8 @@ public class NewMemberServlet extends HttpServlet {
         familyEntity.setProperty("timestamp", updatedTimestamp);
 
         datastore.put(familyEntity);
+
+        long familyID = familyEntity.getKey().getId();
 
         // Create a user info entity for the newly added member
         Entity newUserInfoEntity = new Entity("UserInfo", newMemberEmail);
