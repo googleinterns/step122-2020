@@ -74,6 +74,8 @@ public class FamilyServlet extends HttpServlet {
             return;
         }
         
+        String userEmail = (String) entity.getProperty("email");
+
         // Retrieve the family name from the request
         String familyName = request.getParameter("family-name");
         long createdTimestamp = System.currentTimeMillis();

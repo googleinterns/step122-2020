@@ -32,7 +32,7 @@ public class DeleteMemberServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    Entity userInfoEntity = getCurrentUserEntity();
+    Entity userInfoEntity = Utils.getCurrentUserEntity();
     if (userInfoEntity == null) {
         System.out.println("You do not belong to a family currently");
         return;
@@ -55,9 +55,9 @@ public class DeleteMemberServlet extends HttpServlet {
     datastore.put(familyEntity);
 
     // Delete the user info entity of the removed member from datastore
-    query = new Query("UserInfo")
+    Query query = new Query("UserInfo")
         .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, memberToDelete));
-    results = datastore.prepare(query);
+    PreparedQuery results = datastore.prepare(query);
     userInfoEntity = results.asSingleEntity();
     datastore.delete(userInfoEntity.getKey());
     response.sendRedirect("/settings.html");
