@@ -147,9 +147,6 @@ function deleteGrocery(grocery) {
   fetch('/delete-grocery', {method: 'POST', body: params});
 }
 
-function isEditableGrocery(grocery) {
-  return grocery.userMatch || !grocery.email; 
-
 /** Fetches tasks from the server and adds them to the DOM. */
 function loadTasks() {
   fetch('/list-tasks').then(response => response.json()).then((tasks) => {
@@ -212,6 +209,7 @@ function createCalendar() {
     fetch(new Request('/new-calendar', {method: 'POST'})).then(() => {
         insertCalendar();
     });
+}
 
 /** Tells the server to delete the grocery. */
 function deleteGrocery(grocery) {
