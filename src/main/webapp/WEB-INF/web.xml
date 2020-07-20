@@ -125,6 +125,27 @@
     <url-pattern>/grocery-list/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>complete-grocery</servlet-name>
+    <servlet-class>com.google.sps.servlets.CompleteGroceryServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>complete-grocery</servlet-name>
+    <url-pattern>/complete-grocery/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>delete-grocery</servlet-name>
+    <servlet-class>com.google.sps.servlets.DeleteGroceryServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>delete-grocery</servlet-name>
+    <url-pattern>/delete-grocery/*</url-pattern>
+  </servlet-mapping>
+
+
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>calendar-auth</web-resource-name>
