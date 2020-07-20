@@ -13,7 +13,7 @@ body {}
 .title {
   font-family: 'Cinzel', serif;
   color: rgba(0,0,0, 0.4);
-  font-size: 100px;
+  font-size: 150px;
   text-align: center;
 }
 
@@ -120,7 +120,7 @@ body {}
   background-color: #e7e7e7; 
   color: black;
   border: thick rgba(214, 13, 13, 0.4);
-  padding: 15px;
+  padding: 100px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -223,3 +223,67 @@ body {}
   font-size: 100px;
   text-align: center;
 }
+
+* {
+  box-sizing: border-box;
+}
+
+.row {
+  display: flex;
+}
+
+/* Create two equal columns that sits next to each other */
+.column {
+  flex: 50%;
+  padding: 50px;
+  height: 100vh;
+}
+
+.quote {
+  font-family: 'Parisienne', serif;
+  color: white;
+  font-size: 55px;
+  text-align: center;
+}
+
+.author {
+  font-family: 'Graduate', serif;
+  color: #F1948A ;
+  font-size: 40px;
+  text-align: center;
+}
+
+.trailer {
+  font-family: 'Parisienne', serif;
+  color: white;
+  font-size: 40px;
+  text-align: center;
+}
+
+.welcome {
+  font-family: 'Parisienne', serif;
+  color: #F1948A;
+  font-size: 60px;
+  text-align: center;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.loginbutton {
+  background-color: rgba(0,0,0, 0.4); /* Green */
+  border: none;
+  color: white;
+  padding: 100px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.button1 {border-radius: 100%;}
