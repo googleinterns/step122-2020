@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 public class GroceryServlet extends HttpServlet {
   private static final String GROCERY = "Grocery";
   private static final String FAMILY_ID = "familyID";
+  private static final String COMPLETE = "Complete";
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {      
@@ -88,7 +89,7 @@ public class GroceryServlet extends HttpServlet {
     if( grocery != null && !grocery.equals("")) {
         groceryEntity.setProperty(GROCERY, grocery);
         groceryEntity.setProperty(FAMILY_ID, familyID);
-        groceryEntity.setProperty("Complete", complete);
+        groceryEntity.setProperty(COMPLETE, complete);
         datastore.put(groceryEntity);
     }     
 
@@ -133,7 +134,7 @@ public class GroceryServlet extends HttpServlet {
     for (Entity entity : familyGrocery.asIterable()) {
         String groceryItem = (String) entity.getProperty(GROCERY);
         String assignEmail = (String) entity.getProperty("assignEmail");
-        complete = (Boolean) entity.getProperty("Complete");
+        complete = (Boolean) entity.getProperty(COMPLETE);
         long id = entity.getKey().getId();     
         if (userEmail.equals(assignEmail)) {
             isUserAssigned = true;
