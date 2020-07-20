@@ -92,6 +92,7 @@ function createGroceryElement(grocery){
       // Remove the task from the DOM.
       groceryElement.remove();
     });
+
     const completeButtonElement = document.createElement('button');
     completeButtonElement.innerText = 'Complete';
     completeButtonElement.addEventListener('click', () => {
