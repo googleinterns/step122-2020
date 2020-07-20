@@ -28,17 +28,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet responsible for deleting groceries. */
-@WebServlet("/delete-grocery")
-public class DeleteGroceryServlet extends HttpServlet {
-
+/** Servlet responsible for telling the server a task is complete. */
+@WebServlet("/complete-grocery")
+public class CompleteGroceryServlet extends HttpServlet {
+    private static final String GROCERY = "Grocery";
+      private static final String COMPLETE = "Complete";
+    
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    String userEmail = userService.getCurrentUser().getEmail();
     long id = Long.parseLong(request.getParameter("id"));
-    Key groceryEntityKey = KeyFactory.createKey("Grocery", id);
+    Key groceryEntityKey = KeyFactory.createKey(GROCERY, id);
 
     Entity groceryEntity;
     try {
@@ -47,14 +48,8 @@ public class DeleteGroceryServlet extends HttpServlet {
         System.out.println("Grocery not found");
         return;
     }
-    
-    // deletes key if user email is assigned to them or no one
-    String member = (String) groceryEntity.getProperty("assignEmail");
-    if(member == null || member.equals(userEmail)) {
-        datastore.delete(groceryEntityKey);
-    } else {
-        // TODO: add error handling
-        return;
-    }
+    boolean complete = true;
+    groceryEntity.setProperty(COMPLETE, complete);
+    datastore.put(groceryEntity);
   }
 }
