@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+ // Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,21 +26,17 @@ import javax.servlet.http.HttpServletResponse;
  
 public class RemoveFromGrocery {
  
-public void removeMember(String removedMember) {
-    UserService userService = UserServiceFactory.getUserService();
+  public void removeMember(String removedMember) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Key groceryEntityKey = KeyFactory.createKey("Grocery", removedMember);
     
-     Entity groceryEntity;
-    try {
-        groceryEntity = datastore.get(groceryEntityKey);
-    } catch (EntityNotFoundException e) {
-        System.out.println("Member not found");
-        return;
+    Query removedMemberQuery = new Query(GROCERY)
+      .setFilter(new Query.FilterPredicate(“memberEmail”, Query.FilterOperator.EQUAL, removedMember)); 
+
+    PreparedQuery results = datastore.prepare(removedMemberQuery);
+
+    for (Entity memberEntity : results.asIterable()) {
+        datastore.delete(memberEntity.getKey());
     }
-    
-datastore.delete(groceryEntityKey);
- 
 }
  
 }
