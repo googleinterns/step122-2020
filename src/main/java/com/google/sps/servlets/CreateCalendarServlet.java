@@ -87,19 +87,38 @@ public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeSer
     String currentUserEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     BatchRequest batch = calendarService.batch();
     
+    AclRule rule = new AclRule();
+    Scope scope = new Scope();
+    scope.setType("default").setValue("");
+    rule.setScope(scope).setRole("reader");
+
+    Insert insertRequest = calendarService.acl().insert(createdCalendar.getId(), rule);
+
+    batch.queue(insertRequest.buildHttpRequest(), Calendar.class, GoogleJsonErrorContainer.class, 
+        new BatchCallback<Calendar, GoogleJsonErrorContainer>() {
+
+        public void onSuccess(Calendar calendar, HttpHeaders responseHeaders) {
+            log("Added ACL rule");
+        }
+
+        public void onFailure(GoogleJsonErrorContainer e, HttpHeaders responseHeaders) {
+            log(e.getError().getMessage());
+        }
+    }); // Throws IOException
+
     for (String memberEmail : memberEmails) {
         // Create access rule with associated scope
         if (memberEmail.equals(currentUserEmail)) {
             continue;
         } 
         
-        AclRule rule = new AclRule();
-        Scope scope = new Scope();
+        rule = new AclRule();
+        scope = new Scope();
         scope.setType("user").setValue(memberEmail);
         rule.setScope(scope).setRole("owner");
 
         // Insert new access rule
-        Insert insertRequest = calendarService.acl().insert(createdCalendar.getId(), rule);
+        insertRequest = calendarService.acl().insert(createdCalendar.getId(), rule);
 
         batch.queue(insertRequest.buildHttpRequest(), Calendar.class, GoogleJsonErrorContainer.class, 
           new BatchCallback<Calendar, GoogleJsonErrorContainer>() {

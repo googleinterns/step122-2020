@@ -29,12 +29,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /** Servlet takes grocery list and displays it to the screen based on the users family */
 @WebServlet("/grocery-list")
 public class GroceryServlet extends HttpServlet {
   private static final String GROCERY = "Grocery";
   private static final String FAMILY_ID = "familyID";
+  private static final String COMPLETE = "Complete";
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {      
@@ -51,6 +51,7 @@ public class GroceryServlet extends HttpServlet {
         response.sendRedirect("/grocery.html");
         return;
     }
+
     String assignGrocery = request.getParameter("assignGrocery");
     String noneAssigned = null;
     Entity groceryEntity = new Entity(GROCERY);
@@ -83,10 +84,12 @@ public class GroceryServlet extends HttpServlet {
     }
 
     // adds item to datastore
+    boolean complete = false;
     String grocery = request.getParameter("groceryItem");
     if( grocery != null && !grocery.equals("")) {
         groceryEntity.setProperty(GROCERY, grocery);
         groceryEntity.setProperty(FAMILY_ID, familyID);
+        groceryEntity.setProperty(COMPLETE, complete);
         datastore.put(groceryEntity);
     }     
 
@@ -125,18 +128,20 @@ public class GroceryServlet extends HttpServlet {
   // returns items from the query that match the users familyID in the Grocery object    
   private ArrayList<Grocery> fetchGroceries(PreparedQuery familyGrocery, String userEmail) {
     boolean isUserAssigned;
+    Boolean complete;
     long timestamp = System.currentTimeMillis();
     ArrayList<Grocery> groceryList = new ArrayList<>();
     for (Entity entity : familyGrocery.asIterable()) {
         String groceryItem = (String) entity.getProperty(GROCERY);
         String assignEmail = (String) entity.getProperty("assignEmail");
+        complete = (Boolean) entity.getProperty(COMPLETE);
         long id = entity.getKey().getId();     
         if (userEmail.equals(assignEmail)) {
             isUserAssigned = true;
         } else {
             isUserAssigned = false;
         }
-        Grocery grocery = new Grocery(assignEmail, id, timestamp, groceryItem, isUserAssigned);
+        Grocery grocery = new Grocery(assignEmail, id, timestamp, groceryItem, isUserAssigned, complete);
         groceryList.add(grocery);
     }
     return groceryList;
