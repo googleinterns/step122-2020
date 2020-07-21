@@ -58,16 +58,34 @@ public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeSer
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
           
+    UserService userService = UserServiceFactory.getUserService();
+    if(!userService.isUserLoggedIn()) {
+        response.setContentType("application/text");
+        response.getWriter().println("You must be logged in to use the calendar function");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return;
+    }
+
     Calendar calendarService = Utils.loadCalendarClient();
 
     Entity currentFamilyEntity = null;
     
-    try {
-        currentFamilyEntity = Utils.getCurrentFamilyEntity(Utils.getCurrentUserEntity());
-    } catch(EntityNotFoundException e) {
-        System.out.println("Family entity was not found");
+    Entity userInfoEntity = Utils.getCurrentUserEntity();
+
+    // If current user is not in a family, they cannot add a member
+    if (userInfoEntity == null) {
         response.setContentType("application/text");
-        response.getWriter().println("");
+        response.getWriter().println("You must belong to a family to use the calendar function");
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return;
+    }
+
+    try {
+        currentFamilyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
+    } catch(EntityNotFoundException e) {
+        response.setContentType("application/text");
+        response.getWriter().println("Family data was not found - please refresh and try again");
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return;
     }
 
