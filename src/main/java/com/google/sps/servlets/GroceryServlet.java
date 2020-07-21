@@ -40,7 +40,16 @@ public class GroceryServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {      
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    String userEmail = userService.getCurrentUser().getEmail();
+    String userEmail;
+    try {
+    userEmail = userService.getCurrentUser().getEmail();
+    } catch (NullPointerException e) {
+        response.setContentType("application/text");
+        response.getWriter().println("You must Sign in before using this function");
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+       // response.sendRedirect("/grocery.html");
+        return;
+    }
 
     // if user isn't associated with family don't allow them to create a list
     Query query = new Query("UserInfo")
@@ -49,9 +58,9 @@ public class GroceryServlet extends HttpServlet {
     Entity userInfoEntity = results.asSingleEntity();
     if (userInfoEntity == null) {
         response.setContentType("application/text");
+        System.out.println("null exception caught");
         response.getWriter().println("You must belong to a family to use the grocery function");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-       // response.sendRedirect("/grocery.html");
         return;
     }
 
@@ -102,9 +111,17 @@ public class GroceryServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService = UserServiceFactory.getUserService();
+    String userEmail;
 
+     try {
+    userEmail = userService.getCurrentUser().getEmail();
+    } catch (NullPointerException e) {
+        response.setContentType("application/text");
+        response.getWriter().println("You must Sign in before using this function");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return;
+    }
     // checks if user is a part of a family and returns an error if they aren't
-    String userEmail = userService.getCurrentUser().getEmail();
     Query query = new Query("UserInfo")
         .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
     PreparedQuery results = datastore.prepare(query);

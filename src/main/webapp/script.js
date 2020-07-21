@@ -61,11 +61,13 @@ function loadGrocery() {
     // fetches json list of groceries
     fetch('/grocery-list').then(response => handleErrors(response)).then((response) => 
         response.json()).then((groceries) => {
+            
     const groceryListElement = document.getElementById('grocery-list-container');  
     groceries.forEach((grocery) => {
         groceryListElement.appendChild(createGroceryElement(grocery));
     })
-    })
+    }).catch(error => alert(error.message)); 
+
 }
 
 function createGroceryElement(grocery){
