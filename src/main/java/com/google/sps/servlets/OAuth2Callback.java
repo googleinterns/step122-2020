@@ -40,7 +40,8 @@ public class OAuth2Callback extends AbstractAppEngineAuthorizationCodeCallbackSe
       HttpServletRequest req, HttpServletResponse resp, AuthorizationCodeResponseUrl errorResponse)
       throws ServletException, IOException {
     String nickname = UserServiceFactory.getUserService().getCurrentUser().getNickname();
-    resp.getWriter().print("<h3>" + nickname + ", why don't you want to play with me?</h1>");
+    resp.getWriter().print("<h3>Permissions denied; the calendar feature is unavailable without user permissions</h1>");
+    resp.getWriter().print("<a href=\"home.html\">Return to Home</a>");
     resp.setStatus(200);
     resp.addHeader("Content-Type", "text/html");
   }
