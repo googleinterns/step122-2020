@@ -212,9 +212,9 @@ function insertCalendar() {
 }
 
 function createCalendar() {
-    fetch(new Request('/create-calendar', {method: 'POST'})).then(() => {
+    fetch(new Request('/create-calendar', {method: 'POST'})).then((response) => handleErrors(response)).then(() => {
         insertCalendar();
-    });
+    }).catch(error => alert(error.message));
 }
 
 /** Tells the server to delete the grocery. */

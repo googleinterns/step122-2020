@@ -71,6 +71,14 @@ public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeSer
         return;
     }
 
+    // If a family calendar already exists prevent user from creating a new one
+    if (currentFamilyEntity.getProperty(CALENDAR_ID_PROPERTY) != null) {
+        response.setContentType("application/text");
+        response.getWriter().println("A family calendar already exists");
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return;
+    }
+
     // Create a new calendar
     com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
     calendar.setSummary((String) currentFamilyEntity.getProperty("name") + "'s Calendar");
