@@ -51,6 +51,14 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
 
+    UserService userService = UserServiceFactory.getUserService();
+    if(!userService.isUserLoggedIn()) {
+        response.setContentType("application/text");
+        response.getWriter().println("You must be logged in to use the calendar function");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return;
+    }
+    
     Entity userInfoEntity = Utils.getCurrentUserEntity();
 
     // If current user is not in a family, they cannot add a member
@@ -65,9 +73,9 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
     try {
         familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
     } catch(EntityNotFoundException e) {
-        System.out.println("Family entity was not found");
         response.setContentType("application/text");
-        response.getWriter().println("");
+        response.getWriter().println("Family data was not found - please refresh and try again");
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return;
     }
     
