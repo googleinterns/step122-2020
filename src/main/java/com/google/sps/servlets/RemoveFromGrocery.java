@@ -24,18 +24,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
  
-public class RemoveFromGrocery {
+ /*
+* This helper class removes member that were previously assigned to a grocery item after 
+*  being deleted from a family
+*/
+ class RemoveFromGrocery {
  
-  public void removeMember(String removedMember) {
+  static void removeMember(String removedMember) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
-    Query removedMemberQuery = new Query(GROCERY)
-      .setFilter(new Query.FilterPredicate(“memberEmail”, Query.FilterOperator.EQUAL, removedMember)); 
-
+    // create query of grocery items assigned to removed member
+    Query removedMemberQuery = new Query("Grocery")
+      .setFilter(new Query.FilterPredicate("assignEmail", Query.FilterOperator.EQUAL, removedMember)); 
     PreparedQuery results = datastore.prepare(removedMemberQuery);
-
+    
     for (Entity memberEntity : results.asIterable()) {
-        datastore.delete(memberEntity.getKey());
+        memberEntity.setProperty("assignEmail", null);
+        datastore.put(memberEntity);
     }
 }
  
