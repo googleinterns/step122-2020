@@ -1,24 +1,32 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
+    <head>
         <meta charset="UTF-8">
         <title>Welcome Page</title>
-        <link rel="stylesheet" href="style.css">
+         <link rel="stylesheet" href="style.css">
         <script src="script.js"></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cinzel">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Parisienne">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Graduate">
     </head>
-    <body style="background-color: rgb(205, 236, 232);">
-        <div id="content">
-            <br></br><br></br><br></br>
-            <div class="title">houseHOLD</div>
-                <h3 class="body-font">Please log in here:</h3>    
+    <body style="background-color: #F1948A  ;">
+        <div class="row">
+            <div class="column" style="background-color: #A3E4D7 ;">
+                <img height="800" width="800" class="center" src="images/mainhouse.png"/>
+                <h2 class="quote">“Ohana means family. Family means nobody gets left behind or forgotten.”</h2>
+                <h3 class="author">- Lilo & Stitch</h3>
+                <h2 class="trailer">. . . . . . . . . . . . . . . </h2>
             </div>
-            <div class="login-button">
-                <form action="/login" method="GET">
-                    <button name="loginBtn" class="button">Login</button>
-                </form>  
-            </div>      
+            <div class="column" style="background-color:#F5F5F5;">
+                <h1 class="title">houseHOLD</h1>
+                <h2 class="welcome">Welcome to Household</h2>
+                <div style="text-align:center">
+                    <form action="/login" method="GET">
+                        <button name="loginBtn" class="loginbutton button1">Sign in</button>
+                    </form>  
+                </div> 
+            </div>
         </div>
     </body>
 </html>
