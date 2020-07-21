@@ -206,7 +206,9 @@ function insertCalendar() {
         calFrame.setAttribute('frameborder', '0'); 
         calFrame.setAttribute('scrolling', 'no');
         calElement.appendChild(calFrame);
-    });
+
+        document.getElementById('createCalendarButton').setAttribute("style","visibility:hidden");
+    }).catch(error => alert(error.message));
 }
 
 function createCalendar() {
