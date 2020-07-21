@@ -48,7 +48,10 @@ public class GroceryServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity userInfoEntity = results.asSingleEntity();
     if (userInfoEntity == null) {
-        response.sendRedirect("/grocery.html");
+        response.setContentType("application/text");
+        response.getWriter().println("You must belong to a family to use the grocery function");
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+       // response.sendRedirect("/grocery.html");
         return;
     }
 

@@ -59,7 +59,8 @@ function userLogin() {
 
 function loadGrocery() {
     // fetches json list of groceries
-    fetch('/grocery-list').then(response => response.json()).then((groceries) => {
+    fetch('/grocery-list').then(response => handleErrors(response)).then((response) => 
+        response.json()).then((groceries) => {
     const groceryListElement = document.getElementById('grocery-list-container');  
     groceries.forEach((grocery) => {
         groceryListElement.appendChild(createGroceryElement(grocery));
