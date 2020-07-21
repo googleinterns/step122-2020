@@ -19,6 +19,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
+import com.google.sps.data.Family;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,42 +37,38 @@ public class FamilyServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UserService userService = UserServiceFactory.getUserService();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-        // Query datastore with the current users email to see if they are in a family
-        String userEmail = userService.getCurrentUser().getEmail();
-        Query query = new Query("UserInfo")
-            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
-        PreparedQuery results = datastore.prepare(query);
-        Entity userInfoEntity = results.asSingleEntity();
+        Entity userInfoEntity = Utils.getCurrentUserEntity();
 
         // If there is no user info entity they are not in a family
         if (userInfoEntity == null) {
             return;
         }
 
-        // Retrieve the family id from the user info and fetch their family entity from datastore
-        long familyID = (long) userInfoEntity.getProperty("familyID");
-
-        Key familyEntityKey = KeyFactory.createKey("Family", familyID);
-        
-        Entity familyEntity;
-
+        Entity familyEntity = null;
+    
         try {
-            familyEntity = datastore.get(familyEntityKey);
-        } catch (EntityNotFoundException e) {
-            System.out.println("Family not found");
+            familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
+        } catch(EntityNotFoundException e) {
+            System.out.println("Family entity was not found");
+            response.setContentType("application/text");
+            response.getWriter().println("");
             return;
         }
 
-        // Fetch member emails belonging to the family and return in json format
+        // Fetch family info and return in json format
+        String name = (String) familyEntity.getProperty("name");
+        long id = familyEntity.getKey().getId();
+        long timestamp = (long) familyEntity.getProperty("timestamp");
         ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
+
+        Family family = new Family(name, id, timestamp, memberEmails);
 
         Gson gson = new Gson();
 
         response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(memberEmails));
+        response.getWriter().println(gson.toJson(family));
     }
 
     @Override
@@ -79,12 +76,7 @@ public class FamilyServlet extends HttpServlet {
         UserService userService = UserServiceFactory.getUserService();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-        // Query datastore with the current users email to see if they are in a family
-        String userEmail = userService.getCurrentUser().getEmail();
-        Query query = new Query("UserInfo")
-            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
-        PreparedQuery results = datastore.prepare(query);
-        Entity entity = results.asSingleEntity();
+        Entity entity = Utils.getCurrentUserEntity();
 
         // If the user already belongs to a family, they cannot create a new one
         if (entity != null) {
@@ -92,6 +84,8 @@ public class FamilyServlet extends HttpServlet {
             return;
         }
         
+        String userEmail = userService.getCurrentUser().getEmail();
+
         // Retrieve the family name from the request
         String familyName = request.getParameter("family-name");
         long createdTimestamp = System.currentTimeMillis();
@@ -102,7 +96,7 @@ public class FamilyServlet extends HttpServlet {
         Entity familyEntity = new Entity("Family");
         familyEntity.setProperty("name", familyName);
         familyEntity.setProperty("memberEmails", memberEmails);
-        familyEntity.setProperty("createdTimestamp", createdTimestamp);   
+        familyEntity.setProperty("timestamp", createdTimestamp);   
         datastore.put(familyEntity);
 
         long familyID = familyEntity.getKey().getId();

@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.extensions.appengine.auth.oauth2.AbstractAppEngineAuthorizationCodeServlet;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
@@ -44,23 +45,33 @@ import javax.servlet.http.HttpServletResponse;
 */
 public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
   
+  private static final String CALENDAR_ID_PROPERTY = "calendarID";
+
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Entity userInfoEntity = Utils.getCurrentUserEntity();
 
     // If current user is not in a family, they cannot add a member
     if (userInfoEntity == null) {
-        System.out.println("You do not belong to a family yet!");
+        response.setContentType("application/text");
+        response.getWriter().println("You must belong to a family to use the calendar function");
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return;
     }
 
-    Entity familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
-
-    String calendarID = (String) familyEntity.getProperty("calendarID");
+    Entity familyEntity = null;
+    try {
+        familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
+    } catch(EntityNotFoundException e) {
+        System.out.println("Family entity was not found");
+        response.setContentType("application/text");
+        response.getWriter().println("");
+        return;
+    }
+    
+    String calendarID = (String) familyEntity.getProperty(CALENDAR_ID_PROPERTY);
 
     if (calendarID == null) {
         response.setContentType("application/text");
@@ -70,7 +81,18 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
 
     Calendar calendarService = Utils.loadCalendarClient();
 
-    CalendarListEntry calendarEntry = calendarService.calendarList().get(calendarID).execute();
+    CalendarListEntry calendarEntry;
+    try {
+        calendarEntry = calendarService.calendarList().get(calendarID).execute();
+    } catch (GoogleJsonResponseException e) {
+        // Create a new calendar list entry
+        CalendarListEntry calendarListEntry = new CalendarListEntry();
+        calendarListEntry.setId(calendarID);
+
+        // Insert the new calendar list entry
+        calendarEntry = calendarService.calendarList().insert(calendarListEntry).execute();
+    }
+    
 
     response.setContentType("application/text");
     response.getWriter().println("https://calendar.google.com/calendar/embed?src=" + calendarEntry.getId() + "&output=embed");

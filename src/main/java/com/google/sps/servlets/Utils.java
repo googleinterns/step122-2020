@@ -103,23 +103,18 @@ class Utils {
   }
 
   // Retrieve the family id from the user info and fetch their family entity from datastore
-  static Entity getCurrentFamilyEntity(Entity userInfoEntity) {
+  static Entity getCurrentFamilyEntity(Entity userInfoEntity) throws EntityNotFoundException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     long familyID = (long) userInfoEntity.getProperty("familyID");
 
     Key familyEntityKey = KeyFactory.createKey("Family", familyID);
 
-    Entity familyEntity = null;
-    try {
-        familyEntity = datastore.get(familyEntityKey);
-    } catch (EntityNotFoundException e) {
-        System.out.println("Family not found");
-    }
+    Entity familyEntity = datastore.get(familyEntityKey);
 
     return familyEntity;
   }
-  
+
   /**
    * Returns an {@link IOException} (but not a subclass) in order to work around restrictive GWT
    * serialization policy.

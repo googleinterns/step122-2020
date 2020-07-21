@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/complete-grocery")
 public class CompleteGroceryServlet extends HttpServlet {
     private static final String GROCERY = "Grocery";
-
+      private static final String COMPLETE = "Complete";
     
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -49,9 +49,7 @@ public class CompleteGroceryServlet extends HttpServlet {
         return;
     }
     boolean complete = true;
-    groceryEntity.setProperty("Complete", complete);
+    groceryEntity.setProperty(COMPLETE, complete);
     datastore.put(groceryEntity);
   }
 }
-
-
