@@ -46,8 +46,8 @@ public class GroceryServlet extends HttpServlet {
     } catch (NullPointerException e) {
         response.setContentType("application/text");
         response.getWriter().println("You must Sign in before using this function");
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-       // response.sendRedirect("/grocery.html");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.sendRedirect("/grocery.html");
         return;
     }
 
@@ -58,9 +58,9 @@ public class GroceryServlet extends HttpServlet {
     Entity userInfoEntity = results.asSingleEntity();
     if (userInfoEntity == null) {
         response.setContentType("application/text");
-        System.out.println("null exception caught");
         response.getWriter().println("You must belong to a family to use the grocery function");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.sendRedirect("/grocery.html");
         return;
     }
 
@@ -127,9 +127,10 @@ public class GroceryServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity userInfoEntity = results.asSingleEntity();
     if (userInfoEntity == null) {
-        response.setContentType("text/html;");
-        response.getWriter().println("You do not belong to a family yet!");
-    return;
+        response.setContentType("application/text");
+        response.getWriter().println("You must belong to a family to use the grocery function");
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return;
     }
 
     // creates arraylist and starts query
