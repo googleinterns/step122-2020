@@ -48,6 +48,14 @@ public class CalendarAuthServlet extends AbstractAppEngineAuthorizationCodeServl
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
 
+    UserService userService = UserServiceFactory.getUserService();
+    if(!userService.isUserLoggedIn()) {
+        response.getWriter().print("<h3>Permissions denied; the calendar feature is unavailable if you are not logged in</h1>");
+        response.getWriter().print("<a href=\"index.html\">Return to Login</a>");
+        response.setStatus(200);
+        response.addHeader("Content-Type", "text/html");
+    }
+
     String url = initializeFlow().newAuthorizationUrl()
         .setRedirectUri(Utils.getRedirectUri(request)).build();
     response.sendRedirect(url);
