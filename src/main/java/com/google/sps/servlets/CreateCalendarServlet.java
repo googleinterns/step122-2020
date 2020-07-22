@@ -86,13 +86,8 @@ public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeSer
 
     String currentUserEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     BatchRequest batch = calendarService.batch();
-    
-    AclRule rule = new AclRule();
-    Scope scope = new Scope();
-    scope.setType("default").setValue("");
-    rule.setScope(scope).setRole("reader");
 
-    Insert insertRequest = calendarService.acl().insert(createdCalendar.getId(), rule);
+    Insert insertRequest = Utils.createUserAclRequest(createdCalendar.getId(), "", "default", "reader");
 
     batch.queue(insertRequest.buildHttpRequest(), Calendar.class, GoogleJsonErrorContainer.class, 
         new BatchCallback<Calendar, GoogleJsonErrorContainer>() {
@@ -110,15 +105,10 @@ public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeSer
         // Create access rule with associated scope
         if (memberEmail.equals(currentUserEmail)) {
             continue;
-        } 
-        
-        rule = new AclRule();
-        scope = new Scope();
-        scope.setType("user").setValue(memberEmail);
-        rule.setScope(scope).setRole("owner");
+        }
 
         // Insert new access rule
-        insertRequest = calendarService.acl().insert(createdCalendar.getId(), rule);
+        insertRequest = Utils.createUserAclRequest(createdCalendar.getId(), memberEmail, "user", "owner");
 
         batch.queue(insertRequest.buildHttpRequest(), Calendar.class, GoogleJsonErrorContainer.class, 
           new BatchCallback<Calendar, GoogleJsonErrorContainer>() {
