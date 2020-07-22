@@ -5,27 +5,50 @@
         <title>Home</title>
         <link rel="stylesheet" href="style.css">
         <script src="script.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Parisienne">
     </head>
     <body>
-        <div class="top-container">
+        <div class="colorstrip" class="top-container">
             <div class="dropdown">
-                <button class="dropbtn">MENU</button>
-                <div class="dropdown-content">
-                    <a href="/calendar-auth">Calendar</a>
-                    <a href="photos.html">Photos</a>
-                    <a href="task.html">To-Do List</a>
-                    <a href="grocery.html">Grocery List</a>
-                    <a href="settings.html">Settings</a>
-                </div>
+                <a href="home.html">
+                    <button class="dropbtn">HOME</button>
+                </a>
             </div>
-            <div class="user">
-                <a href="images/user.png" ><img class="user-image" src="images/user.png"/></a>
+            <div class="logout">
+                <form action="/login" method="GET">
+                    <button class="dropbtn" name="logoutBtn">LOGOUT</button>
+                </form>
             </div>
         </div>
-        <img src="/images/barca3.jpg">
-        <div class="bg-image album"> </div>
-        <div class="bg-text-photo grocery">
-            <h1 class="heading-font">GROCERY</h1>
-        </div> 
+        <div>
+            <h1 class="homewelcome">Household<img height="100" width="100" src="images/mainhouse.png"/></h1>
+        </div>
+        <img src="/images/g.jpg">
+        <a href="grocery.html">
+            <div class="bg-text-photo grocery">
+                <h1 class="heading-font">GROCERY</h1>
+            </div>
+        </a> 
+        <br><br><br>
+         <img src="/images/fam.png">
+        <a href="settings.html">
+            <div class="bg-text-photo family">
+                <h1 class="heading-font">FAMILY</h1>
+            </div>
+        </a> 
+        <br><br><br>
+        <img src="/images/cal1.png">
+        <a href="/calendar-auth">
+            <div class="bg-text-photo calendar">
+                <h1 class="heading-font">CALENDAR</h1>
+            </div>
+        </a> 
+        <br><br><br>
+        <img src="/images/photo.png">
+        <a href="photos.html">
+            <div class="bg-text-photo photos">
+                <h1 class="heading-font">PHOTOS</h1>
+            </div>
+        </a> 
     </body>
 </html>
