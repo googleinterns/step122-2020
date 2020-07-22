@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * Servlet responsible for creating a shared family calendar
 */
 @WebServlet("/create-calendar")
-public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
+public class CreateCalendarServlet extends HttpServlet {
 
   private static final String CALENDAR_ID_PROPERTY = "calendarID";
   private static final String MEMBER_EMAILS_PROPERTY = "memberEmails";
@@ -112,7 +112,7 @@ public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeSer
 
     String currentUserEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     BatchRequest batch = calendarService.batch();
-    
+
     AclRule rule = new AclRule();
     Scope scope = new Scope();
     scope.setType("default").setValue("");
@@ -161,15 +161,5 @@ public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeSer
 
     batch.execute(); // Throws IOException
    
-  }
-
-  @Override
-  protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
-    return Utils.getRedirectUri(req);
-  }
-
-  @Override
-  protected AuthorizationCodeFlow initializeFlow() throws IOException {
-    return Utils.newFlow();
   }
 }

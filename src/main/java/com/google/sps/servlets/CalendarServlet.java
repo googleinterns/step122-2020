@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 /** 
  * Servlet responsible for returning the link to the shared family calendar
 */
-public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
+public class CalendarServlet extends HttpServlet {
   
   private static final String CALENDAR_ID_PROPERTY = "calendarID";
 
@@ -101,19 +101,8 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
         calendarEntry = calendarService.calendarList().insert(calendarListEntry).execute();
     }
     
-
     response.setContentType("application/text");
     response.getWriter().println("https://calendar.google.com/calendar/embed?src=" + calendarEntry.getId() + "&output=embed");
    
-  }
-
-  @Override
-  protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
-    return Utils.getRedirectUri(req);
-  }
-
-  @Override
-  protected AuthorizationCodeFlow initializeFlow() throws IOException {
-    return Utils.newFlow();
   }
 }
