@@ -112,10 +112,10 @@ public class CreateCalendarServlet extends HttpServlet {
 
     Insert insertRequest = calendarService.acl().insert(createdCalendar.getId(), rule);
 
-    batch.queue(insertRequest.buildHttpRequest(), Calendar.class, GoogleJsonErrorContainer.class, 
-        new BatchCallback<Calendar, GoogleJsonErrorContainer>() {
+    batch.queue(insertRequest.buildHttpRequest(), Void.class, GoogleJsonErrorContainer.class, 
+        new BatchCallback<Void, GoogleJsonErrorContainer>() {
 
-        public void onSuccess(Calendar calendar, HttpHeaders responseHeaders) {
+        public void onSuccess(Void calendar, HttpHeaders responseHeaders) {
             log("Added ACL rule");
         }
 
@@ -138,10 +138,10 @@ public class CreateCalendarServlet extends HttpServlet {
         // Insert new access rule
         insertRequest = calendarService.acl().insert(createdCalendar.getId(), rule);
 
-        batch.queue(insertRequest.buildHttpRequest(), Calendar.class, GoogleJsonErrorContainer.class, 
-          new BatchCallback<Calendar, GoogleJsonErrorContainer>() {
+        batch.queue(insertRequest.buildHttpRequest(), Void.class, GoogleJsonErrorContainer.class, 
+          new BatchCallback<Void, GoogleJsonErrorContainer>() {
 
-            public void onSuccess(Calendar calendar, HttpHeaders responseHeaders) {
+            public void onSuccess(Void cal, HttpHeaders responseHeaders) {
                 log("Added ACL rule");
             }
 
