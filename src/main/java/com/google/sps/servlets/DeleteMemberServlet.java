@@ -14,6 +14,10 @@
 
 package com.google.sps.servlets;
 
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.Acl;
+import com.google.api.services.calendar.model.AclRule;
+import com.google.api.services.calendar.model.AclRule.Scope;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -50,6 +54,21 @@ public class DeleteMemberServlet extends HttpServlet {
     }
 
     String memberToDelete = request.getParameter("member-to-delete");
+
+    // Revoke calendar access for the user
+    String calendarID = (String) familyEntity.getProperty("calendarID");
+
+    if(calendarID != null) {
+        Calendar calendarService = Utils.loadCalendarClient();
+        // Iterate over a list of access rules
+        Acl acl = calendarService.acl().list(calendarID).execute();
+
+        for (AclRule rule : acl.getItems()) {
+            if(rule.getScope().getValue().equals(memberToDelete)) {
+                calendarService.acl().delete(calendarID, rule.getId()).execute();
+            }
+        }
+    }
 
     // Remove the member from the list and update datastore
     ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
