@@ -268,7 +268,10 @@
   cursor: pointer;
 }
 
-.button1 {border-radius: 100%;}
+.button1 {
+    border-radius: 100%;
+    font-size: 45px;
+}
 
 .taskComplete {
   border: thin solid black;
