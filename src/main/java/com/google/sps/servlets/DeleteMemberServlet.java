@@ -58,7 +58,7 @@ public class DeleteMemberServlet extends HttpServlet {
     // Revoke calendar access for the user
     String calendarID = (String) familyEntity.getProperty("calendarID");
 
-    if(calendarID != null) {
+    if(calendarID != null && !memberToDelete.equals(UserServiceFactory.getUserService().getCurrentUser().getEmail())) {
         Calendar calendarService = Utils.loadCalendarClient();
         // Iterate over a list of access rules
         Acl acl = calendarService.acl().list(calendarID).execute();
