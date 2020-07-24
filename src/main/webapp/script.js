@@ -217,6 +217,12 @@ function createCalendar() {
     }).catch(error => alert(error.message));
 }
 
+function deleteCalendar() {
+    fetch(new Request('/delete-calendar', {method: 'POST'})).then((response) => handleErrors(response)).then(() => {
+        insertCalendar();
+    }).catch(error => alert(error.message));
+}
+
 /** Tells the server to delete the grocery. */
 function deleteGrocery(grocery) {
   const params = new URLSearchParams();
