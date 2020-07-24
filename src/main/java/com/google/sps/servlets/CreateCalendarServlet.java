@@ -60,7 +60,8 @@ public class CreateCalendarServlet extends HttpServlet {
           
     UserService userService = UserServiceFactory.getUserService();
     if(!userService.isUserLoggedIn()) {
-        ErrorHandlingUtils.setError(HttpServletResponse.SC_UNAUTHORIZED, "You must be logged in to use the calendar function", response);
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_UNAUTHORIZED,
+            "You must be logged in to use the calendar function", response);
         return;
     }
 
@@ -107,20 +108,6 @@ public class CreateCalendarServlet extends HttpServlet {
 
     String currentUserEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     BatchRequest batch = calendarService.batch();
-
-    Insert insertRequest = Utils.createUserAclRequest(createdCalendar.getId(), "", "default", "reader");
-
-    batch.queue(insertRequest.buildHttpRequest(), Void.class, GoogleJsonErrorContainer.class, 
-        new BatchCallback<Void, GoogleJsonErrorContainer>() {
-
-        public void onSuccess(Void calendar, HttpHeaders responseHeaders) {
-            log("Added ACL rule");
-        }
-
-        public void onFailure(GoogleJsonErrorContainer e, HttpHeaders responseHeaders) {
-            log(e.getError().getMessage());
-        }
-    }); // Throws IOException
 
     for (String memberEmail : memberEmails) {
         // Create access rule with associated scope
