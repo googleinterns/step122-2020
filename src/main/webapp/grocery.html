@@ -24,15 +24,16 @@
         </div>
         <div id="content">
             <h1>Groceries</h1>
-            <form action="/grocery-list" method="POST">
+            <form action="/grocery-list" method="POST" id="groceryForm">
                 <p>Grocery Item</p>
-                <input type="text" name="groceryItem">
+                <input type="text" name="groceryItem" id="groceryItemID">
                 <br>
                 <p> Member to assign (Optional)</p>
-                <input type="text" name="assignGrocery">
+                <input type="text" name="assignGrocery" id="assignGroceryID">
                 <br>
-                <input type="submit" value="Submit">
-            </form>    
+            </form>   
+            <button onclick="createGrocery()">Submit</button> 
+
             <br>
             <ul id="grocery-list-container"></ul>
         </div>

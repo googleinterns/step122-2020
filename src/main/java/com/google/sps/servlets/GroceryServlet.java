@@ -57,6 +57,7 @@ public class GroceryServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity userInfoEntity = results.asSingleEntity();
     if (userInfoEntity == null) {
+        System.out.println("POST");
         response.setContentType("application/text");
         response.getWriter().println("You must belong to a family to use the grocery function");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -65,6 +66,7 @@ public class GroceryServlet extends HttpServlet {
     }
 
     String assignGrocery = request.getParameter("assignGrocery");
+    System.out.println(assignGrocery);
     String noneAssigned = null;
     Entity groceryEntity = new Entity(GROCERY);
    
@@ -88,8 +90,11 @@ public class GroceryServlet extends HttpServlet {
             if(assignGrocery.equals(memberEmails.get(i))) {
                 groceryEntity.setProperty("assignEmail" , memberEmails.get(i));
                 break;
-            } else if(i == memberEmails.size() - 1 ) {
-                response.sendRedirect("/grocery.html");
+            } else if(i == memberEmails.size() - 1) {
+                System.out.println("User not found");
+                response.setContentType("application/text");
+                response.getWriter().println("You can only assigned members in your family");
+                response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
                 return;
             }
         }
@@ -112,7 +117,6 @@ public class GroceryServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService = UserServiceFactory.getUserService();
     String userEmail;
-
      try {
     userEmail = userService.getCurrentUser().getEmail();
     } catch (NullPointerException e) {
@@ -127,6 +131,7 @@ public class GroceryServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity userInfoEntity = results.asSingleEntity();
     if (userInfoEntity == null) {
+        System.out.println("GET");
         response.setContentType("application/text");
         response.getWriter().println("You must belong to a family to use the grocery function");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

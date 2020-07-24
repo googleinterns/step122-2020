@@ -17,10 +17,12 @@ function openFamilyForm() {
 }
 
 function closeFamilyForm() {
+    console.log("Close family");
   document.getElementById("createFamilyForm").style.visibility = "hidden";
 }
 
 function openNewMemberForm() {
+    console.log("new member");
     document.getElementById("newMemberForm").style.visibility = "visible";
 }
 
@@ -215,6 +217,15 @@ function insertCalendar() {
 function createCalendar() {
     fetch(new Request('/create-calendar', {method: 'POST'})).then(() => {
         insertCalendar();
+    });
+}
+
+function createGrocery() {
+   // const groceryForm = document.getElementById('groceryForm');
+   // const groceryData = new FormData(groceryForm);
+    //const params = URLSearchParams();
+    fetch(new Request('/grocery-list', {method: 'POST', body: groceryData})).then(() => {
+        loadGrocery();
     });
 }
 
