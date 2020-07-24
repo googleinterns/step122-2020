@@ -227,7 +227,7 @@ function createGrocery() {
 
     groceryForm.append(groceryItem);
     groceryForm.append(assignGrocery);
-    console.log(groceryForm.submit;)
+    console.log(groceryForm.submit);
     fetch(new Request('/grocery-list', {method: 'POST', body: groceryForm.submit()})).then(() => {
         loadGrocery();
     });
