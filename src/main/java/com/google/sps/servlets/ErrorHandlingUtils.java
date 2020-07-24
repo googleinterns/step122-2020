@@ -23,12 +23,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 class ErrorHandlingUtils {
 
-  static void setError(int errorCode, String errorMessage, HttpServletResponse response) throws IOException {
-    response.setContentType("application/text");
-    response.getWriter().println(errorMessage);
-    response.setStatus(errorCode);
-  }
+  static void setError(int code, String message, HttpServletResponse response)
+        throws IOException {
 
+    response.setContentType("application/text");
+    response.getWriter().println(message);
+    response.setStatus(code);
+  }
 
   private ErrorHandlingUtils() {
   }

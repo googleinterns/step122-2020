@@ -72,20 +72,23 @@ public class CreateCalendarServlet extends HttpServlet {
 
     // If current user is not in a family, they cannot add a member
     if (userInfoEntity == null) {
-        ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST, "You must belong to a family to use the calendar function", response);
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
+            "You must belong to a family to use the calendar function", response);
         return;
     }
 
     try {
         currentFamilyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
     } catch(EntityNotFoundException e) {
-        ErrorHandlingUtils.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Family data was not found - please refresh and try again", response);
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+            "Family data was not found - please refresh and try again", response);
         return;
     }
 
     // If a family calendar already exists prevent user from creating a new one
     if (currentFamilyEntity.getProperty(CALENDAR_ID_PROPERTY) != null) {
-        ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST, "A family calendar already exists", response);
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
+            "A family calendar already exists", response);
         return;
     }
 

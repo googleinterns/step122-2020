@@ -53,7 +53,8 @@ public class CalendarServlet extends HttpServlet {
 
     UserService userService = UserServiceFactory.getUserService();
     if(!userService.isUserLoggedIn()) {
-        ErrorHandlingUtils.setError(HttpServletResponse.SC_UNAUTHORIZED, "You must be logged in to use the calendar function", response);
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_UNAUTHORIZED,
+            "You must be logged in to use the calendar function", response);
         return;
     }
     
@@ -61,7 +62,8 @@ public class CalendarServlet extends HttpServlet {
 
     // If current user is not in a family, they cannot add a member
     if (userInfoEntity == null) {
-        ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST, "You must belong to a family to use the calendar function", response);
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
+            "You must belong to a family to use the calendar function", response);
         return;
     }
 
@@ -69,7 +71,8 @@ public class CalendarServlet extends HttpServlet {
     try {
         familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
     } catch(EntityNotFoundException e) {
-        ErrorHandlingUtils.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Family data was not found - please refresh and try again", response);
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+            "Family data was not found - please refresh and try again", response);
         return;
     }
     
