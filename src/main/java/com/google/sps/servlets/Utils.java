@@ -77,10 +77,13 @@ class Utils {
   // Returns authorization code flow using client credentials (hard coded for now)
   static GoogleAuthorizationCodeFlow newFlow() throws IOException {
     return new GoogleAuthorizationCodeFlow.Builder(
-        new NetHttpTransport(), JacksonFactory.getDefaultInstance(),
-        "INSERT CLIENT ID HERE", "INSERT CLIENT SECRET HERE",
-        Collections.singleton(CalendarScopes.CALENDAR)).setDataStoreFactory(
-        DATA_STORE_FACTORY).setAccessType("offline").build();
+        new NetHttpTransport(), 
+        JacksonFactory.getDefaultInstance(), 
+        getClientCredential(),
+        Collections.singleton(CalendarScopes.CALENDAR))
+    .setDataStoreFactory(DATA_STORE_FACTORY)
+    .setAccessType("offline")
+    .build();
   }
 
   // Returns calendar client using authorization flow
