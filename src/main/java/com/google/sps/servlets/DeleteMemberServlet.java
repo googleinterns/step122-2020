@@ -55,21 +55,6 @@ public class DeleteMemberServlet extends HttpServlet {
 
     String memberToDelete = request.getParameter("member-to-delete");
 
-    // Revoke calendar access for the user
-    String calendarID = (String) familyEntity.getProperty("calendarID");
-
-    if(calendarID != null && !memberToDelete.equals(UserServiceFactory.getUserService().getCurrentUser().getEmail())) {
-        Calendar calendarService = Utils.loadCalendarClient();
-        // Iterate over a list of access rules
-        Acl acl = calendarService.acl().list(calendarID).execute();
-
-        for (AclRule rule : acl.getItems()) {
-            if(rule.getScope().getValue().equals(memberToDelete)) {
-                calendarService.acl().delete(calendarID, rule.getId()).execute();
-            }
-        }
-    }
-
     // Remove the member from the list and update datastore
     ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
     if(!memberEmails.contains(memberToDelete)) {
@@ -82,12 +67,36 @@ public class DeleteMemberServlet extends HttpServlet {
     familyEntity.setProperty("memberEmails", memberEmails);
     datastore.put(familyEntity);
 
-    // Delete the user info entity of the removed member from datastore
+    removeMemberFromCalendar(memberToDelete, familyEntity);
+    removeUserInfo(memberToDelete, datastore);
+
+    response.sendRedirect("/settings.html");
+  }
+
+  // Revoke calendar access for a user
+  private void removeMemberFromCalendar(String memberToRemove, Entity familyEntity) {
+    String calendarID = (String) familyEntity.getProperty("calendarID");
+
+    String currentUserEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
+    if (calendarID != null && !memberToDelete.equals(currentUserEmail)) {
+        Calendar calendarService = Utils.loadCalendarClient();
+        // Iterate over a list of access rules
+        Acl acl = calendarService.acl().list(calendarID).execute();
+
+        for (AclRule rule : acl.getItems()) {
+            if(rule.getScope().getValue().equals(memberToDelete)) {
+                calendarService.acl().delete(calendarID, rule.getId()).execute();
+            }
+        }
+    }
+  }
+  
+  // Delete the user info entity of the removed member from datastore
+  private void removeUserInfo(String memberToDelete, DatastoreService datastore) {
     Query query = new Query("UserInfo")
         .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, memberToDelete));
     PreparedQuery results = datastore.prepare(query);
     userInfoEntity = results.asSingleEntity();
     datastore.delete(userInfoEntity.getKey());
-    response.sendRedirect("/settings.html");
   }
 }
