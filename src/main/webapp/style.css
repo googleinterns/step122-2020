@@ -144,7 +144,7 @@
 
 /* Set a style for the confirm button */
 .form-container .btn {
-  background-color: #4CAF50;
+  background-color: #FF6F00;
   color: white;
   padding: 16px 20px;
   border: none;
@@ -156,7 +156,7 @@
 
 /* Add a red background color to the cancel button */
 .form-container .cancel {
-  background-color: red;
+  background-color: rgba(0,0,0, 0.4) ;
 }
 
 /* Add some hover effects to buttons */
@@ -223,8 +223,15 @@
 
 .author {
   font-family: 'Graduate', serif;
-  color: #FF6F00 ;
+  color: #FF6F00;
   font-size: 40px;
+  text-align: center;
+}
+
+.members {
+  font-family: 'Graduate', serif;
+  color: #AED581  ;
+  font-size: 30px;
   text-align: center;
 }
 
@@ -275,7 +282,10 @@
   cursor: pointer;
 }
 
-.button1 {border-radius: 100%;}
+.button1 {
+    border-radius: 100%;
+    font-size: 45px;
+}
 
 .taskComplete {
   border: thin solid black;
@@ -347,7 +357,7 @@ img {
   background-color:#0099FF;
   color: whitesmoke;
   padding: 16px;
-  font-size: 40px;
+  font-size: 50px;
   border: none;
   font-family: 'Cinzel', serif;
   display: block;

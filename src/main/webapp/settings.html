@@ -6,8 +6,9 @@
         <link rel="stylesheet" href="style.css">
         <script src="script.js"></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Parisienne">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Graduate">
     </head>
-    <body onload="loadFamilyMembers()">
+    <body class="members" onload="loadFamilyMembers()">
         <div class="colorstrip" class="top-container">
             <div class="dropdown">
                 <a href="home.html">
@@ -22,8 +23,10 @@
         </div>
         <br>
         <div class="homewelcome">Your Family</div>
+        <br>
         <div class="btngroup" id="content">
             <div id="family-container"></div>
+            <br>
             <button class="familybutton" onclick="openFamilyForm()">CREATE FAMILY</button>
             <div class="form-popup" id="createFamilyForm">
               <form action="/family" method="POST" class="form-container">
