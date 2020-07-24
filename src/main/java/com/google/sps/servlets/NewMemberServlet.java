@@ -69,6 +69,7 @@ public class NewMemberServlet extends HttpServlet {
 
         datastore.put(familyEntity);
 
+        // Adds the new user to the family calendar
         String calendarID = (String) familyEntity.getProperty("calendarID");
 
         if(calendarID != null) {
