@@ -1,4 +1,4 @@
- // Copyright 2019 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,12 +24,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
  
- /*
+/**
 * This helper class removes member that were previously assigned to a grocery item after 
 *  being deleted from a family
 */
- class RemoveFromGrocery {
- 
+class GroceryUtils {
   static void removeMember(String removedMember) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
@@ -38,11 +37,10 @@ import javax.servlet.http.HttpServletResponse;
       .setFilter(new Query.FilterPredicate("assignEmail", Query.FilterOperator.EQUAL, removedMember)); 
     PreparedQuery results = datastore.prepare(removedMemberQuery);
     
-    for (Entity memberEntity : results.asIterable()) {
-        memberEntity.setProperty("assignEmail", null);
-        datastore.put(memberEntity);
+    for (Entity groceryEntity : results.asIterable()) {
+        groceryEntity.setProperty("assignEmail", null);
+        datastore.put(groceryEntity);
     }
-}
- 
+  }
 }
 
