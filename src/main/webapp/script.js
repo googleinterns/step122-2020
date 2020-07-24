@@ -221,10 +221,14 @@ function createCalendar() {
 }
 
 function createGrocery() {
-   // const groceryForm = document.getElementById('groceryForm');
-   // const groceryData = new FormData(groceryForm);
-    //const params = URLSearchParams();
-    fetch(new Request('/grocery-list', {method: 'POST', body: groceryData})).then(() => {
+    const groceryForm = document.getElementById('groceryForm');
+    const groceryItem = document.getElementById('groceryItemID');
+    const assignGrocery = document.getElementById('assignGroceryID');
+
+    groceryForm.append(groceryItem);
+    groceryForm.append(assignGrocery);
+    console.log(groceryForm.submit;)
+    fetch(new Request('/grocery-list', {method: 'POST', body: groceryForm.submit()})).then(() => {
         loadGrocery();
     });
 }
