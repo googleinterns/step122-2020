@@ -94,7 +94,7 @@ public class DeleteCalendarServlet extends HttpServlet {
 
     Calendar calendarService = Utils.loadCalendarClient();
 
-    service.calendars().delete(calendarID).execute();
+    calendarService.calendars().delete(calendarID).execute();
 
     currentFamilyEntity.setProperty(CALENDAR_ID_PROPERTY, null);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
