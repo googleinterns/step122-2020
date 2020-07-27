@@ -55,8 +55,7 @@ public class CreateCalendarServlet extends HttpServlet {
   private static final String MEMBER_EMAILS_PROPERTY = "memberEmails";
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
           
     UserService userService = UserServiceFactory.getUserService();
     if(!userService.isUserLoggedIn()) {
