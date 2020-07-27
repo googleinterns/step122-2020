@@ -115,7 +115,7 @@ public class CreateCalendarServlet extends HttpServlet {
         }
 
         // Insert new access rule
-        insertRequest = Utils.createUserAclRequest(createdCalendar.getId(), memberEmail, "user", "owner");
+        Insert insertRequest = Utils.createUserAclRequest(createdCalendar.getId(), memberEmail, "user", "owner");
 
         batch.queue(insertRequest.buildHttpRequest(), Void.class, GoogleJsonErrorContainer.class, 
           new BatchCallback<Void, GoogleJsonErrorContainer>() {
