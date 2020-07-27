@@ -192,7 +192,7 @@ function isEditableGrocery(grocery) {
 }
 
 function insertCalendar() {
-    const calElement = document.getElementById('caldiv');
+    const calElement = document.getElementById('cal-container');
 
     fetch('/calendar').then((response) => handleErrors(response)).then((response) => response.text()).then((calSrc) => {
         if(!calSrc.trim()) {
@@ -205,6 +205,7 @@ function insertCalendar() {
         calFrame.setAttribute('height', '600'); 
         calFrame.setAttribute('frameborder', '0'); 
         calFrame.setAttribute('scrolling', 'no');
+        calFrame.setAttribute('display', 'inline-block');
         calElement.appendChild(calFrame);
 
         document.getElementById('createCalendarButton').setAttribute("style","visibility:hidden");
@@ -220,7 +221,7 @@ function createCalendar() {
 
 function deleteCalendar() {
     fetch(new Request('/delete-calendar', {method: 'POST'})).then((response) => handleErrors(response)).then(() => {
-        document.getElementById('caldiv').innerHTML = "";
+        document.getElementById('cal-container').innerHTML = "";
         insertCalendar();
         document.getElementById('createCalendarButton').setAttribute("style","visibility:visible");
         document.getElementById('deleteCalendarButton').setAttribute("style","visibility:hidden");
