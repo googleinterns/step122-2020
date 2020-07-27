@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** 
- * Servlet responsible for creating a shared family calendar
+ * Servlet responsible for deleting the family calendar
 */
 @WebServlet("/delete-calendar")
 public class DeleteCalendarServlet extends HttpServlet {
@@ -85,7 +85,7 @@ public class DeleteCalendarServlet extends HttpServlet {
 
     String calendarID = (String) currentFamilyEntity.getProperty(CALENDAR_ID_PROPERTY);
 
-    // If a family calendar already exists prevent user from creating a new one
+    // If a family calendar does not exist prevent user from deleting
     if (calendarID == null) {
         ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
             "There is no family calendar currently", response);
