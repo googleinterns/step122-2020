@@ -23,13 +23,15 @@ public final class Grocery {
   private final long id;
   private final String email;
   private final boolean userMatch;
+  private final Boolean complete;
 
-  public Grocery(String email, long id, long timestamp, String item, boolean userMatch) {
+  public Grocery(String email, long id, long timestamp, String item, boolean userMatch, Boolean complete) {
     this.email = email;
     this.id = id;
     this.item = item;
     this.userMatch = userMatch;
     this.timestamp = timestamp;
+    this.complete = complete;
   }
 
   public String toString() {

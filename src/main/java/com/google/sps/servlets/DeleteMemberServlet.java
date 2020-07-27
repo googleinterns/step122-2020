@@ -50,6 +50,7 @@ public class DeleteMemberServlet extends HttpServlet {
     }
 
     String memberToDelete = request.getParameter("member-to-delete");
+    GroceryUtils.removeMember(memberToDelete);
 
     // Remove the member from the list and update datastore
     ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");

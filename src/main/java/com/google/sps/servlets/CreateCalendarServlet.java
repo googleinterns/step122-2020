@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * Servlet responsible for creating a shared family calendar
 */
 @WebServlet("/create-calendar")
-public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
+public class CreateCalendarServlet extends HttpServlet {
 
   private static final String CALENDAR_ID_PROPERTY = "calendarID";
   private static final String MEMBER_EMAILS_PROPERTY = "memberEmails";
@@ -58,16 +58,37 @@ public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeSer
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
           
+    UserService userService = UserServiceFactory.getUserService();
+    if(!userService.isUserLoggedIn()) {
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_UNAUTHORIZED, "You must be logged in to use the calendar function", response);
+        return;
+    }
+
     Calendar calendarService = Utils.loadCalendarClient();
 
     Entity currentFamilyEntity = null;
     
+    Entity userInfoEntity = Utils.getCurrentUserEntity();
+
+    // If current user is not in a family, they cannot add a member
+    if (userInfoEntity == null) {
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
+            "You must belong to a family to use the calendar function", response);
+        return;
+    }
+
     try {
-        currentFamilyEntity = Utils.getCurrentFamilyEntity(Utils.getCurrentUserEntity());
+        currentFamilyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
     } catch(EntityNotFoundException e) {
-        System.out.println("Family entity was not found");
-        response.setContentType("application/text");
-        response.getWriter().println("");
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+            "Family data was not found - please refresh and try again", response);
+        return;
+    }
+
+    // If a family calendar already exists prevent user from creating a new one
+    if (currentFamilyEntity.getProperty(CALENDAR_ID_PROPERTY) != null) {
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
+            "A family calendar already exists", response);
         return;
     }
 
@@ -86,25 +107,44 @@ public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeSer
 
     String currentUserEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     BatchRequest batch = calendarService.batch();
-    
+
+    AclRule rule = new AclRule();
+    Scope scope = new Scope();
+    scope.setType("default").setValue("");
+    rule.setScope(scope).setRole("reader");
+
+    Insert insertRequest = calendarService.acl().insert(createdCalendar.getId(), rule);
+
+    batch.queue(insertRequest.buildHttpRequest(), Void.class, GoogleJsonErrorContainer.class, 
+        new BatchCallback<Void, GoogleJsonErrorContainer>() {
+
+        public void onSuccess(Void calendar, HttpHeaders responseHeaders) {
+            log("Added ACL rule");
+        }
+
+        public void onFailure(GoogleJsonErrorContainer e, HttpHeaders responseHeaders) {
+            log(e.getError().getMessage());
+        }
+    }); // Throws IOException
+
     for (String memberEmail : memberEmails) {
         // Create access rule with associated scope
         if (memberEmail.equals(currentUserEmail)) {
             continue;
         } 
         
-        AclRule rule = new AclRule();
-        Scope scope = new Scope();
+        rule = new AclRule();
+        scope = new Scope();
         scope.setType("user").setValue(memberEmail);
         rule.setScope(scope).setRole("owner");
 
         // Insert new access rule
-        Insert insertRequest = calendarService.acl().insert(createdCalendar.getId(), rule);
+        insertRequest = calendarService.acl().insert(createdCalendar.getId(), rule);
 
-        batch.queue(insertRequest.buildHttpRequest(), Calendar.class, GoogleJsonErrorContainer.class, 
-          new BatchCallback<Calendar, GoogleJsonErrorContainer>() {
+        batch.queue(insertRequest.buildHttpRequest(), Void.class, GoogleJsonErrorContainer.class, 
+          new BatchCallback<Void, GoogleJsonErrorContainer>() {
 
-            public void onSuccess(Calendar calendar, HttpHeaders responseHeaders) {
+            public void onSuccess(Void cal, HttpHeaders responseHeaders) {
                 log("Added ACL rule");
             }
 
@@ -116,15 +156,5 @@ public class CreateCalendarServlet extends AbstractAppEngineAuthorizationCodeSer
 
     batch.execute(); // Throws IOException
    
-  }
-
-  @Override
-  protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
-    return Utils.getRedirectUri(req);
-  }
-
-  @Override
-  protected AuthorizationCodeFlow initializeFlow() throws IOException {
-    return Utils.newFlow();
   }
 }

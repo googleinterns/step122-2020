@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 /** 
  * Servlet responsible for returning the link to the shared family calendar
 */
-public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
+public class CalendarServlet extends HttpServlet {
   
   private static final String CALENDAR_ID_PROPERTY = "calendarID";
 
@@ -51,13 +51,19 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
 
+    UserService userService = UserServiceFactory.getUserService();
+    if(!userService.isUserLoggedIn()) {
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_UNAUTHORIZED,
+            "You must be logged in to use the calendar function", response);
+        return;
+    }
+    
     Entity userInfoEntity = Utils.getCurrentUserEntity();
 
     // If current user is not in a family, they cannot add a member
     if (userInfoEntity == null) {
-        response.setContentType("application/text");
-        response.getWriter().println("You must belong to a family to use the calendar function");
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
+            "You must belong to a family to use the calendar function", response);
         return;
     }
 
@@ -65,9 +71,8 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
     try {
         familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
     } catch(EntityNotFoundException e) {
-        System.out.println("Family entity was not found");
-        response.setContentType("application/text");
-        response.getWriter().println("");
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+            "Family data was not found - please refresh and try again", response);
         return;
     }
     
@@ -93,19 +98,8 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
         calendarEntry = calendarService.calendarList().insert(calendarListEntry).execute();
     }
     
-
     response.setContentType("application/text");
     response.getWriter().println("https://calendar.google.com/calendar/embed?src=" + calendarEntry.getId() + "&output=embed");
    
-  }
-
-  @Override
-  protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
-    return Utils.getRedirectUri(req);
-  }
-
-  @Override
-  protected AuthorizationCodeFlow initializeFlow() throws IOException {
-    return Utils.newFlow();
   }
 }
