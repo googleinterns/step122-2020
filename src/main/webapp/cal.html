@@ -5,13 +5,24 @@
         <title>Welcome Page</title>
         <link rel="stylesheet" href="style.css">
         <script src="script.js"></script>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cinzel">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Parisienne">
     </head>
     <body onload="insertCalendar()">
+        <div class="colorstrip" class="top-container">
+            <div class="dropdown">
+                <a href="home.html">
+                    <img height="100" width="200" src="images/mainhouse.png"/>
+                </a>
+            </div>
+            <div class="logout">
+                <form action="/login" method="GET">
+                    <button class="dropbtn" name="logoutBtn">LOGOUT</button>
+                </form>
+            </div>
+        </div>
       <div id="caldiv">
       </div>
-      <button id="createCalendarButton" onclick="createCalendar()">Create a family calendar</button>
-      <button id="deleteCalendarButton" onclick="deleteCalendar()">Delete family calendar</button>
+      <button class="calbutton" id="createCalendarButton" onclick="createCalendar()">Create a family calendar</button></br>
+      <button class="calbutton" id="deleteCalendarButton" onclick="deleteCalendar()">Delete family calendar</button>
     </body>
 </html>
