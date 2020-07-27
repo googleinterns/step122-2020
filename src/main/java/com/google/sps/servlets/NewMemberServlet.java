@@ -14,6 +14,9 @@
 
 package com.google.sps.servlets;
 
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.Calendar.Acl.Insert;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -65,6 +68,13 @@ public class NewMemberServlet extends HttpServlet {
         familyEntity.setProperty("timestamp", updatedTimestamp);
 
         datastore.put(familyEntity);
+
+        // Adds the new user to the family calendar
+        String calendarID = (String) familyEntity.getProperty("calendarID");
+
+        if(calendarID != null) {
+            Utils.createUserAclRequest(calendarID, newMemberEmail, "user", "owner").execute();
+        }
 
         long familyID = familyEntity.getKey().getId();
 
