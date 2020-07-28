@@ -47,7 +47,7 @@ public class GroceryServlet extends HttpServlet {
         response.setContentType("application/text");
         response.getWriter().println("You must Sign in before using this function");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.sendRedirect("/grocery.html");
+    //  response.sendRedirect("/grocery.html");
         return;
     }
 
@@ -61,7 +61,7 @@ public class GroceryServlet extends HttpServlet {
         response.setContentType("application/text");
         response.getWriter().println("You must belong to a family to use the grocery function");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        response.sendRedirect("/grocery.html");
+       // response.sendRedirect("/grocery.html");
         return;
     }
 
@@ -82,7 +82,7 @@ public class GroceryServlet extends HttpServlet {
     }
 
     // checks if the given email matches a email in the family
-    if (assignGrocery.equals("") || assignGrocery.equals(null)) {
+    if (assignGrocery == null ||assignGrocery.equals("")) {
         groceryEntity.setProperty("assignEmail", noneAssigned);
     } else {
         ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
@@ -109,8 +109,9 @@ public class GroceryServlet extends HttpServlet {
         groceryEntity.setProperty(COMPLETE, complete);
         datastore.put(groceryEntity);
     }     
-
-    response.sendRedirect("/grocery.html");
+    System.out.println("Member is: "+ assignGrocery);
+    System.out.println("Grocery item is:"  + grocery);
+  //response.sendRedirect("/grocery.html");
   }
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

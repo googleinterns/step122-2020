@@ -64,7 +64,8 @@ function loadGrocery() {
     fetch('/grocery-list').then(response => handleErrors(response)).then((response) => 
         response.json()).then((groceries) => {
             
-    const groceryListElement = document.getElementById('grocery-list-container');  
+    const groceryListElement = document.getElementById('grocery-list-container');
+    groceryListElement.innerHTML = '';
     groceries.forEach((grocery) => {
         groceryListElement.appendChild(createGroceryElement(grocery));
     })
@@ -72,7 +73,7 @@ function loadGrocery() {
 
 }
 
-function createGroceryElement(grocery){
+function createGroceryElement(grocery){ 
   const groceryElement = document.createElement('li');
   groceryElement.className = 'task';
 
@@ -221,17 +222,26 @@ function createCalendar() {
 }
 
 function createGrocery() {
-    const groceryForm = document.getElementById('groceryForm');
-    const groceryItem = document.getElementById('groceryItemID');
-    const assignGrocery = document.getElementById('assignGroceryID');
-
-    groceryForm.append(groceryItem);
-    groceryForm.append(assignGrocery);
-    console.log(groceryForm.submit);
-    fetch(new Request('/grocery-list', {method: 'POST', body: groceryForm.submit()})).then(() =>  
-    handleErrors(response)).then((response) => {
-        loadGrocery();
-    });
+    const groceryForm = document.getElementById('groceryFormID');
+    
+    const formData = new FormData(groceryForm);
+    var queryString = "";
+    var array = [];
+    for (var pair of formData.entries()) {
+    var key = pair[0];
+    var value = pair[1]; 
+    queryString += key + '=' + value;
+    array.push(queryString);
+    queryString = "";
+}
+    console.log(queryString);
+    console.log(array);
+    fetch(new Request('/grocery-list', {
+        method: 'POST', body: array.join('&'), 
+        headers: { 
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    })).then(loadGrocery);
 }
 
 /** Tells the server to delete the grocery. */
