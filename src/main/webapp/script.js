@@ -223,10 +223,12 @@ function createCalendar() {
 
 function createGrocery() {
     const groceryForm = document.getElementById('groceryFormID');
-    
+    // creating FormData to get the values of the form
     const formData = new FormData(groceryForm);
     var queryString = "";
     var array = [];
+
+    // loop through the key and values of the form and add them to an array
     for (var pair of formData.entries()) {
     var key = pair[0];
     var value = pair[1]; 
@@ -241,7 +243,9 @@ function createGrocery() {
         headers: { 
             'Content-Type': 'application/x-www-form-urlencoded'
         }
-    })).then(loadGrocery);
+    })).then((response) => handleErrors(response)).then((response) => {
+    loadGrocery();
+    }).catch(error => alert(error.message)); 
 }
 
 /** Tells the server to delete the grocery. */
