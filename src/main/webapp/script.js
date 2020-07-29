@@ -223,6 +223,7 @@ function createCalendar() {
 
 function createGrocery() {
     const groceryForm = document.getElementById('groceryFormID');
+
     // creating FormData to get the values of the form
     const formData = new FormData(groceryForm);
     var queryString = "";
@@ -236,15 +237,16 @@ function createGrocery() {
     array.push(queryString);
     queryString = "";
 }
-    console.log(queryString);
-    console.log(array);
+    document.getElementById('groceryItemID').value='';
+    document.getElementById('assignGroceryID').value='';
+
     fetch(new Request('/grocery-list', {
         method: 'POST', body: array.join('&'), 
         headers: { 
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     })).then((response) => handleErrors(response)).then((response) => {
-    loadGrocery();
+        loadGrocery();
     }).catch(error => alert(error.message)); 
 }
 

@@ -47,7 +47,6 @@ public class GroceryServlet extends HttpServlet {
         response.setContentType("application/text");
         response.getWriter().println("You must Sign in before using this function");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    //  response.sendRedirect("/grocery.html");
         return;
     }
 
@@ -57,16 +56,13 @@ public class GroceryServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity userInfoEntity = results.asSingleEntity();
     if (userInfoEntity == null) {
-        System.out.println("POST");
         response.setContentType("application/text");
         response.getWriter().println("You must belong to a family to use the grocery function");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-       // response.sendRedirect("/grocery.html");
         return;
     }
 
     String assignGrocery = request.getParameter("assignGrocery");
-    System.out.println(assignGrocery);
     String noneAssigned = null;
     Entity groceryEntity = new Entity(GROCERY);
    
@@ -109,9 +105,6 @@ public class GroceryServlet extends HttpServlet {
         groceryEntity.setProperty(COMPLETE, complete);
         datastore.put(groceryEntity);
     }     
-    System.out.println("Member is: "+ assignGrocery);
-    System.out.println("Grocery item is:"  + grocery);
-  //response.sendRedirect("/grocery.html");
   }
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -132,7 +125,6 @@ public class GroceryServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity userInfoEntity = results.asSingleEntity();
     if (userInfoEntity == null) {
-        System.out.println("GET");
         response.setContentType("application/text");
         response.getWriter().println("You must belong to a family to use the grocery function");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
