@@ -211,13 +211,25 @@ function insertCalendar() {
         calFrame.setAttribute('frameborder', '0'); 
         calFrame.setAttribute('scrolling', 'no');
         calElement.appendChild(calFrame);
-    });
+
+        document.getElementById('createCalendarButton').setAttribute("style","visibility:hidden");
+        document.getElementById('deleteCalendarButton').setAttribute("style","visibility:visible");
+    }).catch(error => alert(error.message));
 }
 
 function createCalendar() {
-    fetch(new Request('/create-calendar', {method: 'POST'})).then(() => {
+    fetch(new Request('/create-calendar', {method: 'POST'})).then((response) => handleErrors(response)).then(() => {
         insertCalendar();
-    });
+    }).catch(error => alert(error.message));
+}
+
+function deleteCalendar() {
+    fetch(new Request('/delete-calendar', {method: 'POST'})).then((response) => handleErrors(response)).then(() => {
+        document.getElementById('caldiv').innerHTML = "";
+        insertCalendar();
+        document.getElementById('createCalendarButton').setAttribute("style","visibility:visible");
+        document.getElementById('deleteCalendarButton').setAttribute("style","visibility:hidden");
+    }).catch(error => alert(error.message));
 }
 
 function createGrocery() {

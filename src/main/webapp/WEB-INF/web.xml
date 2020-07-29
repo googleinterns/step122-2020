@@ -36,6 +36,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>delete-calendar</servlet-name>
+    <servlet-class>com.google.sps.servlets.DeleteCalendarServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>delete-calendar</servlet-name>
+    <url-pattern>/delete-calendar/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>calendar-auth</servlet-name>
     <servlet-class>com.google.sps.servlets.CalendarAuthServlet</servlet-class>
   </servlet>
@@ -144,5 +154,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <servlet-name>delete-grocery</servlet-name>
     <url-pattern>/delete-grocery/*</url-pattern>
   </servlet-mapping>
+
+  <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>calendar-auth</web-resource-name>
+            <url-pattern>/calendar-auth</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>
 
 </web-app>

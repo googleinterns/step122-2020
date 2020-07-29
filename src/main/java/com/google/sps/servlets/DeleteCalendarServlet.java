@@ -46,10 +46,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** 
- * Servlet responsible for creating a shared family calendar
+ * Servlet responsible for deleting the family calendar
 */
-@WebServlet("/create-calendar")
-public class CreateCalendarServlet extends HttpServlet {
+@WebServlet("/delete-calendar")
+public class DeleteCalendarServlet extends HttpServlet {
 
   private static final String CALENDAR_ID_PROPERTY = "calendarID";
   private static final String MEMBER_EMAILS_PROPERTY = "memberEmails";
@@ -59,14 +59,9 @@ public class CreateCalendarServlet extends HttpServlet {
           
     UserService userService = UserServiceFactory.getUserService();
     if(!userService.isUserLoggedIn()) {
-        ErrorHandlingUtils.setError(HttpServletResponse.SC_UNAUTHORIZED,
-            "You must be logged in to use the calendar function", response);
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_UNAUTHORIZED, "You must be logged in to use the calendar function", response);
         return;
     }
-
-    Calendar calendarService = Utils.loadCalendarClient();
-
-    Entity currentFamilyEntity = null;
     
     Entity userInfoEntity = Utils.getCurrentUserEntity();
 
@@ -77,6 +72,8 @@ public class CreateCalendarServlet extends HttpServlet {
         return;
     }
 
+    Entity currentFamilyEntity = null;
+
     try {
         currentFamilyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
     } catch(EntityNotFoundException e) {
@@ -85,52 +82,22 @@ public class CreateCalendarServlet extends HttpServlet {
         return;
     }
 
-    // If a family calendar already exists prevent user from creating a new one
-    if (currentFamilyEntity.getProperty(CALENDAR_ID_PROPERTY) != null) {
+    String calendarID = (String) currentFamilyEntity.getProperty(CALENDAR_ID_PROPERTY);
+
+    // If a family calendar does not exist prevent user from deleting
+    if (calendarID == null) {
         ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
-            "A family calendar already exists", response);
+            "There is no family calendar currently", response);
         return;
     }
 
-    // Create a new calendar
-    com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
-    calendar.setSummary((String) currentFamilyEntity.getProperty("name") + "'s Calendar");
+    Calendar calendarService = Utils.loadCalendarClient();
 
-    // Insert the new calendar
-    com.google.api.services.calendar.model.Calendar createdCalendar = calendarService.calendars().insert(calendar).execute();
+    calendarService.calendars().delete(calendarID).execute();
 
-    currentFamilyEntity.setProperty(CALENDAR_ID_PROPERTY, createdCalendar.getId());
+    currentFamilyEntity.setProperty(CALENDAR_ID_PROPERTY, null);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(currentFamilyEntity);
-
-    ArrayList<String> memberEmails = (ArrayList<String>) currentFamilyEntity.getProperty(MEMBER_EMAILS_PROPERTY);
-
-    String currentUserEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
-    BatchRequest batch = calendarService.batch();
-
-    for (String memberEmail : memberEmails) {
-        // Create access rule with associated scope
-        if (memberEmail.equals(currentUserEmail)) {
-            continue;
-        }
-
-        // Insert new access rule
-        Insert insertRequest = Utils.createUserAclRequest(createdCalendar.getId(), memberEmail, "user", "owner");
-
-        batch.queue(insertRequest.buildHttpRequest(), Void.class, GoogleJsonErrorContainer.class, 
-          new BatchCallback<Void, GoogleJsonErrorContainer>() {
-
-            public void onSuccess(Void cal, HttpHeaders responseHeaders) {
-                log("Added ACL rule");
-            }
-
-            public void onFailure(GoogleJsonErrorContainer e, HttpHeaders responseHeaders) {
-                log(e.getError().getMessage());
-            }
-        }); // Throws IOException
-    }
-
-    batch.execute(); // Throws IOException
    
   }
 }

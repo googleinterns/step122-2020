@@ -5,26 +5,29 @@
         <title>Home</title>
         <link rel="stylesheet" href="style.css">
         <script src="script.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Parisienne">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Graduate">
     </head>
-    <body onload="loadFamilyMembers()">
-        <div class="top-container">
+    <body class="members" onload="loadFamilyMembers()">
+        <div class="colorstrip" class="top-container">
             <div class="dropdown">
-                <button class="dropbtn">MENU</button>
-                <div class="dropdown-content">
-                    <a href="/calendar-auth">Calendar</a>
-                    <a href="photos.html">Photos</a>
-                    <a href="task.html">To-Do List</a>
-                    <a href="grocery.html">Grocery List</a>
-                    <a href="settings.html">Settings</a>
-                </div>
+                <a href="home.html">
+                    <img height="100" width="200" src="images/mainhouse.png"/>
+                </a>
             </div>
-            <div class="user">
-                <a href="images/user.png" ><img class="user-image" src="images/user.png"/></a>
+            <div class="logout">
+                <form action="/login" method="GET">
+                    <button class="dropbtn" name="logoutBtn">LOGOUT</button>
+                </form>
             </div>
         </div>
-        <div id="content">
+        <br>
+        <div class="homewelcome">Your Family</div>
+        <br>
+        <div class="btngroup" id="content">
             <div id="family-container"></div>
-            <button onclick="openFamilyForm()">Click to create a family</button>
+            <br>
+            <button class="familybutton" onclick="openFamilyForm()">CREATE FAMILY</button>
             <div class="form-popup" id="createFamilyForm">
               <form action="/family" method="POST" class="form-container">
                 <h1>Create new family</h1>
@@ -36,7 +39,8 @@
                 <button type="button" class="btn cancel" onclick="closeFamilyForm()">Close</button>
               </form>
             </div>
-            <button onclick="openNewMemberForm()">Add a new family member</button>
+            <br>
+            <button class="familybutton" onclick="openNewMemberForm()">ADD FAMILY MEMBER</button>
             <div class="form-popup" id="newMemberForm">
               <form action="/new-member" method="POST" class="form-container">
                 <h1>Add a new family member</h1>
@@ -48,7 +52,8 @@
                 <button type="button" class="btn cancel" onclick="closeNewMemberForm()">Close</button>
               </form>
             </div>
-            <button onclick="openRemoveMemberForm()">Remove a new family member</button>
+            <br>
+            <button class="familybutton" onclick="openRemoveMemberForm()">REMOVE FAMILY MEMBER</button>
             <div class="form-popup" id="removeMemberForm">
               <form action="/delete-member" method="POST" class="form-container">
                 <h1>Remove a new family member</h1>
@@ -61,8 +66,6 @@
               </form>
             </div>
             <form action="/login" method="GET">
-                <button name="logoutBtn">Logout</button>
-            </form>
         </div>
   </body>
 </html>
