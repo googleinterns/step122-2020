@@ -5,6 +5,7 @@
         <title>Home</title>
         <link rel="stylesheet" href="style.css">
         <script src="script.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Parisienne">
     </head>
     <body onload="loadGrocery()">
         <div class="colorstrip" class="top-container">
@@ -20,14 +21,15 @@
             </div>
         </div>
         <div id="content">
-            <h1>Please submit below the link to your Google Photos album you'd like to be displayed!</h1>
+            <h1 class="household">Please insert the link to your Google Photos album below!</h1>
             <form action="/photos" method="POST">
-                <p>Album Link</p>
-                <input type="url" name="albumLink">
+                <input class="center" type="url" name="albumLink">
                 <br>
-                <input type="submit" value="Submit">
+                <br>
+                <input class="dropbtn" type="submit" value="Submit">
             </form>    
             <br>
         </div>
   </body>
 </html>
+ 
