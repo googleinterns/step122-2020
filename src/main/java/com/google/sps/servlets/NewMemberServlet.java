@@ -90,7 +90,5 @@ public class NewMemberServlet extends HttpServlet {
         newUserInfoEntity.setProperty("email", newMemberEmail);
         newUserInfoEntity.setProperty("familyID", familyID);
         datastore.put(newUserInfoEntity);
-
-        response.sendRedirect("/settings.html");
     }
 }

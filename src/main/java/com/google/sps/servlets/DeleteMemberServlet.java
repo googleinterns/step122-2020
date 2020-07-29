@@ -88,7 +88,6 @@ public class DeleteMemberServlet extends HttpServlet {
     removeMemberFromCalendar(memberToDelete, familyEntity);
     removeUserInfo(memberToDelete, datastore, userInfoEntity);
 
-    response.sendRedirect("/settings.html");
   }
 
   // Revoke calendar access for a user
