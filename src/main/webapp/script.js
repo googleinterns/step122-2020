@@ -39,7 +39,13 @@ function closeRemoveMemberForm() {
 function loadFamilyMembers() {
   fetch('/family').then(response => response.json()).then((family) => {
     const familyElement = document.getElementById('family-container');
+    familyElement.innerHTML = "";
     const familyHeader = document.createElement("HEADER");
+    if(!("name" in family)) {
+        familyHeader.innerText = "You are not in a family currently";
+        familyElement.appendChild(familyHeader);
+        return;
+    }
     familyHeader.innerText = "Current Family Members in " + family.name + ":";
     familyElement.appendChild(familyHeader);
     family.members.forEach((memberEmail) => {

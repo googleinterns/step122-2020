@@ -43,6 +43,8 @@ public class FamilyServlet extends HttpServlet {
 
         // If there is no user info entity they are not in a family
         if (userInfoEntity == null) {
+            response.setContentType("application/json;");
+            response.getWriter().println("{}");
             return;
         }
 
