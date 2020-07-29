@@ -29,25 +29,50 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet takes grocery list and displays it to the screen based on the users family */
+/** Servlet takes photo album URL and displays it to the screen based on the users family */
 @WebServlet("/photos")
 public class PhotosServlet extends HttpServlet {
-     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {   
-            UserService userService = UserServiceFactory.getUserService();
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    String userEmail = userService.getCurrentUser().getEmail();
+    private static final String PHOTO = "Photo";
+    private static final String FAMILY_ID = "familyID";
+    @Override
 
-    // if user isn't associated with family don't allow them to create a list
-    Query query = new Query("UserInfo")
-        .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
-    PreparedQuery results = datastore.prepare(query);
-    Entity userInfoEntity = results.asSingleEntity();
-    if (userInfoEntity == null) {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {   
+        UserService userService = UserServiceFactory.getUserService();
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        String userEmail = userService.getCurrentUser().getEmail();
+
+        // if user isn't associated with family don't allow them to submit a photo album url
+        Query query = new Query("UserInfo")
+            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, userEmail));
+        PreparedQuery results = datastore.prepare(query);
+        Entity userInfoEntity = results.asSingleEntity();
+        if (userInfoEntity == null) {
+            response.sendRedirect("/photos.html");
+            return;
+        }   
+
+        String link = request.getParameter("albumLink");
+        Entity photoEntity = new Entity(PHOTO);
+
+        // turn familyID into a key so the user's family can be accessed
+        long familyID = (long) userInfoEntity.getProperty(FAMILY_ID);
+        Key familyEntityKey = KeyFactory.createKey("Family", familyID);
+        Entity familyEntity;
+        try {
+            familyEntity = datastore.get(familyEntityKey);
+        } catch (EntityNotFoundException e) {
+            return;
+        }
+
+        // adds url to datastore
+        if( link != null && !link.equals("")) {
+            photoEntity.setProperty(PHOTO, link);
+            datastore.put(photoEntity);
+        }     
+
         response.sendRedirect("/photos.html");
-        return;
-    }   
     }
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
      }
 }
