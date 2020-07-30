@@ -2,12 +2,6 @@
   box-sizing: border-box;
 }
 
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
-}
-
 .title {
   font-family: 'Cinzel', serif;
   color: rgba(0,0,0, 0.4);
@@ -90,6 +84,10 @@
   float: right;
 }
 
+.user-image{
+  width: 175px;
+  height: 100px;
+}
 
 .login-button {
   background-color: #e7e7e7; 
@@ -173,6 +171,10 @@
   background-size: cover;
 }
 
+.user {
+  float: right;
+}
+
 .cal { background-image: url("images/cal.png"); }
 .album { background-image: url("images/createalbum.png"); }
 
@@ -181,7 +183,7 @@
 }
  
 .task {
-  border: thin solid black;
+  border:solid #0099FF;
   display: flex;
   margin: 10px;
   padding: 10px;
@@ -358,6 +360,33 @@ img {
   color: whitesmoke;
   padding: 16px;
   font-size: 50px;
+  border: none;
+  font-family: 'Cinzel', serif;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.grocery-input {
+    float: left;
+    text-align: center;   
+    width: 35%;
+}
+
+.grocery-output {
+    float:right;
+    width: 55%;
+}
+
+.grocery-incomplete {
+    float: left;
+}
+
+.grocerybutton{
+  background-color:#0099FF;
+  color: whitesmoke;
+  padding: 16px;
+  font-size: 25px;
   border: none;
   font-family: 'Cinzel', serif;
   display: block;

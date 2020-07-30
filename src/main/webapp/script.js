@@ -64,15 +64,23 @@ function loadGrocery() {
     fetch('/grocery-list').then(response => handleErrors(response)).then((response) => 
         response.json()).then((groceries) => {
             
-    const groceryListElement = document.getElementById('grocery-list-container');  
+    const groceryListElement = document.getElementById('grocery-list-container'); 
+    const groceryCompleteList = document.getElementById('grocery-complete-container');
+
     groceries.forEach((grocery) => {
+        console.log(grocery.complete);
+        if(grocery.complete === true) {
+            groceryCompleteList.appendChild(createCompleteGrocery(grocery));
+            return;
+        }
         groceryListElement.appendChild(createGroceryElement(grocery));
     })
     }).catch(error => alert(error.message)); 
-
 }
 
 function createGroceryElement(grocery){
+    const groceryCompleteList = document.getElementById('grocery-complete-container');
+
   const groceryElement = document.createElement('li');
   groceryElement.className = 'task';
 
@@ -82,10 +90,6 @@ function createGroceryElement(grocery){
     titleElement.innerText = grocery.item;
   } else {
     titleElement.innerText = grocery.item + " assigned to: " + grocery.email;
-  }
-
-  if(grocery.complete === true) {
-    groceryElement.className = 'taskComplete';
   }
 
   // only creates button for items assigned to user or no one
@@ -103,7 +107,9 @@ function createGroceryElement(grocery){
     completeButtonElement.addEventListener('click', () => {
       groceryElement.className = 'taskComplete';
       completeButtonElement.remove();
+      groceryElement.remove();
       completeGrocery(grocery);
+      groceryCompleteList.appendChild(createCompleteGrocery(grocery));
     }); 
 
     if(isGroceryComplete(grocery)) {
@@ -120,6 +126,36 @@ function createGroceryElement(grocery){
   groceryElement.appendChild(titleElement);
   return groceryElement;
     }
+
+// adds items to the list of completed items
+ function createCompleteGrocery(grocery) {
+ const groceryElement = document.createElement('li');
+  groceryElement.className = 'task';
+
+  // If assigned email is empty then only show the item else show the item and the assigned email
+  const titleElement = document.createElement('span');
+  if(!grocery.email) {
+    titleElement.innerText = grocery.item;
+  } else {
+    titleElement.innerText = grocery.item + " assigned to: " + grocery.email;
+  }
+
+  if (isEditableGrocery(grocery)) {
+    const deleteButtonElement = document.createElement('button');
+    deleteButtonElement.innerText = 'Delete';
+    deleteButtonElement.addEventListener('click', () => {
+      deleteGrocery(grocery);
+      // Remove the task from the DOM.
+      groceryElement.remove();
+    });
+    groceryElement.appendChild(titleElement);
+    groceryElement.appendChild(deleteButtonElement);
+    return groceryElement;
+
+ }
+    groceryElement.appendChild(titleElement);
+    return groceryElement;
+ }
 
 /** Fetches tasks from the server and adds them to the DOM. */
 function loadTasks() {
