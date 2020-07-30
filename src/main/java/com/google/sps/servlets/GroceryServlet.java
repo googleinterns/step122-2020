@@ -136,11 +136,17 @@ public class GroceryServlet extends HttpServlet {
     // creates arraylist and starts query
     ArrayList<Grocery> groceryList = new ArrayList<>();
     long familyID = (long) userInfoEntity.getProperty(FAMILY_ID);
+    try {
     Query groceryQuery = new Query(GROCERY)
       .setFilter(new Query.FilterPredicate(FAMILY_ID, Query.FilterOperator.EQUAL, familyID));   
     PreparedQuery familyGrocery= datastore.prepare(groceryQuery);
     groceryList = fetchGroceries(familyGrocery, userEmail);   
-
+    } catch(Exception e) {
+        response.setContentType("applocation/text");
+        response.getWriter().println("Something went wrong.");
+        response.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
+        return;
+    }
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(groceryList));
