@@ -202,10 +202,6 @@
   text-align: center;
 }
 
-* {
-  box-sizing: border-box;
-}
-
 .row {
   display: flex;
 }
@@ -235,6 +231,14 @@
   font-family: 'Graduate', serif;
   color: #AED581  ;
   font-size: 30px;
+  text-align: center;
+}
+
+.cal-container {
+  text-align: center;
+}
+
+.cal-buttons {
   text-align: center;
 }
 
@@ -356,7 +360,7 @@ img {
   background-color:#0099FF;
 }
 
-.familybutton{
+.familybutton, .calbutton {
   background-color:#0099FF;
   color: whitesmoke;
   padding: 16px;
