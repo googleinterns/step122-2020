@@ -165,7 +165,7 @@ function deleteGrocery(grocery) {
 }
 
 
-/** Tells the server to delete the grocery. */
+/** Tells the server mark the grocery complete. */
 function completeGrocery(grocery) {
   const params = new URLSearchParams();
   params.append('id', grocery.id);  
