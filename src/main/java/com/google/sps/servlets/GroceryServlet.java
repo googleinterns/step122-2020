@@ -142,7 +142,7 @@ public class GroceryServlet extends HttpServlet {
     PreparedQuery familyGrocery= datastore.prepare(groceryQuery);
     groceryList = fetchGroceries(familyGrocery, userEmail);   
     } catch(Exception e) {
-        response.setContentType("applocation/text");
+        response.setContentType("application/text");
         response.getWriter().println("Something went wrong.");
         response.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
         return;
