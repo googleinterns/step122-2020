@@ -130,7 +130,8 @@ public class CreateCalendarServlet extends HttpServlet {
         }); // Throws IOException
     }
 
-    batch.execute(); // Throws IOException
-   
+    if (batch.size() > 0) {
+        batch.execute(); // Throws IOException
+    }
   }
 }
