@@ -42,7 +42,7 @@ public class GroceryServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String userEmail;
     try {
-    userEmail = userService.getCurrentUser().getEmail();
+        userEmail = userService.getCurrentUser().getEmail();
     } catch (NullPointerException e) {
         response.setContentType("application/text");
         response.getWriter().println("You must Sign in before using this function");
@@ -57,7 +57,6 @@ public class GroceryServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity userInfoEntity = results.asSingleEntity();
     if (userInfoEntity == null) {
-        System.out.println("POST");
         response.setContentType("application/text");
         response.getWriter().println("You must belong to a family to use the grocery function");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -66,7 +65,6 @@ public class GroceryServlet extends HttpServlet {
     }
 
     String assignGrocery = request.getParameter("assignGrocery");
-    System.out.println(assignGrocery);
     String noneAssigned = null;
     Entity groceryEntity = new Entity(GROCERY);
    
@@ -118,7 +116,7 @@ public class GroceryServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String userEmail;
      try {
-    userEmail = userService.getCurrentUser().getEmail();
+        userEmail = userService.getCurrentUser().getEmail();
     } catch (NullPointerException e) {
         response.setContentType("application/text");
         response.getWriter().println("You must Sign in before using this function");
@@ -131,7 +129,6 @@ public class GroceryServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity userInfoEntity = results.asSingleEntity();
     if (userInfoEntity == null) {
-        System.out.println("GET");
         response.setContentType("application/text");
         response.getWriter().println("You must belong to a family to use the grocery function");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

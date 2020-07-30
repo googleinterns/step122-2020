@@ -18,7 +18,7 @@ function openFamilyForm() {
 
 function closeFamilyForm() {
     console.log("Close family");
-  document.getElementById("createFamilyForm").style.visibility = "hidden";
+    document.getElementById("createFamilyForm").style.visibility = "hidden";
 }
 
 function openNewMemberForm() {
