@@ -231,12 +231,12 @@ function createGrocery() {
 
     // loop through the key and values of the form and add them to an array
     for (var pair of formData.entries()) {
-    var key = pair[0];
-    var value = pair[1]; 
-    queryString += key + '=' + value;
-    array.push(queryString);
-    queryString = "";
-}
+        var key = pair[0];
+        var value = pair[1]; 
+        queryString += key + '=' + value;
+        array.push(queryString);
+        queryString = "";
+    }
     document.getElementById('groceryItemID').value='';
     document.getElementById('assignGroceryID').value='';
 
