@@ -2,12 +2,34 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Welcome Page</title>
+        <title>Photos</title>
         <link rel="stylesheet" href="style.css">
         <script src="script.js"></script>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cinzel">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Parisienne">
     </head>
-    <body class="bg-image album"> 
-    </body>
+    <body onload="loadGrocery()">
+        <div class="colorstrip" class="top-container">
+            <div class="dropdown">
+                <a href="home.html">
+                    <img height="100" width="200" src="images/mainhouse.png"/>
+                </a>
+            </div>
+            <div class="logout">
+                <form action="/login" method="GET">
+                    <button class="dropbtn" name="logoutBtn">LOGOUT</button>
+                </form>
+            </div>
+        </div>
+        <div id="content">
+            <h1 class="household">Please insert the link to your Google Photos album below!</h1>
+            <form action="/photos" method="POST">
+                <input class="center" type="url" name="albumLink">
+                <br>
+                <br>
+                <input class="dropbtn" type="submit" value="Submit">
+            </form>    
+            <br>
+        </div>
+  </body>
 </html>
+ 
