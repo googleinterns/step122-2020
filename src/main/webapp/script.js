@@ -249,7 +249,7 @@ function createGrocery() {
         loadGrocery();
     }).catch(error => alert(error.message)); 
 }
-
+ 
 /** Tells the server to delete the grocery. */
 function deleteGrocery(grocery) {
   const params = new URLSearchParams();

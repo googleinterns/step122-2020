@@ -73,7 +73,9 @@ public class GroceryServlet extends HttpServlet {
     try {
         familyEntity = datastore.get(familyEntityKey);
     } catch (EntityNotFoundException e) {
-        System.out.println("grocery assigned to: " + assignGrocery);
+        response.setContentType("application/text");
+        response.getWriter().println("Family data was not found - please refresh and try again");
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return;
     }
 
