@@ -46,6 +46,8 @@ function loadFamilyMembers() {
     if(!("name" in family)) {
         familyHeader.innerText = "You are not in a family currently";
         familyElement.appendChild(familyHeader);
+        document.getElementById('addMemberButton').setAttribute("style","visibility:hidden");
+        document.getElementById('removeMemberButton').setAttribute("style","visibility:hidden");
         return;
     }
     familyHeader.innerText = "Current Family Members in " + family.name + ":";
@@ -55,6 +57,8 @@ function loadFamilyMembers() {
       memberListElement.innerText = memberEmail;
       familyElement.appendChild(memberListElement);
     })
+    document.getElementById('addMemberButton').setAttribute("style","visibility:visible");
+    document.getElementById('removeMemberButton').setAttribute("style","visibility:visible");
   });
 }
 
