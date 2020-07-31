@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Home</title>
+        <title>Family</title>
         <link rel="stylesheet" href="style.css">
         <script src="script.js"></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Parisienne">
@@ -28,8 +28,8 @@
             <div id="family-container"></div>
             <br>
             <button class="familybutton" onclick="openFamilyForm()">CREATE FAMILY</button>
-            <div class="form-popup" id="createFamilyForm">
-              <form action="/family" method="POST" class="form-container">
+            <div class="form-popup">
+              <form action="javascript:void(0);" class="form-container" id="createFamilyForm" onsubmit="createFamily()">
                 <h1>Create new family</h1>
 
                 <label for="name"><b>Name</b></label>
@@ -41,8 +41,8 @@
             </div>
             <br>
             <button class="familybutton" onclick="openNewMemberForm()">ADD FAMILY MEMBER</button>
-            <div class="form-popup" id="newMemberForm">
-              <form action="/new-member" method="POST" class="form-container">
+            <div class="form-popup">
+              <form action="javascript:void(0);" class="form-container" id="newMemberForm" onsubmit="addNewMember()">
                 <h1>Add a new family member</h1>
 
                 <label for="name"><b>Member email</b></label>
@@ -54,9 +54,9 @@
             </div>
             <br>
             <button class="familybutton" onclick="openRemoveMemberForm()">REMOVE FAMILY MEMBER</button>
-            <div class="form-popup" id="removeMemberForm">
-              <form action="/delete-member" method="POST" class="form-container">
-                <h1>Remove a new family member</h1>
+            <div class="form-popup">
+              <form action="javascript:void(0);" class="form-container" id="removeMemberForm" onsubmit="removeMember()">
+                <h1>Remove a family member</h1>
 
                 <label for="name"><b>Member email</b></label>
                 <input type="text" placeholder="Enter Email" name="member-to-delete" required>
