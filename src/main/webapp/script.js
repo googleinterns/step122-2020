@@ -233,7 +233,7 @@ function createGrocery() {
     for (var pair of formData.entries()) {
         var key = pair[0];
         var value = pair[1]; 
-        queryString += key + '=' + value;
+        queryString += encodeURIComponent(key) + '=' + encodeURIComponent(value)
         array.push(queryString);
         queryString = "";
     }

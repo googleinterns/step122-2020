@@ -28,6 +28,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.logging.Logger;
+
 
 /** Servlet takes grocery list and displays it to the screen based on the users family */
 @WebServlet("/grocery-list")
@@ -37,7 +39,10 @@ public class GroceryServlet extends HttpServlet {
   private static final String COMPLETE = "Complete";
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {      
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+    Logger log = Logger.getLogger(GroceryServlet.class.getName());
+    log.info("Your information log message.");    
+
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String userEmail;
