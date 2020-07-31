@@ -345,3 +345,43 @@ function handleErrors(response) {
     }
     return response;
 }
+
+/** Fetches photo urls from the server and adds them to the DOM. */
+function loadPhotos() {
+  fetch('/list-photos').then(response => response.json()).then((photos) => {
+    const photoListElement = document.getElementById('photo-list');
+    photos.forEach((photo) => {
+      photoListElement.appendChild(createPhotoElement(photo));
+      console.log("link is" + photo);
+    })
+  });
+}
+
+/** Creates an element that represents a photo url, including its delete button. */
+function createPhotoElement(photo) {
+  const photoElement = document.createElement('li');
+  photoElement.className = 'photo';
+
+  const titleElement = document.createElement('span');
+  titleElement.innerText = photo.url;
+
+  const deleteButtonElement = document.createElement('button');
+  deleteButtonElement.innerText = 'Delete';
+  deleteButtonElement.addEventListener('click', () => {
+    deletePhoto(photo);
+
+    // Remove the photo url from the DOM.
+    photoElement.remove();
+  });
+
+  photoElement.appendChild(titleElement);
+  photoElement.appendChild(deleteButtonElement);
+  return photoElement;
+}
+
+/** Tells the server to delete the photo url. */
+function deletePhoto(photo) {
+  const params = new URLSearchParams();
+  params.append('url', photo.url);
+  fetch('/delete-photo', {method: 'POST', body: params});
+}
