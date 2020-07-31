@@ -63,9 +63,14 @@ public class NewMemberServlet extends HttpServlet {
         // Add the new member email to the family's list and update datastore
         ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
 
-        if (memberEmails.contains(newMemberEmail)) {
+        // Check if the user already is in a family
+        Query query = new Query("UserInfo")
+        .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, newMemberEmail));
+        PreparedQuery results = datastore.prepare(query);
+         
+        if(results.asSingleEntity() != null) {
             ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
-                "This member already belongs to this family", response);
+                "This user already belongs to a family", response);
             return;
         }
         
