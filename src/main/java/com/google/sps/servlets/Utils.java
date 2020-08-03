@@ -28,6 +28,9 @@ import com.google.api.client.util.Preconditions;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.Calendar.Acl.Insert;
+import com.google.api.services.calendar.model.AclRule;
+import com.google.api.services.calendar.model.AclRule.Scope;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -116,6 +119,15 @@ class Utils {
     Entity familyEntity = datastore.get(familyEntityKey);
 
     return familyEntity;
+  }
+
+  static Insert createUserAclRequest(String calendarID, String memberEmail, String scopeType, String role) throws IOException {
+    AclRule rule = new AclRule();
+    Scope scope = new Scope();
+    scope.setType(scopeType).setValue(memberEmail);
+    rule.setScope(scope).setRole(role);
+
+    return loadCalendarClient().acl().insert(calendarID, rule);
   }
 
   /**

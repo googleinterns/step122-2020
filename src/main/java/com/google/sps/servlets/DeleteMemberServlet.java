@@ -14,6 +14,10 @@
 
 package com.google.sps.servlets;
 
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.Acl;
+import com.google.api.services.calendar.model.AclRule;
+import com.google.api.services.calendar.model.AclRule.Scope;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -34,7 +38,8 @@ public class DeleteMemberServlet extends HttpServlet {
 
     Entity userInfoEntity = Utils.getCurrentUserEntity();
     if (userInfoEntity == null) {
-        System.out.println("You do not belong to a family currently");
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
+            "You must belong to a family to use this function", response);
         return;
     }
 
@@ -43,20 +48,36 @@ public class DeleteMemberServlet extends HttpServlet {
     try {
         familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
     } catch(EntityNotFoundException e) {
-        System.out.println("Family entity was not found");
-        response.setContentType("application/text");
-        response.getWriter().println("");
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+            "Family data was not found - please refresh and try again", response);
         return;
     }
 
     String memberToDelete = request.getParameter("member-to-delete");
-    GroceryUtils.removeMember(memberToDelete);
 
     // Remove the member from the list and update datastore
     ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
     if(!memberEmails.contains(memberToDelete)) {
-        System.out.println("This member does not belong to your family");
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
+            "This person does not belong to your family!", response);
         return;
+    }
+
+    GroceryUtils.removeMember(memberToDelete);
+
+    // Revoke calendar access for the user
+    String calendarID = (String) familyEntity.getProperty("calendarID");
+
+    if(calendarID != null && !memberToDelete.equals(UserServiceFactory.getUserService().getCurrentUser().getEmail())) {
+        Calendar calendarService = Utils.loadCalendarClient();
+        // Iterate over a list of access rules
+        Acl acl = calendarService.acl().list(calendarID).execute();
+
+        for (AclRule rule : acl.getItems()) {
+            if(rule.getScope().getValue().equals(memberToDelete)) {
+                calendarService.acl().delete(calendarID, rule.getId()).execute();
+            }
+        }
     }
 
     memberEmails.remove(memberToDelete);
@@ -64,12 +85,35 @@ public class DeleteMemberServlet extends HttpServlet {
     familyEntity.setProperty("memberEmails", memberEmails);
     datastore.put(familyEntity);
 
-    // Delete the user info entity of the removed member from datastore
+    removeMemberFromCalendar(memberToDelete, familyEntity);
+    removeUserInfo(memberToDelete, datastore, userInfoEntity);
+
+  }
+
+  // Revoke calendar access for a user
+  private void removeMemberFromCalendar(String memberToDelete, Entity familyEntity) throws IOException {
+    String calendarID = (String) familyEntity.getProperty("calendarID");
+
+    String currentUserEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
+    if (calendarID != null && !memberToDelete.equals(currentUserEmail)) {
+        Calendar calendarService = Utils.loadCalendarClient();
+        // Iterate over a list of access rules
+        Acl acl = calendarService.acl().list(calendarID).execute();
+
+        for (AclRule rule : acl.getItems()) {
+            if(rule.getScope().getValue().equals(memberToDelete)) {
+                calendarService.acl().delete(calendarID, rule.getId()).execute();
+            }
+        }
+    }
+  }
+  
+  // Delete the user info entity of the removed member from datastore
+  private void removeUserInfo(String memberToDelete, DatastoreService datastore, Entity userInfoEntity) throws IOException {
     Query query = new Query("UserInfo")
         .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, memberToDelete));
     PreparedQuery results = datastore.prepare(query);
     userInfoEntity = results.asSingleEntity();
     datastore.delete(userInfoEntity.getKey());
-    response.sendRedirect("/settings.html");
   }
 }
