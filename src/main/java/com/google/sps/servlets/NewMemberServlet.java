@@ -14,6 +14,9 @@
 
 package com.google.sps.servlets;
 
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.Calendar.Acl.Insert;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -38,7 +41,8 @@ public class NewMemberServlet extends HttpServlet {
 
         // If current user is not in a family, they cannot add a member
         if (userInfoEntity == null) {
-            System.out.println("You do not belong to a family yet!");
+            ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
+                "You must belong to a family to use this function", response);
             return;
         }
 
@@ -47,9 +51,8 @@ public class NewMemberServlet extends HttpServlet {
         try {
             familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
         } catch(EntityNotFoundException e) {
-            System.out.println("Family entity was not found");
-            response.setContentType("application/text");
-            response.getWriter().println("");
+            ErrorHandlingUtils.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                "Family data was not found - please refresh and try again", response);
             return;
         }
 
@@ -59,12 +62,26 @@ public class NewMemberServlet extends HttpServlet {
 
         // Add the new member email to the family's list and update datastore
         ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
+
+        if (memberEmails.contains(newMemberEmail)) {
+            ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
+                "This member already belongs to this family", response);
+            return;
+        }
+        
         memberEmails.add(newMemberEmail);
 
         familyEntity.setProperty("memberEmails", memberEmails);
         familyEntity.setProperty("timestamp", updatedTimestamp);
 
         datastore.put(familyEntity);
+
+        // Adds the new user to the family calendar
+        String calendarID = (String) familyEntity.getProperty("calendarID");
+
+        if(calendarID != null) {
+            Utils.createUserAclRequest(calendarID, newMemberEmail, "user", "owner").execute();
+        }
 
         long familyID = familyEntity.getKey().getId();
 
@@ -73,7 +90,5 @@ public class NewMemberServlet extends HttpServlet {
         newUserInfoEntity.setProperty("email", newMemberEmail);
         newUserInfoEntity.setProperty("familyID", familyID);
         datastore.put(newUserInfoEntity);
-
-        response.sendRedirect("/settings.html");
     }
 }

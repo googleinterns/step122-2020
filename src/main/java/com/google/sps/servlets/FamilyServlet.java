@@ -43,6 +43,8 @@ public class FamilyServlet extends HttpServlet {
 
         // If there is no user info entity they are not in a family
         if (userInfoEntity == null) {
+            response.setContentType("application/json;");
+            response.getWriter().println("{}");
             return;
         }
 
@@ -51,9 +53,8 @@ public class FamilyServlet extends HttpServlet {
         try {
             familyEntity = Utils.getCurrentFamilyEntity(userInfoEntity);
         } catch(EntityNotFoundException e) {
-            System.out.println("Family entity was not found");
-            response.setContentType("application/text");
-            response.getWriter().println("");
+            ErrorHandlingUtils.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                "Family data was not found - please refresh and try again", response);
             return;
         }
 
@@ -80,7 +81,8 @@ public class FamilyServlet extends HttpServlet {
 
         // If the user already belongs to a family, they cannot create a new one
         if (entity != null) {
-            System.out.println("You already belong to a family");
+            ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
+                "You already belong to a family!", response);
             return;
         }
         

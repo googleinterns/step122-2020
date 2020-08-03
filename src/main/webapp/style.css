@@ -1,13 +1,5 @@
-body {}
-
 * {
   box-sizing: border-box;
-}
-
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
 }
 
 .title {
@@ -59,12 +51,15 @@ body {}
 }
 
 .dropbtn {
-  background-color: rgb(205, 236, 232);
+  background-color:#0099FF;
   color: whitesmoke;
   padding: 16px;
-  font-size: 35px;
+  font-size: 50px;
   border: none;
   font-family: 'Cinzel', serif;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .dropdown {
@@ -73,27 +68,9 @@ body {}
   float: left;
 }
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-content a:hover {background-color: rgba(0,0,0, 0.4);}
-
 .dropdown:hover .dropdown-content {display: block;}
 
-.dropdown:hover .dropbtn {background-color: rgb(205, 236, 232);}
+.dropdown:hover .dropbtn {background-color: rgba(0,0,0, 0.4);}
 
 .top-container {
   display: inline-block; 
@@ -101,19 +78,18 @@ body {}
 }
 
 .image-container{
-    display:flex;
-    align-items: center;
+  display:flex;
+  align-items: center;
   justify-content: center;
 }
 
-.user {
+.logout {
   float: right;
 }
 
 .user-image{
-  width: 75px;
-  height: 75px;
-  border:  thick solid rgb(205, 236, 232);
+  width: 175px;
+  height: 100px;
 }
 
 .login-button {
@@ -169,7 +145,7 @@ body {}
 
 /* Set a style for the confirm button */
 .form-container .btn {
-  background-color: #4CAF50;
+  background-color: #FF6F00;
   color: white;
   padding: 16px 20px;
   border: none;
@@ -181,7 +157,7 @@ body {}
 
 /* Add a red background color to the cancel button */
 .form-container .cancel {
-  background-color: red;
+  background-color: rgba(0,0,0, 0.4) ;
 }
 
 /* Add some hover effects to buttons */
@@ -191,11 +167,15 @@ body {}
 
 .bg-image {
   /* Full height */
-  height: 100%;
+  height: 60%;
 
   /* Center and scale the image nicely */
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.user {
+  float: right;
 }
 
 .cal { background-image: url("images/cal.png"); }
@@ -206,7 +186,7 @@ body {}
 }
  
 .task {
-  border: thin solid black;
+  border:solid #0099FF;
   display: flex;
   margin: 10px;
   padding: 10px;
@@ -222,10 +202,6 @@ body {}
   color: rgb(205, 236, 232);
   font-size: 100px;
   text-align: center;
-}
-
-* {
-  box-sizing: border-box;
 }
 
 .row {
@@ -248,8 +224,23 @@ body {}
 
 .author {
   font-family: 'Graduate', serif;
-  color: #F1948A ;
+  color: #FF6F00;
   font-size: 40px;
+  text-align: center;
+}
+
+.members {
+  font-family: 'Graduate', serif;
+  color: #AED581  ;
+  font-size: 30px;
+  text-align: center;
+}
+
+.cal-container {
+  text-align: center;
+}
+
+.cal-buttons {
   text-align: center;
 }
 
@@ -262,8 +253,22 @@ body {}
 
 .welcome {
   font-family: 'Parisienne', serif;
-  color: #F1948A;
+  color: #FF6F00;
   font-size: 60px;
+  text-align: center;
+}
+
+.household {
+  font-family: 'Parisienne', serif;
+  color: #FF6F00;
+  font-size: 30px;
+  text-align: center;
+}
+
+.homewelcome {
+  font-family: 'Parisienne', serif;
+  color: #FF6F00;
+  font-size: 130px;
   text-align: center;
 }
 
@@ -286,7 +291,10 @@ body {}
   cursor: pointer;
 }
 
-.button1 {border-radius: 100%;}
+.button1 {
+    border-radius: 100%;
+    font-size: 45px;
+}
 
 .taskComplete {
   border: thin solid black;
@@ -295,4 +303,100 @@ body {}
   margin: 10px;
   padding: 10px;
   width: 300px;
+}
+
+.heading-font {
+  font-family: 'Cinzel', serif;
+  color: whitesmoke;
+  font-size: 60px
+}
+
+/* Position text in the middle of the page/image */
+.bg-text-photo {
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0, 0.4); /* Black w/opacity/see-through */
+  color: white;
+  font-weight: normal;
+  font-size: 35px;
+  border: 10px solid #f1f1f1;
+  position: absolute; /* Stay fixed */
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 600px;
+  padding: 20px;
+  text-align: center;
+}
+
+.grocery{
+  top: 58.5%;
+  left: 50%;
+}
+
+.family{
+  top: 92.3%;
+  left: 50%;
+}
+
+.calendar{
+  top: 125%;
+  left: 50%;
+}
+
+.photos{
+  top: 159%;
+  left: 50%;
+}
+
+img {
+  padding: 0;
+  display: block;
+  margin: 0 auto;
+  max-height: 100%;
+  max-width: 45%;
+}
+
+.colorstrip{
+  width: 100%; height: 100px;
+  border-style: solid;
+  border-color: #0099FF;
+  background-color:#0099FF;
+}
+
+.familybutton, .calbutton {
+  background-color:#0099FF;
+  color: whitesmoke;
+  padding: 16px;
+  font-size: 50px;
+  border: none;
+  font-family: 'Cinzel', serif;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.grocery-input {
+    float: left;
+    text-align: center;   
+    width: 35%;
+}
+
+.grocery-output {
+    float:right;
+    width: 55%;
+}
+
+.grocery-incomplete {
+    float: left;
+}
+
+.grocerybutton{
+  background-color:#0099FF;
+  color: whitesmoke;
+  padding: 16px;
+  font-size: 25px;
+  border: none;
+  font-family: 'Cinzel', serif;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
