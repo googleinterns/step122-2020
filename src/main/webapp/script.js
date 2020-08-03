@@ -67,9 +67,6 @@ function submitFamilyForm(formName, endpoint) {
 
     // creating FormData to get the values of the form
     const formData = new FormData(form);
-    var queryString = "";
-    var array = [];
-
     const params = new URLSearchParams();
 
     // loop through the key and values of the form and add them to an array
