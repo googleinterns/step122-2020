@@ -39,20 +39,19 @@ public class GroceryServlet extends HttpServlet {
   private static final String COMPLETE = "Complete";
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
-    Logger log = Logger.getLogger(GroceryServlet.class.getName());
-    log.info("Your information log message.");    
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {     
 
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String userEmail;
-    try {
-        userEmail = userService.getCurrentUser().getEmail();
-    } catch (NullPointerException e) {
-        response.setContentType("application/text");
-        response.getWriter().println("You must Sign in before using this function");
+    if(userService.getCurrentUser().getEmail().equals(null)) {
+       response.setContentType("application/text");
+        response.getWriter().println("You must sign in before using this function");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        return;
+        return; 
+    } else {
+        userEmail = userService.getCurrentUser().getEmail();
+      
     }
 
     // if user isn't associated with family don't allow them to create a list
@@ -97,7 +96,7 @@ public class GroceryServlet extends HttpServlet {
                 System.out.println("User not found");
                 response.setContentType("application/text");
                 response.getWriter().println("You can only assigned members in your family");
-                response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
         }

@@ -109,11 +109,9 @@ function loadGrocery() {
     // fetches json list of groceries
     fetch('/grocery-list').then(response => handleErrors(response)).then((response) => 
         response.json()).then((groceries) => {
-
-    const groceryListElement = document.getElementById('grocery-list-container'); 
-    const groceryCompleteList = document.getElementById('grocery-complete-container');
+        const groceryListElement = document.getElementById('grocery-list-container'); 
+        const groceryCompleteList = document.getElementById('grocery-complete-container');
     groceries.forEach((grocery) => {
-        console.log(grocery.complete);
         if(grocery.complete === true) {
             groceryCompleteList.appendChild(createCompleteGrocery(grocery));
             return;
@@ -124,7 +122,7 @@ function loadGrocery() {
 }
 
 function createGroceryElement(grocery){
-    const groceryCompleteList = document.getElementById('grocery-complete-container');
+  const groceryCompleteList = document.getElementById('grocery-complete-container');
 
   const groceryElement = document.createElement('li');
   groceryElement.className = 'task';
@@ -319,13 +317,13 @@ function createGrocery() {
 
     // creating FormData to get the values of the form
     const formData = new FormData(groceryForm);
-    var queryString = "";
-    var array = [];
+    const queryString = "";
+    const array = [];
 
     // loop through the key and values of the form and add them to an array
     for (var pair of formData.entries()) {
-        var key = pair[0];
-        var value = pair[1]; 
+        const key = pair[0];
+        const value = pair[1]; 
         queryString += encodeURIComponent(key) + '=' + encodeURIComponent(value)
         array.push(queryString);
         queryString = "";
