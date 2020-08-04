@@ -58,10 +58,11 @@ public class DeleteFamilyServlet extends HttpServlet {
         calendarService.calendars().delete(calendarID).execute();
     }
 
-    // TODO: Delete all UserInfo entities, all grocery entities, all photo entities
     removeDataTypeForFamily("UserInfo", familyID);
     removeDataTypeForFamily("Grocery", familyID);
     removeDataTypeForFamily("Photo", familyID);
+
+    datastore.delete(familyEntity.getKey());
 
   }
 
