@@ -40,7 +40,7 @@
               </form>
             </div>
             <br>
-            <button class="familybutton" onclick="openNewMemberForm()">ADD FAMILY MEMBER</button>
+            <button class="familybutton" onclick="openNewMemberForm()" id="addMemberButton">ADD FAMILY MEMBER</button>
             <div class="form-popup">
               <form action="javascript:void(0);" class="form-container" id="newMemberForm" onsubmit="addNewMember()">
                 <h1>Add a new family member</h1>
@@ -53,7 +53,7 @@
               </form>
             </div>
             <br>
-            <button class="familybutton" onclick="openRemoveMemberForm()">REMOVE FAMILY MEMBER</button>
+            <button class="familybutton" onclick="openRemoveMemberForm()" id="removeMemberButton">REMOVE FAMILY MEMBER</button>
             <div class="form-popup">
               <form action="javascript:void(0);" class="form-container" id="removeMemberForm" onsubmit="removeMember()">
                 <h1>Remove a family member</h1>

@@ -46,6 +46,8 @@ function loadFamilyMembers() {
     if(!("name" in family)) {
         familyHeader.innerText = "You are not in a family currently";
         familyElement.appendChild(familyHeader);
+        document.getElementById('addMemberButton').setAttribute("style","visibility:hidden");
+        document.getElementById('removeMemberButton').setAttribute("style","visibility:hidden");
         return;
     }
     familyHeader.innerText = "Current Family Members in " + family.name + ":";
@@ -55,6 +57,8 @@ function loadFamilyMembers() {
       memberListElement.innerText = memberEmail;
       familyElement.appendChild(memberListElement);
     })
+    document.getElementById('addMemberButton').setAttribute("style","visibility:visible");
+    document.getElementById('removeMemberButton').setAttribute("style","visibility:visible");
   });
 }
 
@@ -63,9 +67,6 @@ function submitFamilyForm(formName, endpoint) {
 
     // creating FormData to get the values of the form
     const formData = new FormData(form);
-    var queryString = "";
-    var array = [];
-
     const params = new URLSearchParams();
 
     // loop through the key and values of the form and add them to an array
@@ -124,6 +125,7 @@ function loadGrocery() {
 
 function createGroceryElement(grocery){
   const groceryCompleteList = document.getElementById('grocery-complete-container');
+
   const groceryElement = document.createElement('li');
   groceryElement.className = 'task';
 
@@ -249,7 +251,7 @@ function deleteGrocery(grocery) {
 }
 
 
-/** Tells the server to delete the grocery. */
+/** Tells the server mark the grocery complete. */
 function completeGrocery(grocery) {
   const params = new URLSearchParams();
   params.append('id', grocery.id);  
@@ -355,4 +357,44 @@ function handleErrors(response) {
         });
     }
     return response;
+}
+
+/** Fetches photo urls from the server and adds them to the DOM. */
+function loadPhotos() {
+  fetch('/list-photos').then(response => response.json()).then((photos) => {
+    const photoListElement = document.getElementById('photo-list');
+    photos.forEach((photo) => {
+      photoListElement.appendChild(createPhotoElement(photo));
+      console.log("link is" + photo);
+    })
+  });
+}
+
+/** Creates an element that represents a photo url, including its delete button. */
+function createPhotoElement(photo) {
+  const photoElement = document.createElement('li');
+  photoElement.className = 'photo';
+
+  const titleElement = document.createElement('span');
+  titleElement.innerText = photo.url;
+
+  const deleteButtonElement = document.createElement('button');
+  deleteButtonElement.innerText = 'Delete';
+  deleteButtonElement.addEventListener('click', () => {
+    deletePhoto(photo);
+
+    // Remove the photo url from the DOM.
+    photoElement.remove();
+  });
+
+  photoElement.appendChild(titleElement);
+  photoElement.appendChild(deleteButtonElement);
+  return photoElement;
+}
+
+/** Tells the server to delete the photo url. */
+function deletePhoto(photo) {
+  const params = new URLSearchParams();
+  params.append('url', photo.url);
+  fetch('/delete-photo', {method: 'POST', body: params});
 }

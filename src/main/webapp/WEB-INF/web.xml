@@ -156,13 +156,33 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>photos</servlet-name>
-    <servlet-class>com.google.sps.servlets.PhotosServlet</servlet-class>
+    <servlet-name>new-photo</servlet-name>
+    <servlet-class>com.google.sps.servlets.NewPhotoServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>photos</servlet-name>
-    <url-pattern>/photos/*</url-pattern>
+    <servlet-name>new-photo</servlet-name>
+    <url-pattern>/new-photo/*</url-pattern>
+  </servlet-mapping>
+
+    <servlet>
+    <servlet-name>delete-photo</servlet-name>
+    <servlet-class>com.google.sps.servlets.DeletePhotoServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>delete-photo</servlet-name>
+    <url-pattern>/delete-photo/*</url-pattern>
+  </servlet-mapping>
+
+    <servlet>
+    <servlet-name>list-photos</servlet-name>
+    <servlet-class>com.google.sps.servlets.ListPhotosServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>list-photos</servlet-name>
+    <url-pattern>/list-photos/*</url-pattern>
   </servlet-mapping>
 
   <security-constraint>
