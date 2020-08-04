@@ -76,6 +76,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>delete-family</servlet-name>
+    <servlet-class>com.google.sps.servlets.DeleteFamilyServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>delete-family</servlet-name>
+    <url-pattern>/delete-family/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>new-member</servlet-name>
     <servlet-class>com.google.sps.servlets.NewMemberServlet</servlet-class>
   </servlet>
