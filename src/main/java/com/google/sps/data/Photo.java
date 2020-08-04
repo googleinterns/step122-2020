@@ -14,9 +14,8 @@
 
 package com.google.sps.data;
 
-/** An item on a todo list. */
+/** An item in photos. */
 public final class Photo {
-
 
   private final String url;
 
