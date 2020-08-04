@@ -5,37 +5,46 @@
         <title>Home</title>
         <link rel="stylesheet" href="style.css">
         <script src="script.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Parisienne">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Graduate">
     </head>
     <body onload="loadGrocery()">
-        <div class="top-container">
+       <div class="colorstrip" class="top-container">
             <div class="dropdown">
-                <button class="dropbtn">MENU</button>
-                <div class="dropdown-content">
-                    <a href="home.html">Home</a>
-                    <a href="/calendar-auth">Calendar</a>
-                    <a href="photos.html">Photos</a>
-                    <a href="task.html">To-Do List</a>
-                    <a href="settings.html">Settings</a>
-                </div>
+                <a href="home.html">
+                    <img height="100" width="200" src="images/mainhouse.png"/>
+                </a>
             </div>
-            <div class="user">
-                <a href="images/user.png" ><img class="user-image" src="images/user.png"/></a>
+            <div class="logout">
+                <form action="/login" method="GET">
+                    <button class="dropbtn" name="logoutBtn">LOGOUT</button>
+                </form>
             </div>
         </div>
-        <div id="content">
-            <h1>Groceries</h1>
-            <form action="/grocery-list" method="POST" id="groceryFormID" name="groceryForm">
-                <p>Grocery Item</p>
-                <input type="text" name="groceryItem" id="groceryItemID">
-                <br>
-                <p> Member to assign (Optional)</p>
-                <input type="text" name="assignGrocery" id="assignGroceryID">
-                <br>
-            </form>   
-            <button onclick="createGrocery()">Submit</button> 
 
-            <br>
-            <ul id="grocery-list-container"></ul>
+        <br>
+        <div class="homewelcome">Groceries</div>
+            <div class="grocery-input">
+                <form action="/grocery-list" method="POST" id="groceryForm" style="padding:10px;">
+                    <p class="members" >Grocery Item</p>
+                    <input type="text" name="groceryItem" id="groceryItemID">
+                    <br>
+                    <p class="members" > Member to assign (Optional)</p>
+                    <input type="text" name="assignGrocery" id="assignGroceryID">
+                    <br>
+                </form>   
+            <button class="grocerybutton" onclick="createGrocery()">Submit</button> 
+            </div>
+        <br>
+        <div class="grocery-output">
+            <div class="grocery-incomplete">
+                <p class="members" style="text-align:center;">Not done:</p>
+                <ul id="grocery-list-container"></ul>
+            </div>
+            <div>
+                <p class="members" style="text-align:center;">Complete:</p>
+                <ul id="grocery-complete-container"></ul>
+            </div>
         </div>
-  </body>
+    </body>
 </html>

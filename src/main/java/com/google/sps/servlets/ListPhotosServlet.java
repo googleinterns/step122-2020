@@ -16,24 +16,42 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.gson.Gson;
+import com.google.sps.data.Photo;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet responsible for deleting tasks. */
-@WebServlet("/delete-task")
-public class DeleteTaskServlet extends HttpServlet {
+/** Servlet responsible for listing tasks. */
+@WebServlet("/list-photos")
+public class ListPhotosServlet extends HttpServlet {
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long id = Long.parseLong(request.getParameter("id"));
-    
-    Key taskEntityKey = KeyFactory.createKey("Task", id);
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Query query = new Query("Photo");
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.delete(taskEntityKey);
+    PreparedQuery results = datastore.prepare(query);
+
+    List<Photo> photos = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+      String url = (String) entity.getProperty("Photo");
+      System.out.println(url);
+      Photo photo = new Photo(url);
+      photos.add(photo);
+    }
+
+    Gson gson = new Gson();
+
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(photos));
   }
 }

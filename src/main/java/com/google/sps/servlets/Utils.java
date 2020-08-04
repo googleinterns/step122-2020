@@ -28,6 +28,9 @@ import com.google.api.client.util.Preconditions;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.Calendar.Acl.Insert;
+import com.google.api.services.calendar.model.AclRule;
+import com.google.api.services.calendar.model.AclRule.Scope;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -77,10 +80,13 @@ class Utils {
   // Returns authorization code flow using client credentials (hard coded for now)
   static GoogleAuthorizationCodeFlow newFlow() throws IOException {
     return new GoogleAuthorizationCodeFlow.Builder(
-        new NetHttpTransport(), JacksonFactory.getDefaultInstance(),
-        "INSERT CLIENT ID HERE", "INSERT CLIENT SECRET HERE",
-        Collections.singleton(CalendarScopes.CALENDAR)).setDataStoreFactory(
-        DATA_STORE_FACTORY).setAccessType("offline").build();
+        new NetHttpTransport(), 
+        JacksonFactory.getDefaultInstance(), 
+        getClientCredential(),
+        Collections.singleton(CalendarScopes.CALENDAR))
+    .setDataStoreFactory(DATA_STORE_FACTORY)
+    .setAccessType("offline")
+    .build();
   }
 
   // Returns calendar client using authorization flow
@@ -113,6 +119,15 @@ class Utils {
     Entity familyEntity = datastore.get(familyEntityKey);
 
     return familyEntity;
+  }
+
+  static Insert createUserAclRequest(String calendarID, String memberEmail, String scopeType, String role) throws IOException {
+    AclRule rule = new AclRule();
+    Scope scope = new Scope();
+    scope.setType(scopeType).setValue(memberEmail);
+    rule.setScope(scope).setRole(role);
+
+    return loadCalendarClient().acl().insert(calendarID, rule);
   }
 
   /**
