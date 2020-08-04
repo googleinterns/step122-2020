@@ -49,8 +49,25 @@ public class DeleteFamilyServlet extends HttpServlet {
         return;
     }
 
-    String calendarID = (String) currentFamilyEntity.getProperty(CALENDAR_ID_PROPERTY);
-    long familyID = (long) userInfoEntity.getProperty("familyID");
+    deleteAllData(familyEntity);
+
+  }
+
+  // Delete the all data of one type corresponding to a family
+  private void removeDataTypeForFamily(String kind, long familyID) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query(kind)
+        .setFilter(new Query.FilterPredicate("familyID", Query.FilterOperator.EQUAL, familyID));
+    PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+        datastore.delete(entity.getKey());
+    }
+  }
+
+  private void deleteAllData(Entity familyEntity) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    String calendarID = (String) familyEntity.getProperty("calendarID");
+    long familyID = (long) familyEntity.getKey().getId();
 
     // Delete family calendar
     if (calendarID != null) {
@@ -64,16 +81,5 @@ public class DeleteFamilyServlet extends HttpServlet {
 
     datastore.delete(familyEntity.getKey());
 
-  }
-
-  // Delete the all data of one type corresponding to a family
-  private void removeDataTypeForFamily(String kind, long familyID) throws IOException {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query(kind)
-        .setFilter(new Query.FilterPredicate("familyID", Query.FilterOperator.EQUAL, familyID));
-    PreparedQuery results = datastore.prepare(query);
-    for (Entity entity : results.asIterable()) {
-        datastore.delete(entity.getKey());
-    }
   }
 }
