@@ -20,6 +20,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -53,14 +54,14 @@ public class DeleteFamilyServlet extends HttpServlet {
 
   }
 
-  // Delete the all data of one type corresponding to a family
-  private void removeDataTypeForFamily(String kind, long familyID) throws IOException {
+  // Adds all keys of a certain kind associated with a family to the list of keys
+  private void addKindKeysForFamily(String kind, long familyID, List<Key> keys) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query(kind)
         .setFilter(new Query.FilterPredicate("familyID", Query.FilterOperator.EQUAL, familyID));
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
-        datastore.delete(entity.getKey());
+        keys.add(entity.getKey());
     }
   }
 
@@ -75,11 +76,15 @@ public class DeleteFamilyServlet extends HttpServlet {
         calendarService.calendars().delete(calendarID).execute();
     }
 
-    removeDataTypeForFamily("UserInfo", familyID);
-    removeDataTypeForFamily("Grocery", familyID);
-    removeDataTypeForFamily("Photo", familyID);
+    List<Key> keys = new ArrayList<Key>();
 
-    datastore.delete(familyEntity.getKey());
+    addKindKeysForFamily("UserInfo", familyID, keys);
+    addKindKeysForFamily("Grocery", familyID, keys);
+    addKindKeysForFamily("Photo", familyID, keys);
+    keys.add(familyEntity.getKey());
+
+    // Batch delete of all associated keys
+    datastore.delete(keys);
 
   }
 }
