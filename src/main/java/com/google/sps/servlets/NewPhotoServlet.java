@@ -19,7 +19,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
-import com.google.sps.data.Grocery;
+import com.google.sps.data.Photo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,8 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet takes photo album URL and displays it to the screen based on the users family */
-@WebServlet("/photos")
-public class PhotosServlet extends HttpServlet {
+@WebServlet("/new-photo")
+public class NewPhotoServlet extends HttpServlet {
     private static final String PHOTO = "Photo";
     private static final String FAMILY_ID = "familyID";
     @Override
@@ -72,7 +72,4 @@ public class PhotosServlet extends HttpServlet {
 
         response.sendRedirect("/photos.html");
     }
-
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-     }
 }
