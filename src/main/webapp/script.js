@@ -99,6 +99,13 @@ function removeMember() {
     closeRemoveMemberForm();
 }
 
+function deleteFamily() {
+    fetch(new Request('/delete-family', {method: 'POST'}))
+        .then((response) => handleErrors(response)).then(() => {
+            location.reload();
+        }).catch(error => alert(error.message)); 
+}
+
 function userLogin() {
   fetch('/login').then(response => response.text())
   .then((message) => {
