@@ -65,7 +65,7 @@ public class NewMemberServlet extends HttpServlet {
 
         // Check if the user already is in a family
         Query query = new Query("UserInfo")
-        .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, newMemberEmail));
+            .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, newMemberEmail));
         PreparedQuery results = datastore.prepare(query);
          
         if(results.asSingleEntity() != null) {
