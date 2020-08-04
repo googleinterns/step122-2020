@@ -31,7 +31,6 @@ public class DeleteFamilyServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Entity userInfoEntity = Utils.getCurrentUserEntity();
     if (userInfoEntity == null) {
@@ -59,19 +58,21 @@ public class DeleteFamilyServlet extends HttpServlet {
         calendarService.calendars().delete(calendarID).execute();
     }
 
-    Query query = new Query("UserInfo")
-        .setFilter(new Query.FilterPredicate("familyID", Query.FilterOperator.EQUAL, familyID));
-
     // TODO: Delete all UserInfo entities, all grocery entities, all photo entities
+    removeDataTypeForFamily("UserInfo", familyID);
+    removeDataTypeForFamily("Grocery", familyID);
+    removeDataTypeForFamily("Photo", familyID);
 
   }
 
-  // Delete the user info entity of the removed member from datastore
-  private void removeUserInfo(String memberToDelete, DatastoreService datastore, Entity userInfoEntity) throws IOException {
-    Query query = new Query("UserInfo")
-        .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, memberToDelete));
+  // Delete the all data of one type corresponding to a family
+  private void removeDataTypeForFamily(String kind, long familyID) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query(kind)
+        .setFilter(new Query.FilterPredicate("familyID", Query.FilterOperator.EQUAL, familyID));
     PreparedQuery results = datastore.prepare(query);
-    userInfoEntity = results.asSingleEntity();
-    datastore.delete(userInfoEntity.getKey());
+    for (Entity entity : results.asIterable()) {
+        datastore.delete(entity.getKey());
+    }
   }
 }
