@@ -105,25 +105,25 @@ function userLogin() {
   });
 }
 
-function loadGrocery() {
+function loadGrocery() {  
     // fetches json list of groceries
     fetch('/grocery-list').then(response => handleErrors(response)).then((response) => 
-        response.json()).then((groceries) => {
-        const groceryListElement = document.getElementById('grocery-list-container'); 
-        const groceryCompleteList = document.getElementById('grocery-complete-container');
-    groceries.forEach((grocery) => {
-        if(grocery.complete === true) {
-            groceryCompleteList.appendChild(createCompleteGrocery(grocery));
-            return;
-        }
-        groceryListElement.appendChild(createGroceryElement(grocery));
-    })
-    }).catch(error => alert(error.message)); 
-}
+        response.json()).then((groceries) => {      
+            const groceryListElement = document.getElementById('grocery-list-container'); 
+            const groceryCompleteList = document.getElementById('grocery-complete-container');
+            groceryListElement.innerHTML = '';
+            groceries.forEach((grocery) => {
+                if(grocery.complete === true) {
+                    groceryCompleteList.appendChild(createCompleteGrocery(grocery));
+                    return;
+                }
+                groceryListElement.appendChild(createGroceryElement(grocery));
+            })
+        }).catch(error => alert(error.message)); 
+    }
 
 function createGroceryElement(grocery){
   const groceryCompleteList = document.getElementById('grocery-complete-container');
-
   const groceryElement = document.createElement('li');
   groceryElement.className = 'task';
 
@@ -171,8 +171,8 @@ function createGroceryElement(grocery){
     }
 
 // adds items to the list of completed items
- function createCompleteGrocery(grocery) {
- const groceryElement = document.createElement('li');
+function createCompleteGrocery(grocery) {
+  const groceryElement = document.createElement('li');
   groceryElement.className = 'task';
 
   // If assigned email is empty then only show the item else show the item and the assigned email
@@ -317,18 +317,16 @@ function createGrocery() {
 
     // creating FormData to get the values of the form
     const formData = new FormData(groceryForm);
-    var queryString = "";
     const array = [];
 
     // loop through the key and values of the form and add them to an array
     for (var pair of formData.entries()) {
-        var key = pair[0];
-        var value = pair[1]; 
-        queryString += encodeURIComponent(key) + '=' + encodeURIComponent(value)
-        array.push(queryString);
-        console.log(queryString);
+        const key = pair[0];
+        const value = pair[1]; 
+        array.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
         queryString = "";
     }
+    console.log(array);
     document.getElementById('groceryItemID').value='';
     document.getElementById('assignGroceryID').value='';
 

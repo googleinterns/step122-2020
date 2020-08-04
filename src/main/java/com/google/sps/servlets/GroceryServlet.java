@@ -44,14 +44,13 @@ public class GroceryServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String userEmail;
-    if(userService.getCurrentUser().getEmail().equals(null)) {
-       response.setContentType("application/text");
+     if(userService.getCurrentUser() == null) {
+        response.setContentType("application/text");
         response.getWriter().println("You must sign in before using this function");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         return; 
     } else {
         userEmail = userService.getCurrentUser().getEmail();
-      
     }
 
     // if user isn't associated with family don't allow them to create a list
@@ -89,7 +88,7 @@ public class GroceryServlet extends HttpServlet {
     } else {
         ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
         for(int i = 0; i < memberEmails.size(); i++) {
-            if(assignGrocery.equals(memberEmails.get(i))) {
+            if(memberEmails.contains(assignGrocery)) {
                 groceryEntity.setProperty("assignEmail" , memberEmails.get(i));
                 break;
             } else if(i == memberEmails.size() - 1) {
@@ -117,13 +116,13 @@ public class GroceryServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService = UserServiceFactory.getUserService();
     String userEmail;
-     try {
-        userEmail = userService.getCurrentUser().getEmail();
-    } catch (NullPointerException e) {
+    if(userService.getCurrentUser() == null) {
         response.setContentType("application/text");
-        response.getWriter().println("You must Sign in before using this function");
+        response.getWriter().println("You must sign in before using this function");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        return;
+        return; 
+    } else {
+        userEmail = userService.getCurrentUser().getEmail();
     }
     // checks if user is a part of a family and returns an error if they aren't
     Query query = new Query("UserInfo")
