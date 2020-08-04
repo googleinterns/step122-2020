@@ -48,7 +48,7 @@ function loadFamilyMembers() {
         familyElement.appendChild(familyHeader);
         document.getElementById('addMemberButton').setAttribute("style","visibility:hidden");
         document.getElementById('removeMemberButton').setAttribute("style","visibility:hidden");
-        document.getElementById('deleteFamilyButton').setAttribute("style","visibility:visible");
+        document.getElementById('deleteFamilyButton').setAttribute("style","visibility:hidden");
         return;
     }
     familyHeader.innerText = "Current Family Members in " + family.name + ":";
