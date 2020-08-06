@@ -112,7 +112,7 @@ function deleteFamily() {
 
 function userLogin() {
   fetch('/login').then(response => response.text())
-  .then((message) => {""
+  .then((message) => {
     document.getElementById('login-container').innerHTML = message;
   });
 }
