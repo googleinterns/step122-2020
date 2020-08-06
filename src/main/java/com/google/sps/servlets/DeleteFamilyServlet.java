@@ -50,7 +50,7 @@ public class DeleteFamilyServlet extends HttpServlet {
         return;
     }
 
-    String calendarID = (String) currentFamilyEntity.getProperty(CALENDAR_ID_PROPERTY);
+    String calendarID = (String) familyEntity.getProperty("calendarID");
     long familyID = (long) userInfoEntity.getProperty("familyID");
 
     // Delete family calendar
