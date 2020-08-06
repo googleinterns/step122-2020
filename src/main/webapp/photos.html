@@ -7,7 +7,7 @@
         <script src="script.js"></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Parisienne">
     </head>
-    <body onload="loadGrocery()">
+    <body onload="loadPhotos()">
         <div class="colorstrip" class="top-container">
             <div class="dropdown">
                 <a href="home.html">
@@ -22,13 +22,16 @@
         </div>
         <div id="content">
             <h1 class="household">Please insert the link to your Google Photos album below!</h1>
-            <form action="/photos" method="POST">
-                <input class="center" type="url" name="albumLink">
+            <form action="/new-photo" method="POST">
+                <input class="center" type="text" name="albumLink">
                 <br>
                 <br>
                 <input class="dropbtn" type="submit" value="Submit">
             </form>    
-            <br>
+
+            <hr/>
+
+            <ul id="photo-list"></ul>
         </div>
   </body>
 </html>

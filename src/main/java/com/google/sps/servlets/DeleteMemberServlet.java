@@ -63,6 +63,12 @@ public class DeleteMemberServlet extends HttpServlet {
         return;
     }
 
+    if(memberEmails.size() == 1) {
+        ErrorHandlingUtils.setError(HttpServletResponse.SC_BAD_REQUEST,
+            "You are the only person left in the family. Please use the delete family button instead", response);
+        return;
+    }
+
     GroceryUtils.removeMember(memberToDelete);
 
     // Revoke calendar access for the user

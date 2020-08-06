@@ -46,6 +46,10 @@ function loadFamilyMembers() {
     if(!("name" in family)) {
         familyHeader.innerText = "You are not in a family currently";
         familyElement.appendChild(familyHeader);
+        document.getElementById('createFamilyButton').style.display = "block";
+        document.getElementById('addMemberButton').style.visibility = "hidden";
+        document.getElementById('removeMemberButton').style.visibility = "hidden";
+        document.getElementById('deleteFamilyButton').style.visibility = "hidden";
         return;
     }
     familyHeader.innerText = "Current Family Members in " + family.name + ":";
@@ -54,7 +58,11 @@ function loadFamilyMembers() {
       const memberListElement = document.createElement('li');
       memberListElement.innerText = memberEmail;
       familyElement.appendChild(memberListElement);
-    })
+    });
+    document.getElementById('createFamilyButton').style.display = "none";
+    document.getElementById('addMemberButton').style.visibility = "visible";
+    document.getElementById('removeMemberButton').style.visibility = "visible";
+    document.getElementById('deleteFamilyButton').style.visibility = "visible";
   });
 }
 
@@ -63,9 +71,6 @@ function submitFamilyForm(formName, endpoint) {
 
     // creating FormData to get the values of the form
     const formData = new FormData(form);
-    var queryString = "";
-    var array = [];
-
     const params = new URLSearchParams();
 
     // loop through the key and values of the form and add them to an array
@@ -98,6 +103,13 @@ function removeMember() {
     closeRemoveMemberForm();
 }
 
+function deleteFamily() {
+    fetch(new Request('/delete-family', {method: 'POST'}))
+        .then((response) => handleErrors(response)).then(() => {
+            location.reload();
+        }).catch(error => alert(error.message)); 
+}
+
 function userLogin() {
   fetch('/login').then(response => response.text())
   .then((message) => {
@@ -105,27 +117,25 @@ function userLogin() {
   });
 }
 
-function loadGrocery() {
+function loadGrocery() {  
     // fetches json list of groceries
     fetch('/grocery-list').then(response => handleErrors(response)).then((response) => 
-        response.json()).then((groceries) => {
-            
-    const groceryListElement = document.getElementById('grocery-list-container'); 
-    const groceryCompleteList = document.getElementById('grocery-complete-container');
-
-    groceries.forEach((grocery) => {
-        console.log(grocery.complete);
-        if(grocery.complete === true) {
-            groceryCompleteList.appendChild(createCompleteGrocery(grocery));
-            return;
-        }
-        groceryListElement.appendChild(createGroceryElement(grocery));
-    })
-    }).catch(error => alert(error.message)); 
-}
+        response.json()).then((groceries) => {      
+            const groceryListElement = document.getElementById('grocery-list-container'); 
+            const groceryCompleteList = document.getElementById('grocery-complete-container');
+            groceryListElement.innerHTML = '';
+            groceries.forEach((grocery) => {
+                if(grocery.complete === true) {
+                    groceryCompleteList.appendChild(createCompleteGrocery(grocery));
+                    return;
+                }
+                groceryListElement.appendChild(createGroceryElement(grocery));
+            })
+        }).catch(error => alert(error.message)); 
+    }
 
 function createGroceryElement(grocery){
-    const groceryCompleteList = document.getElementById('grocery-complete-container');
+  const groceryCompleteList = document.getElementById('grocery-complete-container');
 
   const groceryElement = document.createElement('li');
   groceryElement.className = 'task';
@@ -174,8 +184,8 @@ function createGroceryElement(grocery){
     }
 
 // adds items to the list of completed items
- function createCompleteGrocery(grocery) {
- const groceryElement = document.createElement('li');
+function createCompleteGrocery(grocery) {
+  const groceryElement = document.createElement('li');
   groceryElement.className = 'task';
 
   // If assigned email is empty then only show the item else show the item and the assigned email
@@ -252,7 +262,7 @@ function deleteGrocery(grocery) {
 }
 
 
-/** Tells the server to delete the grocery. */
+/** Tells the server mark the grocery complete. */
 function completeGrocery(grocery) {
   const params = new URLSearchParams();
   params.append('id', grocery.id);  
@@ -316,19 +326,33 @@ function deleteCalendar() {
 }
 
 function createGrocery() {
-    const groceryForm = document.getElementById('groceryForm');
-    const groceryItem = document.getElementById('groceryItemID');
-    const assignGrocery = document.getElementById('assignGroceryID');
+    const groceryForm = document.getElementById('groceryFormID');
 
-    groceryForm.append(groceryItem);
-    groceryForm.append(assignGrocery);
-    console.log(groceryForm.submit);
-    fetch(new Request('/grocery-list', {method: 'POST', body: groceryForm.submit()})).then(() =>  
-    handleErrors(response)).then((response) => {
+    // creating FormData to get the values of the form
+    const formData = new FormData(groceryForm);
+    const array = [];
+
+    // loop through the key and values of the form and add them to an array
+    for (var pair of formData.entries()) {
+        const key = pair[0];
+        const value = pair[1]; 
+        array.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+        queryString = "";
+    }
+    console.log(array);
+    document.getElementById('groceryItemID').value='';
+    document.getElementById('assignGroceryID').value='';
+
+    fetch(new Request('/grocery-list', {
+        method: 'POST', body: array.join('&'), 
+        headers: { 
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    })).then((response) => handleErrors(response)).then((response) => {
         loadGrocery();
-    });
+    }).catch(error => alert(error.message)); 
 }
-
+ 
 /** Tells the server to delete the grocery. */
 function deleteGrocery(grocery) {
   const params = new URLSearchParams();
@@ -344,4 +368,44 @@ function handleErrors(response) {
         });
     }
     return response;
+}
+
+/** Fetches photo urls from the server and adds them to the DOM. */
+function loadPhotos() {
+  fetch('/list-photos').then(response => response.json()).then((photos) => {
+    const photoListElement = document.getElementById('photo-list');
+    photos.forEach((photo) => {
+      photoListElement.appendChild(createPhotoElement(photo));
+      console.log("link is" + photo);
+    })
+  });
+}
+
+/** Creates an element that represents a photo url, including its delete button. */
+function createPhotoElement(photo) {
+  const photoElement = document.createElement('li');
+  photoElement.className = 'photo';
+
+  const titleElement = document.createElement('span');
+  titleElement.innerText = photo.url;
+
+  const deleteButtonElement = document.createElement('button');
+  deleteButtonElement.innerText = 'Delete';
+  deleteButtonElement.addEventListener('click', () => {
+    deletePhoto(photo);
+
+    // Remove the photo url from the DOM.
+    photoElement.remove();
+  });
+
+  photoElement.appendChild(titleElement);
+  photoElement.appendChild(deleteButtonElement);
+  return photoElement;
+}
+
+/** Tells the server to delete the photo url. */
+function deletePhoto(photo) {
+  const params = new URLSearchParams();
+  params.append('url', photo.url);
+  fetch('/delete-photo', {method: 'POST', body: params});
 }
