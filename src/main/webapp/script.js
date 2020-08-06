@@ -112,7 +112,7 @@ function deleteFamily() {
 
 function userLogin() {
   fetch('/login').then(response => response.text())
-  .then((message) => {
+  .then((message) => {""
     document.getElementById('login-container').innerHTML = message;
   });
 }
@@ -124,6 +124,7 @@ function loadGrocery() {
             const groceryListElement = document.getElementById('grocery-list-container'); 
             const groceryCompleteList = document.getElementById('grocery-complete-container');
             groceryListElement.innerHTML = '';
+            groceryCompleteList.innerHTML = '';
             groceries.forEach((grocery) => {
                 if(grocery.complete === true) {
                     groceryCompleteList.appendChild(createCompleteGrocery(grocery));
