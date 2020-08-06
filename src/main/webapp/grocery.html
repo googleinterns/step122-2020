@@ -21,10 +21,11 @@
                 </form>
             </div>
         </div>
+
         <br>
         <div class="homewelcome">Groceries</div>
             <div class="grocery-input">
-                <form action="/grocery-list" method="POST" id="groceryForm" style="padding:10px;">
+                <form action="/grocery-list" method="POST" id="groceryFormID" style="padding:10px;">
                     <p class="members" >Grocery Item</p>
                     <input type="text" name="groceryItem" id="groceryItemID">
                     <br>
@@ -37,7 +38,7 @@
         <br>
         <div class="grocery-output">
             <div class="grocery-incomplete">
-                <p class="members" style="text-align:center;">Not done:</p>
+                <p class="members" style="text-align:center;">Incomplete:</p>
                 <ul id="grocery-list-container"></ul>
             </div>
             <div>

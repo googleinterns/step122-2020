@@ -28,6 +28,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.logging.Logger;
+
 
 /** Servlet takes grocery list and displays it to the screen based on the users family */
 @WebServlet("/grocery-list")
@@ -37,18 +39,18 @@ public class GroceryServlet extends HttpServlet {
   private static final String COMPLETE = "Complete";
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {      
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {     
+
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String userEmail;
-    try {
-        userEmail = userService.getCurrentUser().getEmail();
-    } catch (NullPointerException e) {
+     if(userService.getCurrentUser() == null) {
         response.setContentType("application/text");
-        response.getWriter().println("You must Sign in before using this function");
+        response.getWriter().println("You must sign in before using this function");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.sendRedirect("/grocery.html");
-        return;
+        return; 
+    } else {
+        userEmail = userService.getCurrentUser().getEmail();
     }
 
     // if user isn't associated with family don't allow them to create a list
@@ -60,7 +62,6 @@ public class GroceryServlet extends HttpServlet {
         response.setContentType("application/text");
         response.getWriter().println("You must belong to a family to use the grocery function");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        response.sendRedirect("/grocery.html");
         return;
     }
 
@@ -75,24 +76,26 @@ public class GroceryServlet extends HttpServlet {
     try {
         familyEntity = datastore.get(familyEntityKey);
     } catch (EntityNotFoundException e) {
-        System.out.println("grocery assigned to: " + assignGrocery);
+        response.setContentType("application/text");
+        response.getWriter().println("Family data was not found - please refresh and try again");
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return;
     }
 
     // checks if the given email matches a email in the family
-    if (assignGrocery.equals("") || assignGrocery.equals(null)) {
+    if (assignGrocery == null ||assignGrocery.equals("")) {
         groceryEntity.setProperty("assignEmail", noneAssigned);
     } else {
         ArrayList<String> memberEmails = (ArrayList<String>) familyEntity.getProperty("memberEmails");
         for(int i = 0; i < memberEmails.size(); i++) {
-            if(assignGrocery.equals(memberEmails.get(i))) {
+            if(memberEmails.contains(assignGrocery)) {
                 groceryEntity.setProperty("assignEmail" , memberEmails.get(i));
                 break;
             } else if(i == memberEmails.size() - 1) {
                 System.out.println("User not found");
                 response.setContentType("application/text");
                 response.getWriter().println("You can only assigned members in your family");
-                response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
         }
@@ -107,21 +110,19 @@ public class GroceryServlet extends HttpServlet {
         groceryEntity.setProperty(COMPLETE, complete);
         datastore.put(groceryEntity);
     }     
-
-    response.sendRedirect("/grocery.html");
   }
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService = UserServiceFactory.getUserService();
     String userEmail;
-     try {
-        userEmail = userService.getCurrentUser().getEmail();
-    } catch (NullPointerException e) {
+    if(userService.getCurrentUser() == null) {
         response.setContentType("application/text");
-        response.getWriter().println("You must Sign in before using this function");
+        response.getWriter().println("You must sign in before using this function");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        return;
+        return; 
+    } else {
+        userEmail = userService.getCurrentUser().getEmail();
     }
     // checks if user is a part of a family and returns an error if they aren't
     Query query = new Query("UserInfo")
@@ -138,11 +139,17 @@ public class GroceryServlet extends HttpServlet {
     // creates arraylist and starts query
     ArrayList<Grocery> groceryList = new ArrayList<>();
     long familyID = (long) userInfoEntity.getProperty(FAMILY_ID);
+    try {
     Query groceryQuery = new Query(GROCERY)
       .setFilter(new Query.FilterPredicate(FAMILY_ID, Query.FilterOperator.EQUAL, familyID));   
     PreparedQuery familyGrocery= datastore.prepare(groceryQuery);
     groceryList = fetchGroceries(familyGrocery, userEmail);   
-
+    } catch(Exception e) {
+        response.setContentType("application/text");
+        response.getWriter().println("Something went wrong.");
+        response.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
+        return;
+    }
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(groceryList));
