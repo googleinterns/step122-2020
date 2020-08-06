@@ -20,6 +20,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +32,6 @@ public class DeleteFamilyServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Entity userInfoEntity = Utils.getCurrentUserEntity();
     if (userInfoEntity == null) {
@@ -50,8 +50,25 @@ public class DeleteFamilyServlet extends HttpServlet {
         return;
     }
 
+    deleteAllData(familyEntity);
+
+  }
+
+  // Adds all keys of a certain kind associated with a family to the list of keys
+  private void addKindKeysForFamily(String kind, long familyID, List<Key> keys) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query(kind)
+        .setFilter(new Query.FilterPredicate("familyID", Query.FilterOperator.EQUAL, familyID));
+    PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+        keys.add(entity.getKey());
+    }
+  }
+
+  private void deleteAllData(Entity familyEntity) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String calendarID = (String) familyEntity.getProperty("calendarID");
-    long familyID = (long) userInfoEntity.getProperty("familyID");
+    long familyID = (long) familyEntity.getKey().getId();
 
     // Delete family calendar
     if (calendarID != null) {
@@ -59,19 +76,15 @@ public class DeleteFamilyServlet extends HttpServlet {
         calendarService.calendars().delete(calendarID).execute();
     }
 
-    Query query = new Query("UserInfo")
-        .setFilter(new Query.FilterPredicate("familyID", Query.FilterOperator.EQUAL, familyID));
+    List<Key> keys = new ArrayList<Key>();
 
-    // TODO: Delete all UserInfo entities, all grocery entities, all photo entities
+    addKindKeysForFamily("UserInfo", familyID, keys);
+    addKindKeysForFamily("Grocery", familyID, keys);
+    addKindKeysForFamily("Photo", familyID, keys);
+    keys.add(familyEntity.getKey());
 
-  }
+    // Batch delete of all associated keys
+    datastore.delete(keys);
 
-  // Delete the user info entity of the removed member from datastore
-  private void removeUserInfo(String memberToDelete, DatastoreService datastore, Entity userInfoEntity) throws IOException {
-    Query query = new Query("UserInfo")
-        .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, memberToDelete));
-    PreparedQuery results = datastore.prepare(query);
-    userInfoEntity = results.asSingleEntity();
-    datastore.delete(userInfoEntity.getKey());
   }
 }

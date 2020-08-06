@@ -27,7 +27,7 @@
         <div class="btngroup" id="content">
             <div id="family-container"></div>
             <br>
-            <button class="familybutton" onclick="openFamilyForm()">CREATE FAMILY</button>
+            <button class="familybutton" onclick="openFamilyForm()" id="createFamilyButton">CREATE FAMILY</button>
             <div class="form-popup">
               <form action="javascript:void(0);" class="form-container" id="createFamilyForm" onsubmit="createFamily()">
                 <h1>Create new family</h1>
@@ -65,7 +65,8 @@
                 <button type="button" class="btn cancel" onclick="closeRemoveMemberForm()">Close</button>
               </form>
             </div>
-            <form action="/login" method="GET">
+            <br>
+            <button class="familybutton" onclick="deleteFamily()" id="deleteFamilyButton">DELETE FAMILY</button>
         </div>
   </body>
 </html>

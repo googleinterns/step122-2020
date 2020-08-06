@@ -46,8 +46,10 @@ function loadFamilyMembers() {
     if(!("name" in family)) {
         familyHeader.innerText = "You are not in a family currently";
         familyElement.appendChild(familyHeader);
-        document.getElementById('addMemberButton').setAttribute("style","visibility:hidden");
-        document.getElementById('removeMemberButton').setAttribute("style","visibility:hidden");
+        document.getElementById('createFamilyButton').style.display = "block";
+        document.getElementById('addMemberButton').style.visibility = "hidden";
+        document.getElementById('removeMemberButton').style.visibility = "hidden";
+        document.getElementById('deleteFamilyButton').style.visibility = "hidden";
         return;
     }
     familyHeader.innerText = "Current Family Members in " + family.name + ":";
@@ -56,9 +58,11 @@ function loadFamilyMembers() {
       const memberListElement = document.createElement('li');
       memberListElement.innerText = memberEmail;
       familyElement.appendChild(memberListElement);
-    })
-    document.getElementById('addMemberButton').setAttribute("style","visibility:visible");
-    document.getElementById('removeMemberButton').setAttribute("style","visibility:visible");
+    });
+    document.getElementById('createFamilyButton').style.display = "none";
+    document.getElementById('addMemberButton').style.visibility = "visible";
+    document.getElementById('removeMemberButton').style.visibility = "visible";
+    document.getElementById('deleteFamilyButton').style.visibility = "visible";
   });
 }
 
@@ -97,6 +101,13 @@ function addNewMember() {
 function removeMember() {
     submitFamilyForm('removeMemberForm', '/delete-member');
     closeRemoveMemberForm();
+}
+
+function deleteFamily() {
+    fetch(new Request('/delete-family', {method: 'POST'}))
+        .then((response) => handleErrors(response)).then(() => {
+            location.reload();
+        }).catch(error => alert(error.message)); 
 }
 
 function userLogin() {
