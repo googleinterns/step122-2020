@@ -386,7 +386,7 @@ img {
 }
 
 .grocery-incomplete {
-    float: left;
+    width: 50%;
 }
 
 .grocerybutton{

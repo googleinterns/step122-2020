@@ -124,6 +124,7 @@ function loadGrocery() {
             const groceryListElement = document.getElementById('grocery-list-container'); 
             const groceryCompleteList = document.getElementById('grocery-complete-container');
             groceryListElement.innerHTML = '';
+            groceryCompleteList.innerHTML = '';
             groceries.forEach((grocery) => {
                 if(grocery.complete === true) {
                     groceryCompleteList.appendChild(createCompleteGrocery(grocery));
